@@ -1,0 +1,20 @@
+{
+  "tracker": {
+    "save_path": "",
+    "state_path": "tracker/state.json",
+    "poll_interval_ms": 1000,
+    "debug": false,
+    "party_only": false,
+    "simulate_if_missing": false,
+    "radical_red_mode": "auto"
+  },
+  "overlay": {
+    "poll_interval_ms": 1000,
+    "theme": "default",
+    "sprite_style": "auto",
+    "overlay_scale": 1.0,
+    "pc_boxes": [1],
+    "memorial_boxes": [25],
+    "sprite_overrides": {}
+  }
+}
