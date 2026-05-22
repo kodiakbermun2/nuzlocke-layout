@@ -1,0 +1,18 @@
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+include = "\\.pyi?$"
+exclude = "(\\.venv|__pycache__|build|dist|node_modules)"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = [".venv", "__pycache__", "build", "dist", "node_modules"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+ignore = []
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"

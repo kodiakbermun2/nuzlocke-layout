@@ -1,0 +1,57 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+.env
+.env.*
+
+# Logs and runtime artifacts
+*.log
+logs/
+tracker_logs/
+
+# Overlay / tracker generated runtime state
+PokemonOverlay/tracker/state.json
+PokemonOverlay/tracker/*.state.json
+PokemonOverlay/tracker/*.pid
+PokemonOverlay/tracker/*.lock
+
+# Temporary save dumps / parser probes / generated binaries
+PokemonOverlay/tracker/*dump*.bin
+PokemonOverlay/tracker/*dump*.json
+PokemonOverlay/tracker/mock_saveblock.bin
+PokemonOverlay/tracker/mock_save_meta.json
+PokemonOverlay/tracker/missing_sprites_report.json
+PokemonOverlay/tracker/*.tmp
+PokemonOverlay/tracker/*.bak
+PokemonOverlay/tracker/_pc_*_out*.txt
+
+# Local emulator / save artifacts
+*.sav.bak
+*.ss0
+*.ss1
+*.sgm
+
+# Node/web build caches (if added later)
+node_modules/
+dist/
+build/
+.cache/
