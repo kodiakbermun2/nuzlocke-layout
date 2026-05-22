@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon Nuzlocke Overlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="overlay-shell" id="overlayRoot">
+      <div class="status-strip" id="statusStrip" aria-live="polite" data-mode="loading">
+        <p class="status" id="statusLine">Waiting for state data...</p>
+      </div>
+
+      <section class="zone party-zone" aria-label="Current Party">
+        <div class="pokemon-grid party-grid" id="partyGrid"></div>
+      </section>
+
+      <section class="zone pc-zone" aria-label="PC Reserves">
+        <div class="pokemon-grid pc-grid" id="pcGrid"></div>
+      </section>
+
+      <section class="zone memorial-zone" aria-label="Memorial Box">
+        <div class="pokemon-grid dead-grid" id="deadGrid"></div>
+      </section>
+    </main>
+
+    <template id="pokemonCardTemplate">
+      <figure class="pokemon-token" data-key="">
+        <span class="sprite-frame">
+          <img class="sprite" alt="Pokemon sprite" />
+        </span>
+      </figure>
+    </template>
+
+    <script src="overlay.js"></script>
+  </body>
+</html>
