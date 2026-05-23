@@ -464,6 +464,37 @@ def prune_pc_cache_against_party(
         remove_matching_from_pc_cache(pc_cache, mon)
 
 
+def prune_pc_list_against_party(
+    pc_list: List[Dict[str, Any]],
+    party: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not pc_list or not party:
+        return [dict(mon) for mon in (pc_list or [])]
+
+    party_exact = {mon_identity(mon) for mon in (party or [])}
+    party_relaxed = {mon_identity_relaxed(mon) for mon in (party or [])}
+    party_names = {
+        (normalized_nickname(mon), bool(mon.get("shiny") or False))
+        for mon in (party or [])
+        if normalized_nickname(mon)
+    }
+
+    out: List[Dict[str, Any]] = []
+    for mon in pc_list:
+        key_exact = mon_identity(mon)
+        key_relaxed = mon_identity_relaxed(mon)
+        name_key = (normalized_nickname(mon), bool(mon.get("shiny") or False))
+
+        if key_exact in party_exact or key_relaxed in party_relaxed:
+            continue
+        if name_key[0] and name_key in party_names:
+            continue
+
+        out.append(dict(mon))
+
+    return out
+
+
 def prune_pc_cache_against_dead(
     pc_cache: Dict[int, Dict[int, Dict[str, Any]]],
     dead_cache: List[Dict[str, Any]],
@@ -792,6 +823,10 @@ def run_loop(
                 pc_cache,
                 bridge_pc_trusted,
                 replace_seen_boxes=replace_seen_boxes,
+            )
+            state["pc_cached"] = prune_pc_list_against_party(
+                state.get("pc_cached", []),
+                party_now,
             )
             prune_dead_cache_against_active(
                 dead_cache,
