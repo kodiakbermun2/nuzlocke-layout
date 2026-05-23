@@ -6,9 +6,15 @@ const DEFAULT_CONFIG = {
   theme: "default",
   spriteStyle: "auto",
   overlayScale: 1,
-  pcBoxes: [],
-  memorialBoxes: [],
+  pcBoxes: [1],
+  memorialBoxes: [25],
   spriteOverrides: {},
+  websocket: {
+    enabled: true,
+    host: "127.0.0.1",
+    port: 8765,
+    reconnectMs: 1000,
+  },
 };
 
 const FETCH_TIMEOUT_MS = 1400;
@@ -18,10 +24,12 @@ const DEBUG = true;
 const partyGrid = document.getElementById("partyGrid");
 const pcGrid = document.getElementById("pcGrid");
 const deadGrid = document.getElementById("deadGrid");
+const overlayRoot = document.getElementById("overlayRoot");
 const statusLine = document.getElementById("statusLine");
 const statusStrip = document.getElementById("statusStrip");
 const cardTemplate = document.getElementById("pokemonCardTemplate");
 const LAYOUT_EDIT_QUERY_PARAM = "layoutEdit";
+const LAYOUT_PRESET_STORAGE_KEY = "nuzlockeOverlay.layoutVars.v2";
 
 const FALLBACK_SPRITE_DATA_URI =
   "data:image/svg+xml;utf8," +
@@ -33,9 +41,13 @@ let config = { ...DEFAULT_CONFIG };
 let timerId = null;
 let previousStateDigest = "";
 let previousMonSignatures = new Map();
-let isFirstSuccess = true;
-let inFlight = false;
 let lastSuccessAt = 0;
+let ws = null;
+let wsReconnectAttempts = 0;
+let wsReconnectTimer = null;
+let pollInFlight = false;
+let wsFallbackPollingActive = false;
+const pcBoxCache = new Map();
 
 const spriteResolutionCache = new Map();
 const spriteLoadPromiseCache = new Map();
@@ -46,6 +58,13 @@ const FORM_ALIAS_MAP = {
   ARCEUS_FIRE: ["ARCEUS_12"],
   BASCULEGION_F: ["BASCULEGION_FEMALE"],
   FLABB: ["FLABEBE"],
+};
+
+// Fallbacks for form/species IDs that may not carry reliable gender metadata
+// in live snapshots. Config overrides can still replace these when provided.
+const SPECIES_ID_SPRITE_HINTS = {
+  645: "frillish_female",
+  646: "jellicent_female",
 };
 
 function logDebug(...args) {
@@ -97,31 +116,78 @@ function normalizePokemon(raw, section, index) {
 
 function normalizeState(data) {
   const party = sanitizeArray(data.party).map((p, i) => normalizePokemon(p, "party", i));
-  let pc = sanitizeArray(data.pc).map((p, i) => normalizePokemon(p, "pc", i));
+  const incomingPc = sanitizeArray(data.pc).map((p, i) => normalizePokemon(p, "pc", i));
+  const sharedCachedPc = sanitizeArray(data.pc_cached).map((p, i) => normalizePokemon(p, "pc", i));
+  let pc = incomingPc;
   let dead = sanitizeArray(data.dead).map((p, i) => normalizePokemon(p, "dead", i));
+  let usedPcFallback = false;
 
   const pcBoxSet = new Set(config.pcBoxes || []);
-  const memorialBoxSet = new Set(config.memorialBoxes || []);
 
-  if (dead.length === 0 && memorialBoxSet.size > 0) {
-    dead = pc
-      .filter((mon) => mon.box != null && memorialBoxSet.has(mon.box))
-      .map((mon) => ({ ...mon, section: "dead", key: `dead-${mon.box}-${mon.boxSlot}-${mon.slot}` }));
-    pc = pc.filter((mon) => !(mon.box != null && memorialBoxSet.has(mon.box)));
+  // Prefer tracker-shared cache so all browser clients (OBS + VS) render the
+  // same box composition. Keep per-browser cache as fallback for older tracker
+  // payloads that don't include pc_cached yet.
+  let sourcePc = [];
+  if (sharedCachedPc.length > 0) {
+    sourcePc = sharedCachedPc;
+  } else {
+    const seenIncomingBoxes = new Set(
+      incomingPc
+        .map((mon) => mon.box)
+        .filter((box) => Number.isFinite(box) && box > 0)
+    );
+
+    for (const box of seenIncomingBoxes) {
+      for (const key of [...pcBoxCache.keys()]) {
+        if (key.startsWith(`${box}:`)) {
+          pcBoxCache.delete(key);
+        }
+      }
+    }
+
+    for (const mon of incomingPc) {
+      if (!Number.isFinite(mon.box) || mon.box <= 0 || !Number.isFinite(mon.boxSlot) || mon.boxSlot <= 0) {
+        continue;
+      }
+      pcBoxCache.set(`${mon.box}:${mon.boxSlot}`, { ...mon, section: "pc" });
+    }
+
+    sourcePc = [...pcBoxCache.values()].sort((a, b) => {
+      if ((a.box || 0) !== (b.box || 0)) {
+        return (a.box || 0) - (b.box || 0);
+      }
+      return (a.boxSlot || 0) - (b.boxSlot || 0);
+    });
   }
 
-  if (pcBoxSet.size > 0) {
-    const filteredPc = pc.filter((mon) => mon.box != null && pcBoxSet.has(mon.box));
-    // If configured boxes are empty in parsed state, keep all parsed PC mons
-    // so the overlay does not look broken while parser offsets are being tuned.
-    if (filteredPc.length === 0 && pc.length > 0) {
-      logDebug("Configured pc_boxes produced no matches; falling back to all parsed PC mons", {
-        configuredBoxes: [...pcBoxSet],
-        parsedPcCount: pc.length,
-      });
+  if (sourcePc.length > 0) {
+    if (pcBoxSet.size > 0) {
+      const configuredPc = sourcePc
+        .filter((mon) => mon.box != null && pcBoxSet.has(mon.box))
+        .map((mon) => ({ ...mon, key: `pc-${mon.box}-${mon.boxSlot}` }));
+
+      if (configuredPc.length > 0) {
+        pc = configuredPc;
+      } else if (incomingPc.length > 0) {
+        // Keep PC visible if the configured box has not been observed yet.
+        // This prevents an empty PC panel after startup/restart.
+        usedPcFallback = true;
+        pc = incomingPc.map((mon, idx) => ({
+          ...mon,
+          key: `pc-fallback-${mon.box || 0}-${mon.boxSlot || idx + 1}`,
+        }));
+      } else {
+        pc = [];
+      }
     } else {
-      pc = filteredPc;
+      pc = sourcePc.map((mon) => ({ ...mon, key: `pc-${mon.box}-${mon.boxSlot}` }));
     }
+
+  }
+
+  if (!usedPcFallback && pcBoxSet.size > 0) {
+    const filteredPc = pc.filter((mon) => mon.box != null && pcBoxSet.has(mon.box));
+    pc = filteredPc;
   }
 
   return { party, pc, dead };
@@ -152,12 +218,68 @@ function statusMode(text, mode) {
   statusStrip.dataset.mode = mode;
 }
 
+function statusClassFromCode(statusCode) {
+  const code = String(statusCode || "").toUpperCase();
+  if (!code) {
+    return "";
+  }
+
+  if (code === "PAR" || code === "PLZ") {
+    return "par";
+  }
+  if (code === "SLP") {
+    return "slp";
+  }
+  if (code === "PSN") {
+    return "psn";
+  }
+  if (code === "TOX") {
+    return "tox";
+  }
+  if (code === "FRZ") {
+    return "frz";
+  }
+  if (code === "BRN") {
+    return "brn";
+  }
+  if (code === "FNT") {
+    return "fnt";
+  }
+  return "other";
+}
+
+function isFaintedPartyMon(mon) {
+  if (!Number.isFinite(mon.currentHp)) {
+    return false;
+  }
+
+  if (Number.isFinite(mon.maxHp) && mon.maxHp <= 0) {
+    return false;
+  }
+
+  return mon.currentHp <= 0;
+}
+
 function toSpriteNameBase(text) {
   return String(text || "")
     .trim()
     .replace(/\s+/g, "_")
     .replace(/-/g, "_")
     .replace(/[^a-zA-Z0-9_]/g, "");
+}
+
+function getSpriteHint(mon) {
+  const configHint = config.spriteOverrides[String(mon.speciesId)] || config.spriteOverrides[mon.species];
+  if (configHint) {
+    return configHint;
+  }
+
+  const idHint = SPECIES_ID_SPRITE_HINTS[Number(mon.speciesId)];
+  if (idHint) {
+    return idHint;
+  }
+
+  return null;
 }
 
 function spriteNameCandidates(mon) {
@@ -171,11 +293,41 @@ function spriteNameCandidates(mon) {
 
   const nameBase = toSpriteNameBase(mon.species);
   const isPlaceholderName = /^species_[0-9]+$/i.test(nameBase);
+  const gender = String(mon.gender || "").toLowerCase();
+  const hint = getSpriteHint(mon);
+
+  const pushFemaleVariants = (token) => {
+    if (gender !== "female") {
+      return;
+    }
+
+    const base = toSpriteNameBase(token);
+    if (!base) {
+      return;
+    }
+
+    const upper = base.toUpperCase();
+    const lower = base.toLowerCase();
+    const compactUpper = upper.replace(/_/g, "");
+    const compactLower = lower.replace(/_/g, "");
+
+    // Prefer explicit female forms first so shared species names do not
+    // resolve to the default male/base sprite when a female sprite exists.
+    pushUnique(`${upper}_female`);
+    pushUnique(`${lower}_female`);
+    pushUnique(`${upper}_F`);
+    pushUnique(`${lower}_f`);
+    pushUnique(`${compactUpper}_female`);
+    pushUnique(`${compactLower}_female`);
+    pushUnique(`${compactUpper}_F`);
+    pushUnique(`${compactLower}_f`);
+  };
 
   const pushAliasVariants = (token) => {
     const key = String(token || "").toUpperCase();
     const aliases = FORM_ALIAS_MAP[key] || [];
     for (const alias of aliases) {
+      pushFemaleVariants(alias);
       pushUnique(alias);
       pushUnique(alias.toLowerCase());
       pushUnique(alias.replace(/_/g, ""));
@@ -191,26 +343,37 @@ function spriteNameCandidates(mon) {
     }
   };
 
-  // If parser yields placeholder species names, prioritize numeric IDs first.
+  // Placeholder names like species_832 come from memory bridge snapshots.
+  // Keep lookup short to avoid a flood of failed sprite URL probes.
   if (isPlaceholderName) {
+    if (hint) {
+      pushFemaleVariants(hint);
+      pushUnique(hint);
+      pushUnique(String(hint).toUpperCase());
+    }
+
     pushUnique(String(mon.speciesId));
     pushUnique(String(mon.speciesId).padStart(3, "0"));
+
+    return out;
   }
 
-  pushUnique(nameBase);
-  pushUnique(nameBase.toUpperCase());
-  pushUnique(nameBase.replace(/_/g, ""));
-  pushUnique(nameBase.replace(/_/g, "").toUpperCase());
-  pushAliasVariants(nameBase);
-
-  const hint = config.spriteOverrides[String(mon.speciesId)] || config.spriteOverrides[mon.species];
+  // Explicit overrides should win over generic species names.
   if (hint) {
+    pushFemaleVariants(hint);
     pushUnique(hint);
     pushUnique(hint.toUpperCase());
     pushUnique(hint.replace(/_/g, ""));
     pushUnique(hint.replace(/_/g, "").toUpperCase());
     pushAliasVariants(hint);
   }
+
+  pushFemaleVariants(nameBase);
+  pushUnique(nameBase);
+  pushUnique(nameBase.toUpperCase());
+  pushUnique(nameBase.replace(/_/g, ""));
+  pushUnique(nameBase.replace(/_/g, "").toUpperCase());
+  pushAliasVariants(nameBase);
 
   // Support prior numeric naming conventions where available.
   if (!isPlaceholderName) {
@@ -221,23 +384,7 @@ function spriteNameCandidates(mon) {
   return out;
 }
 
-function spriteCandidates(mon) {
-  const roots = [];
-
-  if (mon.section === "pc") {
-    roots.push(mon.shiny ? "../../Icons shiny" : "../../Icons");
-    roots.push(mon.shiny ? "sprites/icons/shiny" : "sprites/icons");
-  } else {
-    // Party and memorial both use front sprites. Memorial visual washout is CSS.
-    roots.push(mon.shiny ? "../../Front shiny" : "../../Front");
-    if (config.spriteStyle === "icons") {
-      roots.push(mon.shiny ? "../../Icons shiny" : "../../Icons");
-      roots.push(mon.shiny ? "sprites/icons/shiny" : "sprites/icons");
-    } else {
-      roots.push(mon.shiny ? "sprites/shiny" : "sprites/normal");
-    }
-  }
-
+function buildSpriteCandidates(mon, roots, tails) {
   const candidates = [];
   const names = spriteNameCandidates(mon);
   for (const root of roots) {
@@ -245,12 +392,31 @@ function spriteCandidates(mon) {
       candidates.push(`${root}/${name}.png`);
     }
   }
+  return [...candidates, ...tails];
+}
 
-  candidates.push("../../Front/000.png");
-  candidates.push("sprites/icons/missingno.png");
-  candidates.push("sprites/normal/missingno.png");
-  candidates.push(FALLBACK_SPRITE_DATA_URI);
-  return candidates;
+function resolvePartyCandidates(mon) {
+  const roots = [mon.shiny ? "../../Front shiny" : "../../Front", "sprites/normal"];
+  if (mon.shiny) {
+    roots.push("sprites/shiny");
+  }
+  return buildSpriteCandidates(mon, roots, ["../../Front/000.png", "sprites/normal/missingno.png", FALLBACK_SPRITE_DATA_URI]);
+}
+
+function resolvePcCandidates(mon) {
+  const roots = [mon.shiny ? "../../Icons shiny" : "../../Icons", mon.shiny ? "sprites/icons/shiny" : "sprites/icons"];
+  return buildSpriteCandidates(mon, roots, ["sprites/icons/missingno.png", FALLBACK_SPRITE_DATA_URI]);
+}
+
+function resolveMemorialCandidates(mon) {
+  const roots = [];
+  if (mon.shiny) {
+    roots.push("../../Front shiny");
+    roots.push("sprites/shiny");
+  }
+  roots.push("../../Front");
+  roots.push("sprites/normal");
+  return buildSpriteCandidates(mon, roots, ["../../Front/000.png", "sprites/normal/missingno.png", FALLBACK_SPRITE_DATA_URI]);
 }
 
 function loadImage(url) {
@@ -273,14 +439,22 @@ function loadImage(url) {
   return promise;
 }
 
-async function resolveSpriteSource(mon) {
-  const cacheKey = `${mon.section}|${mon.shiny}|${mon.species}|${mon.speciesId}|${config.spriteStyle}`;
+async function resolveSpriteSource(mon, candidates, resolverTag) {
+  const cacheKey = [
+    resolverTag,
+    mon.section,
+    mon.shiny,
+    mon.species,
+    mon.speciesId,
+    mon.gender,
+    getSpriteHint(mon) || "",
+    config.spriteStyle,
+  ].join("|");
   const cached = spriteResolutionCache.get(cacheKey);
   if (cached) {
     return cached;
   }
 
-  const candidates = spriteCandidates(mon);
   for (const candidate of candidates) {
     try {
       const source = await loadImage(candidate);
@@ -295,6 +469,20 @@ async function resolveSpriteSource(mon) {
   return FALLBACK_SPRITE_DATA_URI;
 }
 
+async function resolvePartySprite(mon) {
+  return resolveSpriteSource(mon, resolvePartyCandidates(mon), "party");
+}
+
+async function resolvePcIconSprite(mon) {
+  return resolveSpriteSource(mon, resolvePcCandidates(mon), "pc");
+}
+
+async function resolveMemorialSprite(mon) {
+  const source = await resolveSpriteSource(mon, resolveMemorialCandidates(mon), "memorial");
+  logDebug("memorial sprite resolved", { species: mon.species, src: source });
+  return source;
+}
+
 function updateCardVisual(node, mon) {
   node.classList.toggle("shiny", mon.shiny);
   node.classList.toggle("sprite-right", mon.section === "party" && mon.slot % 2 === 0);
@@ -306,6 +494,9 @@ function updateCardVisual(node, mon) {
   if (mon.section !== "party") {
     return;
   }
+
+  const fainted = isFaintedPartyMon(mon);
+  node.classList.toggle("fainted", fainted);
 
   const nameEl = node.querySelector(".party-name");
   const levelEl = node.querySelector(".party-level");
@@ -321,8 +512,14 @@ function updateCardVisual(node, mon) {
     levelEl.textContent = levelText;
   }
   if (statusEl) {
-    statusEl.textContent = mon.status || "";
-    statusEl.hidden = !mon.status;
+    const statusCode = mon.status ? String(mon.status).toUpperCase() : "";
+    const statusClass = statusClassFromCode(statusCode);
+    statusEl.className = "party-status";
+    if (statusClass) {
+      statusEl.classList.add(`status-${statusClass}`);
+    }
+    statusEl.textContent = statusCode;
+    statusEl.hidden = !statusCode;
   }
 
   if (typesEl) {
@@ -359,7 +556,11 @@ function updateCardVisual(node, mon) {
 async function setCardSprite(node, mon) {
   const sprite = node.querySelector(".sprite");
   const frame = node.querySelector(".sprite-frame");
-  const resolvedSrc = await resolveSpriteSource(mon);
+  const resolvedSrc = mon.section === "party"
+    ? await resolvePartySprite(mon)
+    : mon.section === "pc"
+      ? await resolvePcIconSprite(mon)
+      : await resolveMemorialSprite(mon);
   if (node.dataset.signature !== monSignature(mon)) {
     // Card changed while async sprite lookup was running.
     return;
@@ -367,15 +568,29 @@ async function setCardSprite(node, mon) {
   if (sprite.src !== resolvedSrc) {
     sprite.src = resolvedSrc;
   }
-  // Icons packs can contain two side-by-side frames for idle animation.
-  // Detect widescreen sprite sheets and enable alternating frame animation.
-  const isIconSection = mon.section === "pc" || mon.section === "dead";
-  if (isIconSection && sprite.naturalWidth > sprite.naturalHeight * 1.65) {
-    sprite.dataset.twoFrame = "true";
-    frame?.classList.add("two-frame");
+
+  // Icon sheets in this setup are typically 2:1 (two 64x64 frames in one PNG).
+  // Apply two-frame mode after the DOM image has fully loaded to avoid race conditions
+  // that can briefly render both frames squeezed together.
+  const applyTwoFrameMode = () => {
+    const isIconSection = mon.section === "pc";
+    const w = Number(sprite.naturalWidth || 0);
+    const h = Number(sprite.naturalHeight || 0);
+    const ratio = h > 0 ? w / h : 0;
+    const isTwoFrameSheet = isIconSection && ratio >= 1.95 && ratio <= 2.05;
+    if (isTwoFrameSheet) {
+      sprite.dataset.twoFrame = "true";
+      frame?.classList.add("two-frame");
+    } else {
+      delete sprite.dataset.twoFrame;
+      frame?.classList.remove("two-frame");
+    }
+  };
+
+  if (sprite.complete && sprite.naturalWidth > 0) {
+    applyTwoFrameMode();
   } else {
-    delete sprite.dataset.twoFrame;
-    frame?.classList.remove("two-frame");
+    sprite.addEventListener("load", applyTwoFrameMode, { once: true });
   }
   sprite.alt = `${mon.nickname} sprite`;
 }
@@ -422,6 +637,9 @@ function createCard(mon) {
   node.dataset.key = mon.key;
   node.dataset.signature = monSignature(mon);
   node.classList.toggle("dead", mon.section === "dead");
+  if (mon.section === "dead") {
+    logDebug("memorial node created", { key: mon.key, species: mon.species, nickname: mon.nickname });
+  }
   updateCardVisual(node, mon);
   setCardSprite(node, mon).catch((err) => {
     console.error("[overlay] Failed to set card sprite", err);
@@ -540,6 +758,8 @@ function preloadSprites(state) {
 }
 
 function render(state) {
+  logDebug("memorial render count", { count: state.dead.length });
+
   const beforeRects = getCurrentCardRects();
   const touchedKeys = new Set();
 
@@ -593,11 +813,192 @@ async function fetchState() {
 }
 
 function scheduleNextPoll() {
+  if (!wsFallbackPollingActive && config.websocket?.enabled) {
+    return;
+  }
   if (timerId) {
     clearTimeout(timerId);
   }
-  timerId = setTimeout(updateLoop, config.pollMs);
+  timerId = setTimeout(runPollingUpdate, config.pollMs);
 }
+
+function clearReconnectTimer() {
+  if (wsReconnectTimer) {
+    clearTimeout(wsReconnectTimer);
+    wsReconnectTimer = null;
+  }
+}
+
+function applyIncomingRawState(raw, source) {
+  const state = normalizeState(raw);
+  const digest = stateDigest(state);
+
+  if (!previousStateDigest) {
+    statusMode("Connected. Loading save data...", "loading");
+  }
+
+  if (digest !== previousStateDigest) {
+    previousStateDigest = digest;
+    render(state);
+    preloadSprites(state);
+    statusMode(`Updated via ${source} at ${new Date().toLocaleTimeString()}`, "ok");
+  } else if (state.party.length === 0 && state.pc.length === 0 && state.dead.length === 0) {
+    statusMode("Connected. Waiting for save data...", "waiting");
+  } else {
+    statusMode("Connected. Waiting for next save update...", "ok");
+  }
+
+  lastSuccessAt = Date.now();
+}
+
+async function runPollingUpdate() {
+  if (pollInFlight) {
+    scheduleNextPoll();
+    return;
+  }
+
+  pollInFlight = true;
+  try {
+    const raw = await fetchState();
+    applyIncomingRawState(raw, "JSON");
+  } catch (error) {
+    const now = Date.now();
+    if (lastSuccessAt === 0 || now - lastSuccessAt > DISCONNECTED_AFTER_MS) {
+      statusMode("Save disconnected. Waiting for tracker...", "disconnected");
+    } else {
+      statusMode("Transient read error. Retrying...", "warning");
+    }
+    console.error("[overlay] Polling update error", error);
+  } finally {
+    pollInFlight = false;
+    scheduleNextPoll();
+  }
+}
+
+function closeSocket() {
+  if (!ws) {
+    return;
+  }
+  try {
+    ws.onopen = null;
+    ws.onmessage = null;
+    ws.onerror = null;
+    ws.onclose = null;
+    ws.close();
+  } catch (_error) {
+    // Best effort close only.
+  }
+  ws = null;
+}
+
+function scheduleReconnect() {
+  clearReconnectTimer();
+  wsReconnectAttempts += 1;
+  const baseDelay = Math.max(250, Number(config.websocket?.reconnectMs || 1000));
+  const delay = Math.min(10000, Math.round(baseDelay * Math.pow(1.65, Math.min(wsReconnectAttempts, 6))));
+  statusMode(`Live feed disconnected. Reconnecting in ${delay}ms...`, "disconnected");
+  wsFallbackPollingActive = true;
+  scheduleNextPoll();
+
+  wsReconnectTimer = setTimeout(() => {
+    connectWebSocket();
+  }, delay);
+}
+
+function connectWebSocket() {
+  closeSocket();
+
+  const host = config.websocket?.host || "127.0.0.1";
+  const port = Number(config.websocket?.port || 8765);
+  const url = `ws://${host}:${port}`;
+
+  statusMode("Connecting to live tracker feed...", "loading");
+  try {
+    ws = new WebSocket(url);
+  } catch (error) {
+    console.error("[overlay] WebSocket constructor failed", error);
+    scheduleReconnect();
+    return;
+  }
+
+  ws.onopen = () => {
+    wsReconnectAttempts = 0;
+    clearReconnectTimer();
+    wsFallbackPollingActive = false;
+    if (timerId) {
+      clearTimeout(timerId);
+      timerId = null;
+    }
+    statusMode("Connected to live tracker feed.", "ok");
+    logDebug("WebSocket connected", { url });
+  };
+
+  ws.onmessage = (event) => {
+    let payload = null;
+    try {
+      payload = JSON.parse(event.data);
+    } catch (error) {
+      console.error("[overlay] Invalid websocket payload", error);
+      return;
+    }
+
+    if (!payload || typeof payload !== "object") {
+      return;
+    }
+
+    if (payload.type === "state_update" && payload.state) {
+      applyIncomingRawState(payload.state, "WebSocket");
+      return;
+    }
+
+    if (payload.type === "tracker_status") {
+      const status = String(payload.status || "").toLowerCase();
+      const message = String(payload.message || "Tracker status update");
+      if (status === "ok") {
+        statusMode(message, "ok");
+      } else if (status === "warning") {
+        statusMode(message, "warning");
+      } else if (status === "error") {
+        statusMode(message, "disconnected");
+      }
+      return;
+    }
+
+    if (payload.type === "heartbeat") {
+      lastSuccessAt = Date.now();
+    }
+  };
+
+  ws.onerror = (error) => {
+    console.error("[overlay] WebSocket error", error);
+  };
+
+  ws.onclose = () => {
+    ws = null;
+    scheduleReconnect();
+  };
+}
+
+function startDataPipeline() {
+  if (config.websocket?.enabled) {
+    wsFallbackPollingActive = true;
+    scheduleNextPoll();
+    connectWebSocket();
+    return;
+  }
+
+  wsFallbackPollingActive = true;
+  statusMode("WebSocket disabled. Using JSON polling fallback...", "waiting");
+  runPollingUpdate();
+}
+
+window.addEventListener("beforeunload", () => {
+  clearReconnectTimer();
+  if (timerId) {
+    clearTimeout(timerId);
+  }
+  closeSocket();
+});
 
 function initLayoutEditMode() {
   const params = new URLSearchParams(window.location.search);
@@ -700,6 +1101,7 @@ function initLayoutEditMode() {
     }
     .layout-edit-actions {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-top: 8px;
     }
@@ -768,6 +1170,22 @@ function initLayoutEditMode() {
     <div class="layout-edit-row"><label>Overlap Alpha</label><input data-var="--party-info-overlap-alpha" data-unit="" type="number" step="0.01"></div>
     <div class="layout-edit-row"><label>Panel Alpha</label><input data-var="--party-info-solid-alpha" data-unit="" type="number" step="0.01"></div>
     <div class="layout-edit-row"><label>Overlap Width px</label><input data-var="--party-info-overlap-width" data-unit="px" type="number" step="1"></div>
+    <h3>PC Layout Edit</h3>
+    <div class="layout-edit-row"><label>PC Left %</label><input data-var="--pc-zone-left" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>PC Top %</label><input data-var="--pc-zone-top" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>PC Width %</label><input data-var="--pc-zone-width" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>PC Height %</label><input data-var="--pc-zone-height" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>PC Grid Gap px</label><input data-var="--pc-grid-gap" data-unit="px" type="number" step="0.5"></div>
+    <h3>Memorial Layout Edit</h3>
+    <div class="layout-edit-row"><label>Memorial Left %</label><input data-var="--memorial-zone-left" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Memorial Top %</label><input data-var="--memorial-zone-top" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Memorial Width %</label><input data-var="--memorial-zone-width" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Memorial Height %</label><input data-var="--memorial-zone-height" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Memorial Columns</label><input data-var="--memorial-columns" data-unit="" type="number" step="1" min="1" max="30"></div>
+    <div class="layout-edit-row"><label>Memorial Gap px</label><input data-var="--memorial-grid-gap" data-unit="px" type="number" step="0.5"></div>
+    <div class="layout-edit-row"><label>Memorial Overlap px</label><input data-var="--memorial-overlap-x" data-unit="px" type="number" step="1" min="0" max="80"></div>
+    <div class="layout-edit-row"><label>Memorial Sprite px</label><input data-var="--memorial-sprite-size" data-unit="px" type="number" step="1"></div>
+    <div class="layout-edit-row"><label>Memorial Scale</label><input data-var="--memorial-sprite-scale" data-unit="" type="number" step="0.01"></div>
     <h3>Per Slot Sprite</h3>
     <div class="layout-edit-row">
       <label>Edit Slot</label>
@@ -785,10 +1203,31 @@ function initLayoutEditMode() {
     <div class="layout-edit-row"><label>Slot Sprite Scale</label><input id="slotSpriteScale" type="number" step="0.01"></div>
     <div class="layout-edit-actions">
       <button data-action="copy">Copy Vars</button>
+      <button data-action="save">Save Local</button>
+      <button data-action="load">Load Local</button>
+      <button data-action="clear">Clear</button>
+      <button data-action="hide">Hide Panel</button>
     </div>
     <pre class="layout-edit-output" id="layoutEditOutput"></pre>
   `;
   document.body.appendChild(panel);
+
+  const showButton = document.createElement("button");
+  showButton.type = "button";
+  showButton.textContent = "Show Layout Panel";
+  showButton.style.position = "fixed";
+  showButton.style.left = "12px";
+  showButton.style.top = "12px";
+  showButton.style.zIndex = "10001";
+  showButton.style.background = "#12394a";
+  showButton.style.border = "1px solid #2f6f86";
+  showButton.style.color = "#dff3fb";
+  showButton.style.borderRadius = "6px";
+  showButton.style.padding = "6px 9px";
+  showButton.style.cursor = "pointer";
+  showButton.style.fontSize = "12px";
+  showButton.hidden = true;
+  document.body.appendChild(showButton);
 
   function getVarNumber(name) {
     const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -845,6 +1284,20 @@ function initLayoutEditMode() {
       "--party-info-overlap-alpha",
       "--party-info-solid-alpha",
       "--party-info-overlap-width",
+      "--pc-zone-left",
+      "--pc-zone-top",
+      "--pc-zone-width",
+      "--pc-zone-height",
+      "--pc-grid-gap",
+      "--memorial-zone-left",
+      "--memorial-zone-top",
+      "--memorial-zone-width",
+      "--memorial-zone-height",
+      "--memorial-columns",
+      "--memorial-grid-gap",
+      "--memorial-overlap-x",
+      "--memorial-sprite-size",
+      "--memorial-sprite-scale",
     ];
     for (let slot = 1; slot <= 6; slot += 1) {
       vars.push(`--party-slot${slot}-sprite-x`);
@@ -860,6 +1313,87 @@ function initLayoutEditMode() {
     if (output) {
       output.textContent = lines.join("\n");
     }
+  }
+
+  function getLayoutVarsObject() {
+    const vars = [
+      "--party-zone-left",
+      "--party-zone-top",
+      "--party-zone-width",
+      "--party-zone-height",
+      "--party-grid-gap",
+      "--party-sprite-x",
+      "--party-sprite-y",
+      "--party-sprite-scale",
+      "--party-right-sprite-right",
+      "--party-info-width",
+      "--party-sprite-size",
+      "--party-inner-gap",
+      "--party-info-pad-y",
+      "--party-info-pad-x",
+      "--party-info-row-gap",
+      "--party-info-offset-x",
+      "--party-info-offset-y",
+      "--party-name-size",
+      "--party-level-size",
+      "--party-type-size",
+      "--party-status-size",
+      "--party-hp-size",
+      "--party-topline-gap",
+      "--party-types-gap",
+      "--party-info-overlap-alpha",
+      "--party-info-solid-alpha",
+      "--party-info-overlap-width",
+      "--pc-zone-left",
+      "--pc-zone-top",
+      "--pc-zone-width",
+      "--pc-zone-height",
+      "--pc-grid-gap",
+      "--memorial-zone-left",
+      "--memorial-zone-top",
+      "--memorial-zone-width",
+      "--memorial-zone-height",
+      "--memorial-columns",
+      "--memorial-grid-gap",
+      "--memorial-overlap-x",
+      "--memorial-sprite-size",
+      "--memorial-sprite-scale",
+    ];
+    for (let slot = 1; slot <= 6; slot += 1) {
+      vars.push(`--party-slot${slot}-sprite-x`);
+      vars.push(`--party-slot${slot}-sprite-y`);
+      vars.push(`--party-slot${slot}-sprite-scale`);
+    }
+
+    const style = getComputedStyle(document.documentElement);
+    const out = {};
+    for (const v of vars) {
+      out[v] = style.getPropertyValue(v).trim();
+    }
+    return out;
+  }
+
+  function syncInputsFromCssVars() {
+    panel.querySelectorAll("input[data-var]").forEach((input) => {
+      const varName = input.dataset.var;
+      input.value = String(getVarNumber(varName));
+    });
+    syncSlotInputs();
+  }
+
+  function applySavedLayoutVars(savedVars) {
+    if (!savedVars || typeof savedVars !== "object") {
+      return false;
+    }
+    for (const [varName, varValue] of Object.entries(savedVars)) {
+      if (!String(varName).startsWith("--")) {
+        continue;
+      }
+      rootStyle.setProperty(varName, String(varValue));
+    }
+    syncInputsFromCssVars();
+    updateOutput();
+    return true;
   }
 
   panel.querySelectorAll("input[data-var]").forEach((input) => {
@@ -919,6 +1453,11 @@ function initLayoutEditMode() {
   slotSpriteScale?.addEventListener("input", applySlotInputs);
 
   const copyButton = panel.querySelector('button[data-action="copy"]');
+  const saveButton = panel.querySelector('button[data-action="save"]');
+  const loadButton = panel.querySelector('button[data-action="load"]');
+  const clearButton = panel.querySelector('button[data-action="clear"]');
+  const hideButton = panel.querySelector('button[data-action="hide"]');
+
   copyButton?.addEventListener("click", async () => {
     const output = panel.querySelector("#layoutEditOutput")?.textContent || "";
     try {
@@ -933,6 +1472,76 @@ function initLayoutEditMode() {
         copyButton.textContent = "Copy Vars";
       }, 1000);
     }
+  });
+
+  saveButton?.addEventListener("click", () => {
+    try {
+      const vars = getLayoutVarsObject();
+      localStorage.setItem(LAYOUT_PRESET_STORAGE_KEY, JSON.stringify(vars));
+      saveButton.textContent = "Saved";
+      setTimeout(() => {
+        saveButton.textContent = "Save";
+      }, 900);
+    } catch (_error) {
+      saveButton.textContent = "Save failed";
+      setTimeout(() => {
+        saveButton.textContent = "Save";
+      }, 1200);
+    }
+  });
+
+  loadButton?.addEventListener("click", () => {
+    try {
+      const raw = localStorage.getItem(LAYOUT_PRESET_STORAGE_KEY);
+      if (!raw) {
+        loadButton.textContent = "No save";
+        setTimeout(() => {
+          loadButton.textContent = "Load";
+        }, 900);
+        return;
+      }
+      const saved = JSON.parse(raw);
+      const ok = applySavedLayoutVars(saved);
+      loadButton.textContent = ok ? "Loaded" : "Load failed";
+      setTimeout(() => {
+        loadButton.textContent = "Load";
+      }, 900);
+    } catch (_error) {
+      loadButton.textContent = "Load failed";
+      setTimeout(() => {
+        loadButton.textContent = "Load";
+      }, 1200);
+    }
+  });
+
+  clearButton?.addEventListener("click", () => {
+    try {
+      localStorage.removeItem(LAYOUT_PRESET_STORAGE_KEY);
+      clearButton.textContent = "Cleared";
+      setTimeout(() => {
+        clearButton.textContent = "Clear";
+      }, 900);
+    } catch (_error) {
+      clearButton.textContent = "Clear failed";
+      setTimeout(() => {
+        clearButton.textContent = "Clear";
+      }, 1200);
+    }
+  });
+
+  function setPanelHidden(hidden) {
+    panel.hidden = hidden;
+    showButton.hidden = !hidden;
+  }
+
+  // Keep edit-mode controls available but start hidden to avoid obscuring overlay.
+  setPanelHidden(true);
+
+  hideButton?.addEventListener("click", () => {
+    setPanelHidden(true);
+  });
+  showButton.addEventListener("click", () => {
+    setPanelHidden(false);
   });
 
   let dragState = null;
@@ -964,11 +1573,16 @@ function initLayoutEditMode() {
   }
 
   function onPointerMove(ev) {
+    const rootRect = overlayRoot?.getBoundingClientRect();
+    if (!rootRect || rootRect.width <= 0 || rootRect.height <= 0) {
+      return;
+    }
+
     if (dragState) {
       const dx = ev.clientX - dragState.startX;
       const dy = ev.clientY - dragState.startY;
-      const leftPct = ((dragState.leftPx + dx) / window.innerWidth) * 100;
-      const topPct = ((dragState.topPx + dy) / window.innerHeight) * 100;
+      const leftPct = ((dragState.leftPx + dx - rootRect.left) / rootRect.width) * 100;
+      const topPct = ((dragState.topPx + dy - rootRect.top) / rootRect.height) * 100;
       rootStyle.setProperty("--party-zone-left", `${leftPct.toFixed(2)}%`);
       rootStyle.setProperty("--party-zone-top", `${topPct.toFixed(2)}%`);
       const leftInput = panel.querySelector('input[data-var="--party-zone-left"]');
@@ -981,8 +1595,8 @@ function initLayoutEditMode() {
     if (resizeState) {
       const dx = ev.clientX - resizeState.startX;
       const dy = ev.clientY - resizeState.startY;
-      const widthPct = ((Math.max(220, resizeState.widthPx + dx) / window.innerWidth) * 100);
-      const heightPct = ((Math.max(220, resizeState.heightPx + dy) / window.innerHeight) * 100);
+      const widthPct = (Math.max(220, resizeState.widthPx + dx) / rootRect.width) * 100;
+      const heightPct = (Math.max(220, resizeState.heightPx + dy) / rootRect.height) * 100;
       rootStyle.setProperty("--party-zone-width", `calc(${widthPct.toFixed(2)}% - 13px)`);
       rootStyle.setProperty("--party-zone-height", `calc(${heightPct.toFixed(2)}% - 13px)`);
       const widthInput = panel.querySelector('input[data-var="--party-zone-width"]');
@@ -1004,7 +1618,60 @@ function initLayoutEditMode() {
   window.addEventListener("pointerup", endPointer);
 
   syncSlotInputs();
+  syncInputsFromCssVars();
   updateOutput();
+}
+
+async function applyTemplateAspect() {
+  const templateVar = getComputedStyle(document.documentElement).getPropertyValue("--template-image").trim();
+  const urlMatch = templateVar.match(/^url\((['"]?)(.*)\1\)$/i);
+  if (!urlMatch) {
+    return;
+  }
+
+  const rawUrl = urlMatch[2];
+  if (!rawUrl) {
+    return;
+  }
+
+  try {
+    const resolvedUrl = new URL(rawUrl, window.location.href).href;
+    await new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        if (img.naturalWidth > 0 && img.naturalHeight > 0) {
+          const aspect = img.naturalWidth / img.naturalHeight;
+          document.documentElement.style.setProperty("--template-aspect", String(aspect));
+        }
+        resolve();
+      };
+      img.onerror = () => reject(new Error("Template image load failed"));
+      img.src = resolvedUrl;
+    });
+  } catch (error) {
+    logDebug("Template aspect detection failed; using default aspect", error);
+  }
+}
+
+function applyTemplateFit() {
+  if (!overlayRoot) {
+    return;
+  }
+
+  const aspectRaw = Number(getComputedStyle(document.documentElement).getPropertyValue("--template-aspect").trim());
+  const aspect = Number.isFinite(aspectRaw) && aspectRaw > 0 ? aspectRaw : 16 / 9;
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+
+  let fitWidth = viewportWidth;
+  let fitHeight = fitWidth / aspect;
+  if (fitHeight > viewportHeight) {
+    fitHeight = viewportHeight;
+    fitWidth = fitHeight * aspect;
+  }
+
+  overlayRoot.style.width = `${fitWidth}px`;
+  overlayRoot.style.height = `${fitHeight}px`;
 }
 
 async function loadConfig() {
@@ -1018,6 +1685,7 @@ async function loadConfig() {
     const overlay = payload.overlay || {};
     const pollMs = Number(overlay.poll_interval_ms || DEFAULT_CONFIG.pollMs);
     const overlayScale = Number(overlay.overlay_scale || DEFAULT_CONFIG.overlayScale);
+    const websocket = typeof overlay.websocket === "object" && overlay.websocket ? overlay.websocket : {};
 
     config = {
       pollMs: Number.isFinite(pollMs) ? Math.max(300, pollMs) : DEFAULT_CONFIG.pollMs,
@@ -1029,6 +1697,15 @@ async function loadConfig() {
       spriteOverrides: typeof overlay.sprite_overrides === "object" && overlay.sprite_overrides
         ? overlay.sprite_overrides
         : DEFAULT_CONFIG.spriteOverrides,
+      websocket: {
+        enabled: Boolean(websocket.enabled ?? DEFAULT_CONFIG.websocket.enabled),
+        host: String(websocket.host || DEFAULT_CONFIG.websocket.host),
+        port: Number(websocket.port || DEFAULT_CONFIG.websocket.port),
+        reconnectMs: Math.max(
+          250,
+          Number(websocket.reconnect_interval_ms || DEFAULT_CONFIG.websocket.reconnectMs)
+        ),
+      },
     };
 
     document.documentElement.style.setProperty("--overlay-scale", String(config.overlayScale));
@@ -1039,52 +1716,13 @@ async function loadConfig() {
   }
 }
 
-async function updateLoop() {
-  if (inFlight) {
-    scheduleNextPoll();
-    return;
-  }
-
-  inFlight = true;
-  try {
-    const raw = await fetchState();
-    const state = normalizeState(raw);
-    const digest = stateDigest(state);
-
-    if (!previousStateDigest) {
-      statusMode("Connected. Loading save data...", "loading");
-    }
-
-    if (digest !== previousStateDigest) {
-      previousStateDigest = digest;
-      render(state);
-      preloadSprites(state);
-      statusMode(`Updated at ${new Date().toLocaleTimeString()}`, "ok");
-      isFirstSuccess = false;
-    } else if (state.party.length === 0 && state.pc.length === 0 && state.dead.length === 0) {
-      statusMode("Connected. Waiting for save data...", "waiting");
-    } else {
-      statusMode("Connected. Waiting for next save update...", "ok");
-    }
-
-    lastSuccessAt = Date.now();
-  } catch (error) {
-    const now = Date.now();
-    if (lastSuccessAt === 0 || now - lastSuccessAt > DISCONNECTED_AFTER_MS) {
-      statusMode("Save disconnected. Waiting for tracker...", "disconnected");
-    } else {
-      statusMode("Transient read error. Retrying...", "warning");
-    }
-    console.error("[overlay] Update cycle error", error);
-  } finally {
-    inFlight = false;
-    scheduleNextPoll();
-  }
-}
-
 (async function bootstrap() {
   statusMode("Loading overlay...", "loading");
-  initLayoutEditMode();
   await loadConfig();
-  await updateLoop();
+  await applyTemplateAspect();
+  applyTemplateFit();
+  initLayoutEditMode();
+  startDataPipeline();
 })();
+
+window.addEventListener("resize", applyTemplateFit);

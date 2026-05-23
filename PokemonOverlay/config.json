@@ -1,12 +1,26 @@
 {
   "tracker": {
-    "save_path": "",
+    "save_path": "C:/Users/kodia/Downloads/1636 - Pokemon Fire Red (U)(Squirrels) (patched).sav",
     "state_path": "tracker/state.json",
     "poll_interval_ms": 1000,
     "debug": false,
     "party_only": false,
     "simulate_if_missing": false,
-    "radical_red_mode": "auto"
+    "radical_red_mode": "auto",
+    "provider_mode": "auto",
+    "memory": {
+      "enabled": true,
+      "backend": "mgba_json_bridge",
+      "bridge_path": "tracker/memory_state.json",
+      "poll_interval_ms": 100,
+      "stale_after_ms": 5000
+    },
+    "websocket": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 8765,
+      "heartbeat_interval_ms": 10000
+    }
   },
   "overlay": {
     "poll_interval_ms": 1000,
@@ -15,6 +29,14 @@
     "overlay_scale": 1.0,
     "pc_boxes": [1],
     "memorial_boxes": [25],
-    "sprite_overrides": {}
+    "sprite_overrides": {
+      "645": "frillish_female"
+    },
+    "websocket": {
+      "enabled": true,
+      "host": "127.0.0.1",
+      "port": 8765,
+      "reconnect_interval_ms": 1000
+    }
   }
 }
