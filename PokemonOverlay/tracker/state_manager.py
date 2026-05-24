@@ -20,7 +20,6 @@ class StateManager:
         payload_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
         if payload_hash == self._last_hash:
-            LOGGER.debug("State unchanged; skip write hash=%s", payload_hash[:12])
             return False
 
         self.state_path.parent.mkdir(parents=True, exist_ok=True)

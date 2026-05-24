@@ -61,14 +61,15 @@
   --pc-zone-width: 28%;
   --pc-zone-height: 26.4%;
   --pc-grid-gap: 0px;
+  --pc-row-overlap-y: 6px;
 
-  --memorial-zone-left: 6%;
+  --memorial-zone-left: 15%;
   --memorial-zone-top: 90%;
   --memorial-zone-width: 40%;
   --memorial-zone-height: 4%;
   --memorial-columns: 5;
   --memorial-grid-gap: 0px;
-  --memorial-overlap-x: 30px;
+  --memorial-overlap-x: 38px;
   --memorial-sprite-size: 108px;
   --memorial-sprite-scale: 1;
 }
@@ -193,6 +194,11 @@ body {
   align-content: start;
 }
 
+.pc-grid {
+  align-items: start;
+  grid-auto-rows: min-content;
+}
+
 .dead-grid {
   display: flex;
   flex-wrap: nowrap;
@@ -229,6 +235,29 @@ body {
 .memorial-zone .pokemon-token {
   min-height: 72px;
   overflow: hidden;
+}
+
+.pc-zone .pokemon-token {
+  min-height: 0;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Keep original sprite size while pulling later PC rows upward for denser stacking. */
+.pc-grid > .pokemon-token:nth-child(n + 7):nth-child(-n + 12) {
+  margin-top: calc(-1 * var(--pc-row-overlap-y));
+}
+
+.pc-grid > .pokemon-token:nth-child(n + 13):nth-child(-n + 18) {
+  margin-top: calc(-2 * var(--pc-row-overlap-y));
+}
+
+.pc-grid > .pokemon-token:nth-child(n + 19):nth-child(-n + 24) {
+  margin-top: calc(-3 * var(--pc-row-overlap-y));
+}
+
+.pc-grid > .pokemon-token:nth-child(n + 25):nth-child(-n + 30) {
+  margin-top: calc(-4 * var(--pc-row-overlap-y));
 }
 
 .memorial-zone .pokemon-token {

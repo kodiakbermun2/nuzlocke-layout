@@ -1,0 +1,24 @@
+{
+  "timestamp_ms": 1716000000000,
+  "party": [
+    {
+      "species": "clauncher",
+      "species_id": 800,
+      "nickname": "Squirt",
+      "level": 16,
+      "gender": "unknown",
+      "shiny": false,
+      "held_item": null,
+      "slot": 1,
+      "current_hp": 46,
+      "max_hp": 46,
+      "status": null,
+      "types": ["water"]
+    }
+  ],
+  "pc": [],
+  "dead": [],
+  "meta": {
+    "source": "mgba_script"
+  }
+}

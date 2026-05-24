@@ -18,6 +18,16 @@ class TrackerConfig:
     party_only: bool = False
     simulate_if_missing: bool = False
     parser_mode: str = "auto"
+    websocket_enabled: bool = True
+    websocket_host: str = "127.0.0.1"
+    websocket_port: int = 8765
+    websocket_heartbeat_seconds: float = 10.0
+    provider_mode: str = "auto"
+    memory_enabled: bool = False
+    memory_backend: str = "mgba_json_bridge"
+    memory_bridge_path: str = "tracker/memory_state.json"
+    memory_poll_seconds: float = 0.15
+    memory_stale_after_seconds: float = 2.0
 
 
 DEFAULT_CONFIG: Dict[str, Any] = {
@@ -29,12 +39,32 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "party_only": False,
         "simulate_if_missing": False,
         "radical_red_mode": "auto",
+        "websocket": {
+            "enabled": True,
+            "host": "127.0.0.1",
+            "port": 8765,
+            "heartbeat_interval_ms": 10000,
+        },
+        "provider_mode": "auto",
+        "memory": {
+            "enabled": False,
+            "backend": "mgba_json_bridge",
+            "bridge_path": "tracker/memory_state.json",
+            "poll_interval_ms": 150,
+            "stale_after_ms": 2000,
+        },
     },
     "overlay": {
         "poll_interval_ms": 1000,
         "theme": "default",
         "sprite_style": "auto",
         "overlay_scale": 1.0,
+        "websocket": {
+            "enabled": True,
+            "host": "127.0.0.1",
+            "port": 8765,
+            "reconnect_interval_ms": 1000,
+        },
     },
 }
 
@@ -71,6 +101,8 @@ def resolve_tracker_config(
     parser_mode: Optional[str],
 ) -> TrackerConfig:
     tracker = config_payload.get("tracker", {})
+    websocket = tracker.get("websocket", {}) if isinstance(tracker.get("websocket", {}), dict) else {}
+    memory = tracker.get("memory", {}) if isinstance(tracker.get("memory", {}), dict) else {}
 
     cfg = TrackerConfig(
         save_path=str(save_path or tracker.get("save_path") or ""),
@@ -87,6 +119,25 @@ def resolve_tracker_config(
         party_only=bool(party_only or tracker.get("party_only", False)),
         simulate_if_missing=bool(simulate_if_missing or tracker.get("simulate_if_missing", False)),
         parser_mode=str(parser_mode or tracker.get("radical_red_mode") or "auto"),
+        websocket_enabled=bool(websocket.get("enabled", True)),
+        websocket_host=str(websocket.get("host") or "127.0.0.1"),
+        websocket_port=max(1, min(65535, int(websocket.get("port", 8765)))),
+        websocket_heartbeat_seconds=max(
+            1.0,
+            float(websocket.get("heartbeat_interval_ms", 10000)) / 1000.0,
+        ),
+        provider_mode=str(tracker.get("provider_mode") or "auto"),
+        memory_enabled=bool(memory.get("enabled", False)),
+        memory_backend=str(memory.get("backend") or "mgba_json_bridge"),
+        memory_bridge_path=str(memory.get("bridge_path") or "tracker/memory_state.json"),
+        memory_poll_seconds=max(
+            0.05,
+            float(memory.get("poll_interval_ms", 150)) / 1000.0,
+        ),
+        memory_stale_after_seconds=max(
+            0.2,
+            float(memory.get("stale_after_ms", 2000)) / 1000.0,
+        ),
     )
 
     return cfg

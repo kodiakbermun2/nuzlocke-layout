@@ -30,6 +30,7 @@ class ParsedSave:
     save_index: int
     sections: Dict[int, SaveSection]
     saveblock: bytes
+    active_slot_raw: bytes
 
 
 @dataclass
@@ -116,6 +117,7 @@ class SaveParser:
             save_index=save_index,
             sections=active_sections,
             saveblock=bytes(saveblock),
+            active_slot_raw=raw[active_slot_index * SLOT_SIZE : (active_slot_index + 1) * SLOT_SIZE],
         )
 
     def inspect_save(self, save_path: Path) -> Optional[SaveDiagnostic]:

@@ -1,2 +1,2 @@
-# No third-party Python dependencies are required for the save-file-first milestone.
-# Optional future dependency (if replacing polling): watchdog>=6.0.0
+# Lightweight runtime dependency for local live overlay updates.
+websockets>=12.0

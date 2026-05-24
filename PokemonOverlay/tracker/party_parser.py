@@ -5,6 +5,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Dict, List, Optional
 import logging
+import json
 import re
 import struct
 
@@ -22,6 +23,19 @@ BOX_MON_SIZE = 80
 MAX_PARTY = 6
 BOXES = 14
 BOX_SIZE = 30
+FULL_BOXES = 25
+RR_FULL_BOX_STRIDE = 58
+RR_COMPRESSED_MON_SIZE = 58
+RR_BOXES_IN_STORAGE_BLOCK = 19
+RR_BOX25_SECTION_ID = 0
+RR_BOX25_OFFSET = 0x0B0
+RR_BOX25_SIZE = BOX_SIZE * RR_COMPRESSED_MON_SIZE
+RR_STORAGE_SECTION_START = 5
+RR_STORAGE_SECTION_END = 13
+RR_STORAGE_BASE_OFFSET = 0x0004
+RR_SAVEBLOCK1_SECTION_IDS = (1, 2, 3, 4)
+RR_BOX23_OFFSET_IN_SB1 = 0x1F08
+RR_BOX24_OFFSET_IN_SB1 = RR_BOX23_OFFSET_IN_SB1 + RR_BOX25_SIZE
 MAX_SPECIES_ID = 3000
 MAX_EXP = 100_000_000
 
@@ -336,14 +350,44 @@ class PartyParser:
         debug: bool = False,
         sections: Optional[Dict[int, SaveSection]] = None,
         parser_mode: Optional[str] = None,
+        slot_raw: Optional[bytes] = None,
     ) -> Dict[str, List[Dict]]:
         mode = self.resolve_mode(saveblock=saveblock, sections=sections, parser_mode=parser_mode, debug=debug)
         party = self._parse_party(saveblock, mode=mode, debug=debug, sections=sections)
-        pc = self._parse_pc(saveblock, mode=mode, debug=debug) if include_pc else []
+        boxed = self._parse_pc(saveblock, mode=mode, debug=debug, sections=sections, slot_raw=slot_raw) if include_pc else []
+
+        # Memorial policy: Box 25 is reserved for dead mons and must never appear in PC.
+        pc: List[Dict] = []
+        dead: List[Dict] = []
+        for mon in boxed:
+            box_value = mon.get("box")
+            if box_value == 25:
+                dead.append(mon)
+            else:
+                pc.append(mon)
+
+        if debug:
+            seen_boxes = sorted({int(mon.get("box")) for mon in boxed if isinstance(mon.get("box"), int)})
+            LOGGER.debug(
+                "PC parse summary: detected_boxes=%s parsed_pc=%s parsed_memorial=%s",
+                seen_boxes,
+                len(pc),
+                len(dead),
+            )
+            for mon in dead:
+                LOGGER.debug(
+                    "Memorial mon: nickname=%s species=%s level=%s box=%s box_slot=%s",
+                    mon.get("nickname"),
+                    mon.get("species"),
+                    mon.get("level"),
+                    mon.get("box"),
+                    mon.get("box_slot"),
+                )
+
         return {
             "party": party,
             "pc": pc,
-            "dead": [],
+            "dead": dead,
             "meta": {
                 "parser_mode": mode.value,
             },
@@ -557,7 +601,29 @@ class PartyParser:
             return best
         return None
 
-    def _parse_pc(self, saveblock: bytes, mode: ParserMode, debug: bool = False) -> List[Dict]:
+    def _parse_pc(
+        self,
+        saveblock: bytes,
+        mode: ParserMode,
+        debug: bool = False,
+        sections: Optional[Dict[int, SaveSection]] = None,
+        slot_raw: Optional[bytes] = None,
+    ) -> List[Dict]:
+        if mode == ParserMode.RADICAL_RED and sections:
+            from_rr_sections = self._parse_pc_from_rr_sections(sections=sections, debug=debug)
+            if from_rr_sections:
+                return from_rr_sections
+
+        if slot_raw:
+            from_slot = self._parse_pc_from_full_slot(slot_raw=slot_raw, mode=mode, debug=debug, sections=sections)
+            if from_slot:
+                return from_slot
+
+        if sections:
+            from_sections = self._parse_pc_from_sections(sections=sections, mode=mode, debug=debug)
+            if from_sections:
+                return from_sections
+
         for pc_offset in PC_OFFSET_CANDIDATES:
             needed = pc_offset + (BOXES * BOX_SIZE * BOX_MON_SIZE)
             if needed > len(saveblock):
@@ -605,6 +671,413 @@ class PartyParser:
         LOGGER.warning("PC parser could not find a valid PC block; returning an empty PC list")
         return []
 
+    def _parse_pc_from_rr_sections(
+        self,
+        sections: Dict[int, SaveSection],
+        debug: bool = False,
+    ) -> List[Dict]:
+        parsed: List[Dict] = []
+        box_counts: Dict[int, int] = {}
+
+        storage_blob = self._build_rr_storage_blob(sections)
+        if storage_blob:
+            parsed.extend(
+                self._parse_rr_box_range_from_blob(
+                    blob=storage_blob,
+                    base_offset=RR_STORAGE_BASE_OFFSET,
+                    start_box=1,
+                    end_box=RR_BOXES_IN_STORAGE_BLOCK,
+                    box_counts=box_counts,
+                )
+            )
+
+        saveblock1_blob = self._build_rr_saveblock1_blob(sections)
+        if saveblock1_blob:
+            parsed.extend(
+                self._parse_rr_single_box_from_blob(
+                    blob=saveblock1_blob,
+                    base_offset=RR_BOX23_OFFSET_IN_SB1,
+                    box_index=23,
+                    box_counts=box_counts,
+                )
+            )
+            parsed.extend(
+                self._parse_rr_single_box_from_blob(
+                    blob=saveblock1_blob,
+                    base_offset=RR_BOX24_OFFSET_IN_SB1,
+                    box_index=24,
+                    box_counts=box_counts,
+                )
+            )
+
+        section0 = sections.get(RR_BOX25_SECTION_ID)
+        if section0 is not None:
+            parsed.extend(
+                self._parse_rr_single_box_from_blob(
+                    blob=section0.data,
+                    base_offset=RR_BOX25_OFFSET,
+                    box_index=25,
+                    box_counts=box_counts,
+                    capture_verify=debug,
+                )
+            )
+
+            if debug:
+                self._log_rr_box25_debug(section0.data, RR_BOX25_OFFSET)
+
+        if debug:
+            current_box = None
+            section5 = sections.get(5)
+            if section5 is not None and len(section5.data) >= 1:
+                current_box = int(section5.data[0]) + 1
+            LOGGER.debug(
+                "RR compressed PC parse: storage_base=0x%X box25_base=section%s:0x%X current_box=%s box_counts=%s parsed_total=%s",
+                RR_STORAGE_BASE_OFFSET,
+                RR_BOX25_SECTION_ID,
+                RR_BOX25_OFFSET,
+                current_box,
+                {k: v for k, v in sorted(box_counts.items()) if v > 0},
+                len(parsed),
+            )
+
+        return parsed
+
+    def _build_rr_storage_blob(self, sections: Dict[int, SaveSection]) -> bytes:
+        chunks: List[bytes] = []
+        for sid in range(RR_STORAGE_SECTION_START, RR_STORAGE_SECTION_END + 1):
+            section = sections.get(sid)
+            if section is None:
+                continue
+            chunks.append(section.data)
+        return b"".join(chunks)
+
+    def _build_rr_saveblock1_blob(self, sections: Dict[int, SaveSection]) -> bytes:
+        chunks: List[bytes] = []
+        for sid in RR_SAVEBLOCK1_SECTION_IDS:
+            section = sections.get(sid)
+            if section is None:
+                continue
+            chunks.append(section.data)
+        return b"".join(chunks)
+
+    def _parse_rr_box_range_from_blob(
+        self,
+        blob: bytes,
+        base_offset: int,
+        start_box: int,
+        end_box: int,
+        box_counts: Dict[int, int],
+    ) -> List[Dict]:
+        out: List[Dict] = []
+        for box in range(start_box, end_box + 1):
+            box_base = base_offset + ((box - start_box) * BOX_SIZE * RR_COMPRESSED_MON_SIZE)
+            out.extend(
+                self._parse_rr_single_box_from_blob(
+                    blob=blob,
+                    base_offset=box_base,
+                    box_index=box,
+                    box_counts=box_counts,
+                )
+            )
+        return out
+
+    def _parse_rr_single_box_from_blob(
+        self,
+        blob: bytes,
+        base_offset: int,
+        box_index: int,
+        box_counts: Dict[int, int],
+        capture_verify: bool = False,
+    ) -> List[Dict]:
+        out: List[Dict] = []
+        verify_rows: List[Dict] = []
+        for slot_idx in range(BOX_SIZE):
+            rec_off = base_offset + (slot_idx * RR_COMPRESSED_MON_SIZE)
+            rec = blob[rec_off : rec_off + RR_COMPRESSED_MON_SIZE]
+            mon = self._decode_rr_compressed_box_mon(rec)
+            if mon is None:
+                continue
+
+            state = mon.to_state_dict(
+                slot=len(out) + 1,
+                box=box_index,
+                box_slot=slot_idx + 1,
+            )
+            out.append(state)
+
+            if capture_verify:
+                verify_rows.append(
+                    {
+                        "offset": rec_off,
+                        "slot": slot_idx + 1,
+                        "raw_species_id": mon.species_id,
+                        "decrypted_species_id": mon.species_id,
+                        "species": mon.species_name,
+                        "nickname": mon.nickname,
+                    }
+                )
+
+        box_counts[box_index] = box_counts.get(box_index, 0) + len(out)
+
+        if capture_verify:
+            self._write_box25_verify_dump(base_offset=base_offset, rows=verify_rows)
+
+        return out
+
+    def _decode_rr_compressed_box_mon(self, rec: bytes) -> Optional[DecodedPokemon]:
+        if len(rec) != RR_COMPRESSED_MON_SIZE:
+            return None
+
+        personality = struct.unpack_from("<I", rec, 0)[0]
+        ot_id = struct.unpack_from("<I", rec, 4)[0]
+        nickname_raw = rec[8:18]
+
+        if personality == 0 and ot_id == 0:
+            return None
+
+        species_id = struct.unpack_from("<H", rec, 28)[0]
+        held_item_id = struct.unpack_from("<H", rec, 30)[0]
+        exp = struct.unpack_from("<I", rec, 32)[0]
+
+        if not (1 <= species_id <= MAX_SPECIES_ID):
+            return None
+        if not (0 <= exp <= MAX_EXP):
+            return None
+
+        nickname = self._decode_gen3_string(nickname_raw).strip()
+        if not nickname or nickname == MISSINGNO_NAME:
+            return None
+
+        species_name = SPECIES_MAP.get(species_id, f"species_{species_id}")
+        held_item = ITEM_MAP.get(held_item_id, f"item_{held_item_id}" if held_item_id else None)
+
+        return DecodedPokemon(
+            species_id=species_id,
+            species_name=species_name,
+            nickname=nickname,
+            level=None,
+            gender="unknown",
+            shiny=self._is_shiny(personality, ot_id),
+            held_item=held_item,
+            personality=personality,
+            ot_id=ot_id,
+            checksum_stored=0,
+            checksum_calculated=0,
+            substructure_order_index=0,
+            substructure_order=(0, 1, 2, 3),
+            exp=exp,
+            parser_mode=ParserMode.RADICAL_RED,
+            types=SPECIES_TYPES_MAP.get(species_id, []),
+        )
+
+    def _log_rr_box25_debug(self, section0: bytes, box25_base: int) -> None:
+        rec = section0[box25_base : box25_base + RR_COMPRESSED_MON_SIZE]
+        if len(rec) < RR_COMPRESSED_MON_SIZE:
+            LOGGER.debug("RR box25 debug: insufficient bytes at base=0x%X", box25_base)
+            return
+
+        personality = struct.unpack_from("<I", rec, 0)[0]
+        ot_id = struct.unpack_from("<I", rec, 4)[0]
+        raw_species = struct.unpack_from("<H", rec, 28)[0]
+        nickname_bytes = rec[8:18]
+        vanilla_checksum = struct.unpack_from("<H", rec, 28)[0]
+        vanilla_decrypted_species = raw_species
+
+        LOGGER.debug(
+            "RR box25 debug: pc_storage_base=0x%X box25_start=0x%X first16=%s raw_species=%s personality=0x%08X ot_id=0x%08X checksum=0x%04X decrypted_species=%s nickname_bytes=%s",
+            RR_STORAGE_BASE_OFFSET,
+            box25_base,
+            rec[:16].hex(" "),
+            raw_species,
+            personality,
+            ot_id,
+            vanilla_checksum,
+            vanilla_decrypted_species,
+            nickname_bytes.hex(" "),
+        )
+
+    def _write_box25_verify_dump(self, base_offset: int, rows: List[Dict]) -> None:
+        payload = {
+            "box": 25,
+            "compressed_struct_size": RR_COMPRESSED_MON_SIZE,
+            "base_offset": base_offset,
+            "entries": rows,
+        }
+        out_path = Path(__file__).resolve().parent / "_box25_verify_dump.json"
+        try:
+            out_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        except Exception as exc:
+            LOGGER.debug("Could not write Box25 verify dump: %s", exc)
+
+    def _parse_pc_from_full_slot(
+        self,
+        slot_raw: bytes,
+        mode: ParserMode,
+        debug: bool = False,
+        sections: Optional[Dict[int, SaveSection]] = None,
+    ) -> List[Dict]:
+        total_slots = FULL_BOXES * BOX_SIZE
+        window_bytes = total_slots * RR_FULL_BOX_STRIDE + BOX_MON_SIZE
+        if len(slot_raw) < window_bytes:
+            return []
+
+        current_box = 1
+        if sections and 5 in sections and len(sections[5].data) >= 4:
+            current_box_raw = struct.unpack_from("<I", sections[5].data, 0)[0]
+            if 0 <= current_box_raw < FULL_BOXES:
+                current_box = current_box_raw + 1
+
+        best_base: Optional[int] = None
+        best_score = -1
+        best_quality = -1
+        best_counts: List[int] = [0] * FULL_BOXES
+        best_parsed: List[Dict] = []
+
+        for base in range(0, len(slot_raw) - window_bytes + 1, 2):
+            counts = [0] * FULL_BOXES
+            parsed: List[Dict] = []
+            quality = 0
+
+            for idx in range(total_slots):
+                off = base + idx * RR_FULL_BOX_STRIDE
+                core = slot_raw[off : off + BOX_MON_SIZE]
+                if len(core) != BOX_MON_SIZE:
+                    continue
+
+                mon = self._decode_box_mon(core, mode=mode)
+                if mon is None:
+                    continue
+
+                cleaned_nickname = mon.nickname
+                if cleaned_nickname.startswith("'l"):
+                    cleaned_nickname = cleaned_nickname[2:]
+                alpha_count = sum(ch.isalpha() for ch in cleaned_nickname)
+                if mon.species_name.startswith("species_") or cleaned_nickname == MISSINGNO_NAME or alpha_count < 2:
+                    continue
+
+                box_idx = idx // BOX_SIZE
+                box_slot = (idx % BOX_SIZE) + 1
+                counts[box_idx] += 1
+                quality += 1
+
+                state_mon = mon.to_state_dict(slot=len(parsed) + 1, box=box_idx + 1, box_slot=box_slot)
+                state_mon["nickname"] = cleaned_nickname
+                parsed.append(state_mon)
+
+            if quality < 8:
+                continue
+
+            score = quality + (counts[0] * 3) + (counts[24] * 5)
+            if score > best_score:
+                best_score = score
+                best_quality = quality
+                best_base = base
+                best_counts = counts
+                best_parsed = parsed
+
+        if best_base is None:
+            return []
+
+        if debug:
+            non_empty_boxes = [i + 1 for i, c in enumerate(best_counts) if c > 0]
+            box_offsets = {
+                i + 1: f"0x{best_base + i * BOX_SIZE * RR_FULL_BOX_STRIDE:X}"
+                for i, c in enumerate(best_counts)
+                if c > 0
+            }
+            LOGGER.debug(
+                "Full PC storage scan selected: raw_pc_start=0x%X current_box_index=%s total_boxes=%s quality=%s",
+                best_base,
+                current_box,
+                FULL_BOXES,
+                best_quality,
+            )
+            LOGGER.debug("Full PC storage boxes discovered=%s", non_empty_boxes)
+            LOGGER.debug("Full PC storage mons per box=%s", {i + 1: c for i, c in enumerate(best_counts) if c > 0})
+            LOGGER.debug("Full PC storage box offsets=%s", box_offsets)
+
+        return best_parsed
+
+    def _parse_pc_from_sections(
+        self,
+        sections: Dict[int, SaveSection],
+        mode: ParserMode,
+        debug: bool = False,
+    ) -> List[Dict]:
+        # Radical Red current-box data appears in section 5 and can be offset
+        # from vanilla PC blocks. Restrict scan scope to section 5 to avoid
+        # cross-section false positives.
+        section = sections.get(5)
+        if section is None:
+            return []
+
+        region = section.data
+        if len(region) < BOX_MON_SIZE:
+            return []
+
+        current_box = 1
+        if len(region) >= 4:
+            current_box_raw = struct.unpack_from("<I", region, 0)[0]
+            if 0 <= current_box_raw < 100:
+                current_box = current_box_raw + 1
+
+        def scan_offsets(offsets: range) -> List[Dict]:
+            seen: set[tuple[int, int, int, str]] = set()
+            out: List[Dict] = []
+
+            for off in offsets:
+                core = region[off : off + BOX_MON_SIZE]
+                mon = self._decode_box_mon(core, mode=mode)
+                if mon is None:
+                    continue
+
+                # Skip placeholders and noisy false positives.
+                if mon.species_name.startswith("species_") or mon.nickname == MISSINGNO_NAME:
+                    continue
+
+                cleaned_nickname = mon.nickname
+                if cleaned_nickname.startswith("'l"):
+                    cleaned_nickname = cleaned_nickname[2:]
+                alpha_count = sum(ch.isalpha() for ch in cleaned_nickname)
+                if alpha_count < 4:
+                    continue
+
+                key = (mon.personality, mon.ot_id, mon.species_id, mon.nickname)
+                if key in seen:
+                    continue
+                seen.add(key)
+
+                slot = len(out) + 1
+                box_slot = ((slot - 1) % BOX_SIZE) + 1
+                mon_state = mon.to_state_dict(slot=slot, box=current_box, box_slot=box_slot)
+                mon_state["nickname"] = cleaned_nickname
+                out.append(mon_state)
+
+                if len(out) >= BOX_SIZE:
+                    break
+
+            return out
+
+        # RR boxed records in section 5 are consistently aligned on 58-byte
+        # boundaries. Prefer aligned offsets to avoid misaligned stale records.
+        parsed = scan_offsets(range(0, len(region) - BOX_MON_SIZE + 1, 58))
+        if len(parsed) < 2:
+            parsed = scan_offsets(range(0, len(region) - BOX_MON_SIZE + 1, 2))
+
+        quality_hits = len(parsed)
+
+        if debug:
+            LOGGER.debug(
+                "Section-scan PC candidate parsed=%s quality_hits=%s region_bytes=%s",
+                len(parsed),
+                quality_hits,
+                len(region),
+            )
+
+        if quality_hits >= 2:
+            return parsed
+        return []
+
     def _decode_party_mon(
         self,
         mon_raw: bytes,
@@ -644,14 +1117,14 @@ class PartyParser:
 
         # PC storage in ROM hacks can mix structures. Try the selected mode first,
         # then fall back to the alternate mode for resilience.
-        decoded = self._decode_core_mon(mon_raw, level=None, mode=mode)
+        decoded = self._decode_core_mon(mon_raw, level=None, mode=mode, rr_require_zero_checksum=False)
         if decoded is not None:
             if decoded.nickname == MISSINGNO_NAME:
                 return None
             return decoded
 
         fallback_mode = ParserMode.VANILLA if mode == ParserMode.RADICAL_RED else ParserMode.RADICAL_RED
-        decoded = self._decode_core_mon(mon_raw, level=None, mode=fallback_mode)
+        decoded = self._decode_core_mon(mon_raw, level=None, mode=fallback_mode, rr_require_zero_checksum=False)
         if decoded is not None and decoded.nickname == MISSINGNO_NAME:
             return None
         return decoded
@@ -664,6 +1137,7 @@ class PartyParser:
         debug: bool = False,
         slot: Optional[int] = None,
         mon_offset: Optional[int] = None,
+        rr_require_zero_checksum: bool = True,
     ) -> Optional[DecodedPokemon]:
         if len(core) != BOX_MON_SIZE:
             return None
@@ -677,7 +1151,7 @@ class PartyParser:
         if personality == 0 and ot_id == 0 and all(b in (0, 0xFF) for b in nickname_raw):
             return None
 
-        decoded_core = self._decode_growth(core, mode=mode)
+        decoded_core = self._decode_growth(core, mode=mode, rr_require_zero_checksum=rr_require_zero_checksum)
         if decoded_core is None:
             if debug and slot is not None:
                 LOGGER.debug(
@@ -756,7 +1230,12 @@ class PartyParser:
             types=types,
         )
 
-    def _decode_growth(self, core: bytes, mode: ParserMode) -> Optional[_DecodedCore]:
+    def _decode_growth(
+        self,
+        core: bytes,
+        mode: ParserMode,
+        rr_require_zero_checksum: bool = True,
+    ) -> Optional[_DecodedCore]:
         personality = struct.unpack_from("<I", core, 0)[0]
         ot_id = struct.unpack_from("<I", core, 4)[0]
         checksum_stored = struct.unpack_from("<H", core, 28)[0]
@@ -794,7 +1273,7 @@ class PartyParser:
             species_id = struct.unpack_from("<H", plaintext_growth, 0)[0]
             held_item_id = struct.unpack_from("<H", plaintext_growth, 2)[0]
             exp = struct.unpack_from("<I", plaintext_growth, 4)[0]
-            if checksum_stored != 0:
+            if rr_require_zero_checksum and checksum_stored != 0:
                 return None
             if not (1 <= species_id <= MAX_SPECIES_ID):
                 return None

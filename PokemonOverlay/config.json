@@ -32,6 +32,10 @@
     "sprite_overrides": {
       "645": "frillish_female"
     },
+    "layout_vars": {
+      "--memorial-zone-left": "15%",
+      "--memorial-overlap-x": "38px"
+    },
     "websocket": {
       "enabled": true,
       "host": "127.0.0.1",

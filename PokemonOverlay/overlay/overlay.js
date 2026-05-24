@@ -1708,6 +1708,20 @@ async function loadConfig() {
       },
     };
 
+    const layoutVars =
+      typeof overlay.layout_vars === "object" && overlay.layout_vars
+        ? overlay.layout_vars
+        : null;
+    if (layoutVars) {
+      const rootStyle = document.documentElement.style;
+      for (const [varName, varValue] of Object.entries(layoutVars)) {
+        if (!String(varName).startsWith("--")) {
+          continue;
+        }
+        rootStyle.setProperty(varName, String(varValue));
+      }
+    }
+
     document.documentElement.style.setProperty("--overlay-scale", String(config.overlayScale));
     document.documentElement.setAttribute("data-theme", config.theme);
     logDebug("Overlay config loaded", config);
