@@ -1,0 +1,918 @@
+{
+  "generated_at": "2026-05-26T07:07:32.576Z",
+  "trainer_flag_base": 1280,
+  "override_count": 192,
+  "unresolved_reward_count": 0,
+  "notes": [
+    {
+      "reward_id": "rival_route_22",
+      "source": "manual_multi_flag_override",
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1609,
+        1610,
+        1611
+      ]
+    },
+    {
+      "reward_id": "brendan_viridian_forest",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 44,
+      "trainer_flag_base": 1280,
+      "flag_id": 1324
+    },
+    {
+      "reward_id": "lass_anne_viridian_forest",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 4,
+      "trainer_flag_base": 1280,
+      "flag_id": 1284
+    },
+    {
+      "reward_id": "ace_nelle_viridian_forest",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 21,
+      "trainer_flag_base": 1280,
+      "flag_id": 1301
+    },
+    {
+      "reward_id": "falkner",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 45,
+      "trainer_flag_base": 1280,
+      "flag_id": 1325
+    },
+    {
+      "reward_id": "brock",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1200
+    },
+    {
+      "reward_id": "super_nerd_miguel",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 170,
+      "trainer_flag_base": 1280,
+      "flag_id": 1450
+    },
+    {
+      "reward_id": "admin_archer_mt_moon",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 46,
+      "trainer_flag_base": 1280,
+      "flag_id": 1326
+    },
+    {
+      "reward_id": "rival_cerulean_city",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 332,
+      "trainer_flag_base": 1280,
+      "flag_id": 1612
+    },
+    {
+      "reward_id": "catcher_cale",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 110,
+      "trainer_flag_base": 1280,
+      "flag_id": 1390
+    },
+    {
+      "reward_id": "lass_ali",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 123,
+      "trainer_flag_base": 1280,
+      "flag_id": 1403
+    },
+    {
+      "reward_id": "youngster_timmy",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 92,
+      "trainer_flag_base": 1280,
+      "flag_id": 1372
+    },
+    {
+      "reward_id": "lass_reli",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 122,
+      "trainer_flag_base": 1280,
+      "flag_id": 1402
+    },
+    {
+      "reward_id": "camper_ethan",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 144,
+      "trainer_flag_base": 1280,
+      "flag_id": 1424
+    },
+    {
+      "reward_id": "rocket_grunt_nugget_bridge",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 356,
+      "trainer_flag_base": 1280,
+      "flag_id": 1636
+    },
+    {
+      "reward_id": "bugsy",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 8,
+      "trainer_flag_base": 1280,
+      "flag_id": 1288
+    },
+    {
+      "reward_id": "misty",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1201
+    },
+    {
+      "reward_id": "rocket_grunt_dig_house",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 355,
+      "trainer_flag_base": 1280,
+      "flag_id": 1635
+    },
+    {
+      "reward_id": "ann_and_brooks",
+      "source": "derived_from_multi_trainer_db_ids",
+      "trainer_db_ids": [
+        126,
+        482
+      ],
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1406,
+        1762
+      ]
+    },
+    {
+      "reward_id": "edmond_and_trevor",
+      "source": "derived_from_multi_trainer_db_ids",
+      "trainer_db_ids": [
+        134,
+        135
+      ],
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1414,
+        1415
+      ]
+    },
+    {
+      "reward_id": "brendan_ss_anne",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 50,
+      "trainer_flag_base": 1280,
+      "flag_id": 1330
+    },
+    {
+      "reward_id": "whitney",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 49,
+      "trainer_flag_base": 1280,
+      "flag_id": 1329
+    },
+    {
+      "reward_id": "lt_surge",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1202
+    },
+    {
+      "reward_id": "picknicker_caitlin",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 155,
+      "trainer_flag_base": 1280,
+      "flag_id": 1435
+    },
+    {
+      "reward_id": "morty",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 52,
+      "trainer_flag_base": 1280,
+      "flag_id": 1332
+    },
+    {
+      "reward_id": "erika",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1203
+    },
+    {
+      "reward_id": "rocket_guard_game_corner",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 357,
+      "trainer_flag_base": 1280,
+      "flag_id": 1637
+    },
+    {
+      "reward_id": "left_guard_rocket_hideout",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 366,
+      "trainer_flag_base": 1280,
+      "flag_id": 1646
+    },
+    {
+      "reward_id": "right_guard_rocket_hideout",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 367,
+      "trainer_flag_base": 1280,
+      "flag_id": 1647
+    },
+    {
+      "reward_id": "giovannia_rocket_hideout",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 348,
+      "trainer_flag_base": 1280,
+      "flag_id": 1628
+    },
+    {
+      "reward_id": "ace_cole",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 18,
+      "trainer_flag_base": 1280,
+      "flag_id": 1298
+    },
+    {
+      "reward_id": "beauty_sam",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 16,
+      "trainer_flag_base": 1280,
+      "flag_id": 1296
+    },
+    {
+      "reward_id": "beauty_shelly",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 17,
+      "trainer_flag_base": 1280,
+      "flag_id": 1297
+    },
+    {
+      "reward_id": "ghost_pokemon_tower",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 2001,
+      "trainer_flag_base": 1280,
+      "flag_id": 3281
+    },
+    {
+      "reward_id": "rival_silph_co",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 432,
+      "trainer_flag_base": 1280,
+      "flag_id": 1712
+    },
+    {
+      "reward_id": "admin_ariana_archer_silph",
+      "source": "derived_from_multi_trainer_db_ids",
+      "trainer_db_ids": [
+        54,
+        53
+      ],
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1334,
+        1333
+      ]
+    },
+    {
+      "reward_id": "giovanni",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1207
+    },
+    {
+      "reward_id": "chuck",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 317,
+      "trainer_flag_base": 1280,
+      "flag_id": 1597
+    },
+    {
+      "reward_id": "sabrina",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1205
+    },
+    {
+      "reward_id": "dumass_kid",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 25,
+      "trainer_flag_base": 1280,
+      "flag_id": 1305
+    },
+    {
+      "reward_id": "rocker_luca",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 285,
+      "trainer_flag_base": 1280,
+      "flag_id": 1565
+    },
+    {
+      "reward_id": "camper_justin",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 477,
+      "trainer_flag_base": 1280,
+      "flag_id": 1757
+    },
+    {
+      "reward_id": "fisherman_andrew",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 233,
+      "trainer_flag_base": 1280,
+      "flag_id": 1513
+    },
+    {
+      "reward_id": "bird_keeper_sebastian",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 300,
+      "trainer_flag_base": 1280,
+      "flag_id": 1580
+    },
+    {
+      "reward_id": "picknicker_susie",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 467,
+      "trainer_flag_base": 1280,
+      "flag_id": 1747
+    },
+    {
+      "reward_id": "picknicker_alma",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 466,
+      "trainer_flag_base": 1280,
+      "flag_id": 1746
+    },
+    {
+      "reward_id": "lola_and_sheila",
+      "source": "derived_from_multi_trainer_db_ids",
+      "trainer_db_ids": [
+        268,
+        269
+      ],
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1548,
+        1549
+      ]
+    },
+    {
+      "reward_id": "bird_keeper_perry",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 301,
+      "trainer_flag_base": 1280,
+      "flag_id": 1581
+    },
+    {
+      "reward_id": "biker_jared",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 195,
+      "trainer_flag_base": 1280,
+      "flag_id": 1475
+    },
+    {
+      "reward_id": "bird_keeper_robert",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 302,
+      "trainer_flag_base": 1280,
+      "flag_id": 1582
+    },
+    {
+      "reward_id": "ace_haley",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 15,
+      "trainer_flag_base": 1280,
+      "flag_id": 1295
+    },
+    {
+      "reward_id": "biker_lao",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 199,
+      "trainer_flag_base": 1280,
+      "flag_id": 1479
+    },
+    {
+      "reward_id": "cue_ball_koji",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 249,
+      "trainer_flag_base": 1280,
+      "flag_id": 1529
+    },
+    {
+      "reward_id": "cue_ball_luke",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 250,
+      "trainer_flag_base": 1280,
+      "flag_id": 1530
+    },
+    {
+      "reward_id": "biker_ruben",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 202,
+      "trainer_flag_base": 1280,
+      "flag_id": 1482
+    },
+    {
+      "reward_id": "cue_ball_camron",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 251,
+      "trainer_flag_base": 1280,
+      "flag_id": 1531
+    },
+    {
+      "reward_id": "biker_hideo",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 201,
+      "trainer_flag_base": 1280,
+      "flag_id": 1481
+    },
+    {
+      "reward_id": "biker_william",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 206,
+      "trainer_flag_base": 1280,
+      "flag_id": 1486
+    },
+    {
+      "reward_id": "bird_keeper_jacob",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 309,
+      "trainer_flag_base": 1280,
+      "flag_id": 1589
+    },
+    {
+      "reward_id": "tamer_ramiro",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 308,
+      "trainer_flag_base": 1280,
+      "flag_id": 1588
+    },
+    {
+      "reward_id": "ace_wilton",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 307,
+      "trainer_flag_base": 1280,
+      "flag_id": 1587
+    },
+    {
+      "reward_id": "brendan_safari_zone",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 26,
+      "trainer_flag_base": 1280,
+      "flag_id": 1306
+    },
+    {
+      "reward_id": "brock_rematch",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 56,
+      "trainer_flag_base": 1280,
+      "flag_id": 1336
+    },
+    {
+      "reward_id": "misty_rematch",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 32,
+      "trainer_flag_base": 1280,
+      "flag_id": 1312
+    },
+    {
+      "reward_id": "lt_surge_rematch",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 51,
+      "trainer_flag_base": 1280,
+      "flag_id": 1331
+    },
+    {
+      "reward_id": "erika_rematch",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 65,
+      "trainer_flag_base": 1280,
+      "flag_id": 1345
+    },
+    {
+      "reward_id": "koga",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1204
+    },
+    {
+      "reward_id": "dumass_jojo_fan",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 66,
+      "trainer_flag_base": 1280,
+      "flag_id": 1346
+    },
+    {
+      "reward_id": "pryce",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 79,
+      "trainer_flag_base": 1280,
+      "flag_id": 1359
+    },
+    {
+      "reward_id": "may_cinnabar",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 61,
+      "trainer_flag_base": 1280,
+      "flag_id": 1341
+    },
+    {
+      "reward_id": "jasmine",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 62,
+      "trainer_flag_base": 1280,
+      "flag_id": 1342
+    },
+    {
+      "reward_id": "ace_derek",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 179,
+      "trainer_flag_base": 1280,
+      "flag_id": 1459
+    },
+    {
+      "reward_id": "ace_lucy",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 215,
+      "trainer_flag_base": 1280,
+      "flag_id": 1495
+    },
+    {
+      "reward_id": "ace_zac",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 180,
+      "trainer_flag_base": 1280,
+      "flag_id": 1460
+    },
+    {
+      "reward_id": "blaine",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1206
+    },
+    {
+      "reward_id": "admin_archer_cerulean_cave",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 67,
+      "trainer_flag_base": 1280,
+      "flag_id": 1347
+    },
+    {
+      "reward_id": "admin_ariana_cerulean_cave",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 68,
+      "trainer_flag_base": 1280,
+      "flag_id": 1348
+    },
+    {
+      "reward_id": "giovanni_cerulean_cave",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 69,
+      "trainer_flag_base": 1280,
+      "flag_id": 1349
+    },
+    {
+      "reward_id": "black_belt_ketchup",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 19,
+      "trainer_flag_base": 1280,
+      "flag_id": 1299
+    },
+    {
+      "reward_id": "clair",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 38,
+      "trainer_flag_base": 1280,
+      "flag_id": 1318
+    },
+    {
+      "reward_id": "burglar_max",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 454,
+      "trainer_flag_base": 1280,
+      "flag_id": 1734
+    },
+    {
+      "reward_id": "burglar_anson",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 455,
+      "trainer_flag_base": 1280,
+      "flag_id": 1735
+    },
+    {
+      "reward_id": "rival_rematch_route_22",
+      "source": "manual_multi_flag_override",
+      "trainer_flag_base": 1280,
+      "flag_ids": [
+        1715,
+        1716,
+        1717
+      ]
+    },
+    {
+      "reward_id": "brendan_route_23",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 26,
+      "trainer_flag_base": 1280,
+      "flag_id": 1306
+    },
+    {
+      "reward_id": "ace_naomi",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 406,
+      "trainer_flag_base": 1280,
+      "flag_id": 1686
+    },
+    {
+      "reward_id": "ace_rolando",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 396,
+      "trainer_flag_base": 1280,
+      "flag_id": 1676
+    },
+    {
+      "reward_id": "ace_george",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 393,
+      "trainer_flag_base": 1280,
+      "flag_id": 1673
+    },
+    {
+      "reward_id": "ace_caroline",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 403,
+      "trainer_flag_base": 1280,
+      "flag_id": 1683
+    },
+    {
+      "reward_id": "ace_colby",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 394,
+      "trainer_flag_base": 1280,
+      "flag_id": 1674
+    },
+    {
+      "reward_id": "ace_alexa",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 404,
+      "trainer_flag_base": 1280,
+      "flag_id": 1684
+    },
+    {
+      "reward_id": "dumbass_creator",
+      "source": "derived_from_trainer_db_id",
+      "trainer_db_id": 24,
+      "trainer_flag_base": 1280,
+      "flag_id": 1304
+    },
+    {
+      "reward_id": "lorelei",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1208
+    },
+    {
+      "reward_id": "bruno",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1209
+    },
+    {
+      "reward_id": "agatha",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1210
+    },
+    {
+      "reward_id": "lance",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1211
+    },
+    {
+      "reward_id": "rival_elite_four_champion",
+      "source": "explicit_reward_flag_id",
+      "flag_id": 1212
+    }
+  ],
+  "overrides": {
+    "rival_route_22": [
+      1609,
+      1610,
+      1611
+    ],
+    "FLAG_DEFEATED_RIVAL_ROUTE_22": [
+      1609,
+      1610,
+      1611
+    ],
+    "brendan_viridian_forest": 1324,
+    "FLAG_DEFEATED_BRENDAN_VIRIDIAN_FOREST": 1324,
+    "lass_anne_viridian_forest": 1284,
+    "FLAG_DEFEATED_LASS_ANNE_VIRIDIAN_FOREST": 1284,
+    "ace_nelle_viridian_forest": 1301,
+    "FLAG_DEFEATED_ACE_NELLE_VIRIDIAN_FOREST": 1301,
+    "falkner": 1325,
+    "FLAG_DEFEATED_FALKNER_PEWTER_CITY": 1325,
+    "brock": 1200,
+    "FLAG_DEFEATED_BROCK": 1200,
+    "super_nerd_miguel": 1450,
+    "FLAG_DEFEATED_SUPER_NERD_MIGUEL_MT_MOON": 1450,
+    "admin_archer_mt_moon": 1326,
+    "FLAG_DEFEATED_ADMIN_ARCHER_MT_MOON": 1326,
+    "rival_cerulean_city": 1612,
+    "FLAG_DEFEATED_RIVAL_CERULEAN_CITY": 1612,
+    "catcher_cale": 1390,
+    "FLAG_DEFEATED_CATCHER_CALE_NUGGET_BRIDGE": 1390,
+    "lass_ali": 1403,
+    "FLAG_DEFEATED_LASS_ALI_NUGGET_BRIDGE": 1403,
+    "youngster_timmy": 1372,
+    "FLAG_DEFEATED_YOUNGSTER_TIMMY_NUGGET_BRIDGE": 1372,
+    "lass_reli": 1402,
+    "FLAG_DEFEATED_LASS_RELI_NUGGET_BRIDGE": 1402,
+    "camper_ethan": 1424,
+    "FLAG_DEFEATED_CAMPER_ETHAN_NUGGET_BRIDGE": 1424,
+    "rocket_grunt_nugget_bridge": 1636,
+    "FLAG_DEFEATED_ROCKET_GRUNT_NUGGET_BRIDGE": 1636,
+    "bugsy": 1288,
+    "FLAG_DEFEATED_BUGSY_ROUTE_25": 1288,
+    "misty": 1201,
+    "FLAG_DEFEATED_MISTY": 1201,
+    "rocket_grunt_dig_house": 1635,
+    "FLAG_DEFEATED_ROCKET_GRUNT_DIG_HOUSE": 1635,
+    "ann_and_brooks": [
+      1406,
+      1762
+    ],
+    "FLAG_DEFEATED_ANN_AND_BROOKS_SS_ANNE": [
+      1406,
+      1762
+    ],
+    "edmond_and_trevor": [
+      1414,
+      1415
+    ],
+    "FLAG_DEFEATED_EDMOND_AND_TREVOR_SS_ANNE": [
+      1414,
+      1415
+    ],
+    "brendan_ss_anne": 1330,
+    "FLAG_DEFEATED_BRENDAN_SS_ANNE": 1330,
+    "whitney": 1329,
+    "FLAG_DEFEATED_WHITNEY_ROUTE_11": 1329,
+    "lt_surge": 1202,
+    "FLAG_DEFEATED_LT_SURGE": 1202,
+    "picknicker_caitlin": 1435,
+    "FLAG_DEFEATED_PICKNICKER_CAITLIN_ROUTE_9": 1435,
+    "morty": 1332,
+    "FLAG_DEFEATED_MORTY_LAVENDER_TOWN": 1332,
+    "erika": 1203,
+    "FLAG_DEFEATED_ERIKA": 1203,
+    "rocket_guard_game_corner": 1637,
+    "FLAG_DEFEATED_ROCKET_GUARD_GAME_CORNER": 1637,
+    "left_guard_rocket_hideout": 1646,
+    "FLAG_DEFEATED_LEFT_GUARD_ROCKET_HIDEOUT": 1646,
+    "right_guard_rocket_hideout": 1647,
+    "FLAG_DEFEATED_RIGHT_GUARD_ROCKET_HIDEOUT": 1647,
+    "giovannia_rocket_hideout": 1628,
+    "FLAG_DEFEATED_GIOVANNIA_ROCKET_HIDEOUT": 1628,
+    "ace_cole": 1298,
+    "FLAG_DEFEATED_ACE_COLE_ROUTE_8": 1298,
+    "beauty_sam": 1296,
+    "FLAG_DEFEATED_BEAUTY_SAM_CELADON_CITY_HOTEL": 1296,
+    "beauty_shelly": 1297,
+    "FLAG_DEFEATED_BEAUTY_SHELLY_CELADON_CITY_HOTEL": 1297,
+    "ghost_pokemon_tower": 3281,
+    "FLAG_DEFEATED_GHOST_POKEMON_TOWER": 3281,
+    "rival_silph_co": 1712,
+    "FLAG_DEFEATED_RIVAL_SILPH_CO": 1712,
+    "admin_ariana_archer_silph": [
+      1334,
+      1333
+    ],
+    "FLAG_DEFEATED_ADMIN_ARIANA_ARCHER_SILPH_CO": [
+      1334,
+      1333
+    ],
+    "giovanni": 1207,
+    "FLAG_DEFEATED_GIOVANNI": 1207,
+    "chuck": 1597,
+    "FLAG_DEFEATED_CHUCK_SAFFRON_CITY": 1597,
+    "sabrina": 1205,
+    "FLAG_DEFEATED_SABRINA": 1205,
+    "dumass_kid": 1305,
+    "FLAG_DEFEATED_DUMASS_KID_SAFFRON_CITY": 1305,
+    "rocker_luca": 1565,
+    "FLAG_DEFEATED_ROCKER_LUCA_ROUTE_12": 1565,
+    "camper_justin": 1757,
+    "FLAG_DEFEATED_CAMPER_JUSTIN_ROUTE_12": 1757,
+    "fisherman_andrew": 1513,
+    "FLAG_DEFEATED_FISHERMAN_ANDREW_ROUTE_12": 1513,
+    "bird_keeper_sebastian": 1580,
+    "FLAG_DEFEATED_BIRD_KEEPER_SEBASTIAN_ROUTE_13": 1580,
+    "picknicker_susie": 1747,
+    "FLAG_DEFEATED_PICKNICKER_SUSIE_ROUTE_13": 1747,
+    "picknicker_alma": 1746,
+    "FLAG_DEFEATED_PICKNICKER_ALMA_ROUTE_13": 1746,
+    "lola_and_sheila": [
+      1548,
+      1549
+    ],
+    "FLAG_DEFEATED_LOLA_AND_SHEILA_ROUTE_13": [
+      1548,
+      1549
+    ],
+    "bird_keeper_perry": 1581,
+    "FLAG_DEFEATED_BIRD_KEEPER_PERRY_ROUTE_13": 1581,
+    "biker_jared": 1475,
+    "FLAG_DEFEATED_BIKER_JARED_ROUTE_13": 1475,
+    "bird_keeper_robert": 1582,
+    "FLAG_DEFEATED_BIRD_KEEPER_ROBERT_ROUTE_13": 1582,
+    "ace_haley": 1295,
+    "FLAG_DEFEATED_ACE_HALEY_ROUTE_15": 1295,
+    "biker_lao": 1479,
+    "FLAG_DEFEATED_BIKER_LAO_ROUTE_16": 1479,
+    "cue_ball_koji": 1529,
+    "FLAG_DEFEATED_CUE_BALL_KOJI_ROUTE_16": 1529,
+    "cue_ball_luke": 1530,
+    "FLAG_DEFEATED_CUE_BALL_LUKE_ROUTE_16": 1530,
+    "biker_ruben": 1482,
+    "FLAG_DEFEATED_BIKER_RUBEN_ROUTE_16": 1482,
+    "cue_ball_camron": 1531,
+    "FLAG_DEFEATED_CUE_BALL_CAMRON_ROUTE_16": 1531,
+    "biker_hideo": 1481,
+    "FLAG_DEFEATED_BIKER_HIDEO_ROUTE_16": 1481,
+    "biker_william": 1486,
+    "FLAG_DEFEATED_BIKER_WILLIAM_ROUTE_18": 1486,
+    "bird_keeper_jacob": 1589,
+    "FLAG_DEFEATED_BIRD_KEEPER_JACOB_ROUTE_18": 1589,
+    "tamer_ramiro": 1588,
+    "FLAG_DEFEATED_TAMER_RAMIRO_ROUTE_18": 1588,
+    "ace_wilton": 1587,
+    "FLAG_DEFEATED_ACE_WILTON_ROUTE_18": 1587,
+    "brendan_safari_zone": 1306,
+    "FLAG_DEFEATED_BRENDAN_SAFARI_ZONE": 1306,
+    "brock_rematch": 1336,
+    "FLAG_DEFEATED_BROCK_REMATCH_PEWTER_CITY": 1336,
+    "misty_rematch": 1312,
+    "FLAG_DEFEATED_MISTY_REMATCH_CERULEAN_CITY": 1312,
+    "lt_surge_rematch": 1331,
+    "FLAG_DEFEATED_LT_SURGE_REMATCH_VERMILLION_CITY": 1331,
+    "erika_rematch": 1345,
+    "FLAG_DEFEATED_ERIKA_REMATCH_CELADON_CITY": 1345,
+    "koga": 1204,
+    "FLAG_DEFEATED_KOGA": 1204,
+    "dumass_jojo_fan": 1346,
+    "FLAG_DEFEATED_DUMASS_JOJO_FAN_POWER_PLANT": 1346,
+    "pryce": 1359,
+    "FLAG_DEFEATED_PRYCE_SEAFOAM_ISLANDS": 1359,
+    "may_cinnabar": 1341,
+    "FLAG_DEFEATED_MAY_CINNABAR_ISLAND": 1341,
+    "jasmine": 1342,
+    "FLAG_DEFEATED_JASMINE_CINNABAR_ISLAND_LAB": 1342,
+    "ace_derek": 1459,
+    "FLAG_DEFEATED_ACE_DEREK_CINNABAR_ISLAND_GYM": 1459,
+    "ace_lucy": 1495,
+    "FLAG_DEFEATED_ACE_LUCY_CINNABAR_ISLAND_GYM": 1495,
+    "ace_zac": 1460,
+    "FLAG_DEFEATED_ACE_ZAC_CINNABAR_ISLAND_GYM": 1460,
+    "blaine": 1206,
+    "FLAG_DEFEATED_BLAINE": 1206,
+    "admin_archer_cerulean_cave": 1347,
+    "FLAG_DEFEATED_ADMIN_ARCHER_CERULEAN_CAVE": 1347,
+    "admin_ariana_cerulean_cave": 1348,
+    "FLAG_DEFEATED_ADMIN_ARIANA_CERULEAN_CAVE": 1348,
+    "giovanni_cerulean_cave": 1349,
+    "FLAG_DEFEATED_GIOVANNI_CERULEAN_CAVE": 1349,
+    "black_belt_ketchup": 1299,
+    "FLAG_DEFEATED_BLACK_BELT_KETCHUP_CERULEAN_CAVE": 1299,
+    "clair": 1318,
+    "FLAG_DEFEATED_CLAIR_VIRIDIAN_CITY": 1318,
+    "burglar_max": 1734,
+    "FLAG_DEFEATED_BURGLAR_MAX_POKEMON_MANSION_4F": 1734,
+    "burglar_anson": 1735,
+    "FLAG_DEFEATED_BURGLAR_ANSON_POKEMON_MANSION_4F": 1735,
+    "rival_rematch_route_22": [
+      1715,
+      1716,
+      1717
+    ],
+    "FLAG_DEFEATED_RIVAL_REMATCH_ROUTE_22": [
+      1715,
+      1716,
+      1717
+    ],
+    "brendan_route_23": 1306,
+    "FLAG_DEFEATED_BRENDAN_ROUTE_23": 1306,
+    "ace_naomi": 1686,
+    "FLAG_DEFEATED_ACE_NAOMI_VICTORY_ROAD": 1686,
+    "ace_rolando": 1676,
+    "FLAG_DEFEATED_ACE_ROLANDO_VICTORY_ROAD": 1676,
+    "ace_george": 1673,
+    "FLAG_DEFEATED_ACE_GEORGE_VICTORY_ROAD": 1673,
+    "ace_caroline": 1683,
+    "FLAG_DEFEATED_ACE_CAROLINE_VICTORY_ROAD": 1683,
+    "ace_colby": 1674,
+    "FLAG_DEFEATED_ACE_COLBY_VICTORY_ROAD": 1674,
+    "ace_alexa": 1684,
+    "FLAG_DEFEATED_ACE_ALEXA_VICTORY_ROAD": 1684,
+    "dumbass_creator": 1304,
+    "FLAG_DEFEATED_DUMBASS_CREATOR_INDIGO_PLATEAU": 1304,
+    "lorelei": 1208,
+    "FLAG_DEFEATED_LORELEI": 1208,
+    "bruno": 1209,
+    "FLAG_DEFEATED_BRUNO": 1209,
+    "agatha": 1210,
+    "FLAG_DEFEATED_AGATHA": 1210,
+    "lance": 1211,
+    "FLAG_DEFEATED_LANCE": 1211,
+    "rival_elite_four_champion": 1212,
+    "FLAG_DEFEATED_CHAMP": 1212
+  }
+}

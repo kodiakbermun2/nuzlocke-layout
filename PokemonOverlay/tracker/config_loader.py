@@ -103,7 +103,6 @@ def resolve_tracker_config(
     tracker = config_payload.get("tracker", {})
     websocket = tracker.get("websocket", {}) if isinstance(tracker.get("websocket", {}), dict) else {}
     memory = tracker.get("memory", {}) if isinstance(tracker.get("memory", {}), dict) else {}
-
     cfg = TrackerConfig(
         save_path=str(save_path or tracker.get("save_path") or ""),
         state_path=str(state_path or tracker.get("state_path") or "state.json"),

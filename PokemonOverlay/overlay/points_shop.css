@@ -1,0 +1,1048 @@
+:root {
+  --points-badge-left: 1.3%;
+  --points-badge-bottom: 3.6%;
+  --points-badge-width: 106px;
+  --points-badge-height: 86px;
+  --points-count-font-size: 46px;
+}
+
+.points-badge-button {
+  position: absolute;
+  left: var(--points-badge-left);
+  bottom: var(--points-badge-bottom);
+  width: var(--points-badge-width);
+  height: var(--points-badge-height);
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  z-index: 40;
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  transition: transform 120ms ease, filter 180ms ease;
+}
+
+.points-badge-button:hover {
+  filter: drop-shadow(0 0 14px rgba(255, 225, 100, 0.78));
+}
+
+.points-badge-button.clicked {
+  transform: scale(0.95);
+}
+
+.points-badge-notification {
+  position: absolute;
+  top: 8%;
+  left: 7%;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #ff5f5f, #d10f24);
+  color: #fff;
+  font: 900 11px/16px "Arial Black", Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.55);
+  pointer-events: none;
+}
+
+.points-badge-count {
+  position: absolute;
+  top: 49%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+  font-family: "Arial Black", Arial, sans-serif;
+  font-weight: 900;
+  color: #000;
+  font-size: var(--points-count-font-size);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 0 rgba(255, 249, 200, 0.45);
+  pointer-events: none;
+}
+
+.points-badge-button[data-digits="single"] .points-badge-count {
+  transform: translate(
+    calc(-50% + var(--points-count-single-x)),
+    calc(-50% + var(--points-count-single-y))
+  );
+}
+
+.points-badge-button[data-digits="double"] .points-badge-count,
+.points-badge-button[data-digits="multi"] .points-badge-count {
+  transform: translate(
+    calc(-50% + var(--points-count-double-x)),
+    calc(-50% + var(--points-count-double-y))
+  );
+}
+
+.points-toast-layer {
+  position: absolute;
+  top: 2.6%;
+  right: 38%;
+  display: grid;
+  gap: 8px;
+  z-index: 50010;
+  pointer-events: none;
+  justify-items: end;
+}
+
+.points-toast {
+  min-width: 260px;
+  max-width: min(38vw, 520px);
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(27, 24, 8, 0.76);
+  color: #1d1502;
+  font: 900 16px/1.2 "Arial Black", Arial, sans-serif;
+  text-align: center;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.56);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+.points-toast.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.points-toast-points {
+  background: linear-gradient(180deg, #ffe177, #f4b637);
+}
+
+.points-toast-reward {
+  background: linear-gradient(180deg, #ffeeb0, #ffc96e);
+}
+
+.points-shop-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 50000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+
+.points-shop-layer.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.points-shop-backdrop {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(1400px 760px at 18% 8%, rgba(255, 209, 102, 0.2), transparent 62%),
+    radial-gradient(920px 620px at 86% 16%, rgba(114, 167, 255, 0.2), transparent 64%),
+    radial-gradient(1000px 740px at 48% 86%, rgba(255, 119, 77, 0.19), transparent 68%),
+    rgba(6, 13, 25, 0.86);
+  backdrop-filter: blur(8px) saturate(1.1);
+}
+
+.points-shop-modal {
+  position: absolute;
+  inset: 2.2% 2.2% 2.2% 2.2%;
+  width: auto;
+  height: auto;
+  max-height: none;
+  transform: scale(0.97);
+  transform-origin: center;
+  border: 4px solid #171515;
+  border-radius: 26px;
+  background:
+    linear-gradient(152deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 38%, rgba(255, 255, 255, 0) 64%),
+    linear-gradient(185deg, rgba(6, 19, 34, 0.97), rgba(12, 30, 49, 0.97));
+  box-shadow:
+    0 28px 92px rgba(0, 0, 0, 0.65),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.08);
+  color: #f0f5ff;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  transition: transform 260ms cubic-bezier(0.2, 0.75, 0.2, 1);
+}
+
+.points-shop-modal::before,
+.points-shop-modal::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.points-shop-modal::before {
+  inset: 0;
+  background:
+    radial-gradient(580px 220px at 12% 18%, rgba(255, 255, 255, 0.12), transparent 72%),
+    radial-gradient(420px 180px at 88% 34%, rgba(255, 255, 255, 0.1), transparent 72%),
+    repeating-linear-gradient(130deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.04) 6px, transparent 6px, transparent 15px);
+  opacity: 0.55;
+}
+
+.points-shop-modal::after {
+  width: 460px;
+  height: 460px;
+  right: -180px;
+  bottom: -190px;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(255, 168, 74, 0.14), rgba(255, 168, 74, 0));
+  filter: blur(16px);
+}
+
+.points-shop-layer.open .points-shop-modal {
+  transform: scale(1);
+}
+
+.points-shop-header,
+.points-shop-content {
+  position: relative;
+  z-index: 1;
+}
+
+.points-shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 3px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(33, 58, 89, 0.65), rgba(16, 34, 53, 0.4));
+}
+
+.points-shop-header h2,
+.points-shop-content h3 {
+  margin: 0;
+  font-family: "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  color: #f9f7ef;
+  letter-spacing: 0.04em;
+  text-shadow:
+    2px 2px 0 #111,
+    -2px 2px 0 #111,
+    2px -2px 0 #111,
+    -2px -2px 0 #111,
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.points-shop-header h2 {
+  font-size: clamp(28px, 3.1vw, 48px);
+}
+
+.points-shop-heading-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.points-shop-tabs {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.points-shop-tab {
+  border: 3px solid #121212;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2d4f79, #203957);
+  color: #d5e9ff;
+  padding: 7px 14px;
+  font: 900 13px/1 "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 140ms ease;
+  position: relative;
+}
+
+.points-shop-tab-notification {
+  position: absolute;
+  top: -7px;
+  right: -9px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  background: linear-gradient(180deg, #ff5f5f, #d10f24);
+  color: #fff;
+  font: 900 10px/14px "Arial Black", Arial, sans-serif;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.48);
+  pointer-events: none;
+}
+
+.points-shop-tab:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.points-shop-tab.is-active {
+  background: linear-gradient(180deg, #ff8f47, #d95a22);
+  color: #fff;
+}
+
+.points-shop-header-points {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  width: fit-content;
+  min-width: 132px;
+  padding: 6px 12px 7px;
+  border: 3px solid #141313;
+  border-radius: 13px;
+  background: linear-gradient(170deg, rgba(35, 66, 101, 0.96), rgba(21, 39, 63, 0.96));
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.points-shop-header-points-label {
+  font-family: "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  color: #e8f5ff;
+  text-shadow: 1px 1px 0 #101010;
+}
+
+.points-shop-header-points-value {
+  font-family: "Arial Black", Arial, sans-serif;
+  font-size: clamp(28px, 2.2vw, 38px);
+  color: #fff9ca;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-shadow:
+    2px 2px 0 #111,
+    -2px 2px 0 #111,
+    2px -2px 0 #111,
+    -2px -2px 0 #111;
+}
+
+.points-shop-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.points-shop-close,
+.points-shop-modal button:not(.points-shop-reward-card) {
+  border: 3px solid #141313;
+  background: linear-gradient(180deg, #60a3ff, #3275c8);
+  color: #fff;
+  border-radius: 13px;
+  padding: 8px 14px;
+  font: 900 14px/1 "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 140ms ease;
+}
+
+.points-shop-layer [hidden] {
+  display: none !important;
+}
+
+.points-edit-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 50030;
+  background: rgba(8, 14, 22, 0.66);
+  backdrop-filter: blur(4px);
+}
+
+.points-edit-modal {
+  width: min(420px, 88vw);
+  border: 3px solid #141313;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #1d3858, #13263b);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.56);
+  padding: 14px;
+  display: grid;
+  gap: 10px;
+}
+
+.points-edit-modal h3 {
+  margin: 0;
+  font: 900 20px/1 "Arial Black", Arial, sans-serif;
+  color: #f7f3e7;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.points-edit-modal label {
+  font: 900 12px/1 "Arial Black", Arial, sans-serif;
+  color: #d8ebff;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.points-edit-modal input {
+  border: 3px solid #141313;
+  border-radius: 10px;
+  background: #f3f7ff;
+  color: #111;
+  padding: 9px 10px;
+  font: 900 20px/1 "Arial Black", Arial, sans-serif;
+}
+
+.points-edit-status {
+  min-height: 16px;
+  margin: 0;
+  color: #d6f2d6;
+  font: 900 12px/1.2 "Arial Black", Arial, sans-serif;
+}
+
+.points-edit-status.is-error {
+  color: #ffb6b6;
+}
+
+.points-edit-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.points-shop-modal button:not(.points-shop-reward-card):hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.05);
+}
+
+.points-shop-modal button:not(.points-shop-reward-card):disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.points-shop-undo-icon {
+  width: 44px;
+  min-width: 44px;
+  height: 40px;
+  padding: 0;
+  font-size: 28px;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+}
+
+.points-shop-content {
+  display: block;
+  padding: 18px 20px;
+  overflow: hidden;
+}
+
+.points-shop-panel {
+  display: none;
+  min-height: 0;
+}
+
+.points-shop-panel.is-active {
+  display: block;
+}
+
+.points-shop-shop-grid {
+  display: block;
+}
+
+.points-shop-rewards-wrap {
+  min-width: 0;
+  display: grid;
+  gap: 10px;
+}
+
+.points-shop-manual-wrap {
+  margin-top: 12px;
+  border: 3px dashed rgba(255, 255, 255, 0.28);
+  border-radius: 14px;
+  padding: 10px;
+  background: rgba(7, 18, 30, 0.64);
+  display: grid;
+  gap: 8px;
+}
+
+.points-shop-manual-wrap h3 {
+  margin: 0;
+  font: 900 16px/1 "Arial Black", Arial, sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #f0f6ff;
+}
+
+.points-shop-manual-controls {
+  display: grid;
+  gap: 8px;
+}
+
+.points-shop-manual-controls label {
+  font: 900 12px/1 "Arial Black", Arial, sans-serif;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #d5e9ff;
+}
+
+.points-shop-manual-controls select {
+  width: 100%;
+  border: 3px solid #141313;
+  border-radius: 11px;
+  background: linear-gradient(180deg, #1e3856, #162a3f);
+  color: #f1f7ff;
+  padding: 8px 10px;
+  font: 900 13px/1.2 "Arial Black", Arial, sans-serif;
+}
+
+.points-shop-manual-actions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.points-shop-manual-status {
+  min-height: 16px;
+  color: #d6f2d6;
+  font: 900 12px/1.2 "Arial Black", Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.points-shop-manual-status.is-error {
+  color: #ffb6b6;
+}
+
+.points-shop-balance-card,
+.points-shop-inventory,
+.points-shop-confirm,
+.points-shop-category {
+  border: 3px solid #151515;
+  border-radius: 16px;
+  background: rgba(9, 22, 38, 0.86);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.06);
+}
+
+.points-shop-inventory,
+.points-shop-history,
+.points-shop-rewards {
+  display: grid;
+  gap: 10px;
+  overflow: auto;
+  padding: 10px;
+}
+
+.points-shop-inventory {
+  min-height: 220px;
+  max-height: 62vh;
+}
+
+.points-shop-rewards {
+  min-height: 0;
+  max-height: 68vh;
+  align-content: start;
+}
+
+.points-shop-category {
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.points-shop-category-banner {
+  margin-bottom: 12px;
+  text-align: center;
+  font: 900 30px/1 "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #111;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, 0.3);
+}
+
+.points-shop-category-encounters .points-shop-category-banner {
+  color: #2ea44f;
+}
+
+.points-shop-category-lifeline .points-shop-category-banner {
+  color: #a88bd8;
+}
+
+.points-shop-category-events .points-shop-category-banner {
+  color: #2e9cca;
+}
+
+.points-shop-category-banner span {
+  display: inline;
+}
+
+.points-shop-category-encounters {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.points-shop-category-lifeline {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.points-shop-category-events {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.points-shop-category-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.points-shop-reward-card {
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  display: block;
+  min-height: 0;
+  border-radius: 0;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  transition: transform 180ms ease, filter 180ms ease;
+  cursor: pointer;
+  overflow: visible;
+  box-sizing: border-box;
+  width: calc((100% - (14px * 4)) / 5);
+  min-width: 150px;
+  max-width: 212px;
+}
+
+.points-shop-stock-chip {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 2px solid #121212;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font: 900 12px/1 "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  z-index: 4;
+}
+
+.points-shop-stock-chip.is-empty {
+  background: rgba(163, 163, 163, 0.95);
+  color: #2c2c2c;
+}
+
+.points-shop-reward-card.is-sold-out {
+  opacity: 1;
+}
+
+.points-shop-reward-card.is-sold-out .points-shop-reward-card-image {
+  filter: grayscale(1) brightness(0.85) contrast(0.92);
+}
+
+.points-shop-reward-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  filter: saturate(1.08) drop-shadow(0 10px 18px rgba(0, 0, 0, 0.42));
+}
+
+.points-shop-reward-card-image,
+.points-shop-reward-card-fallback {
+  position: static;
+  width: 100%;
+  height: 244px;
+  display: block;
+}
+
+.points-shop-reward-card-image {
+  object-fit: contain;
+  object-position: center;
+  image-rendering: auto;
+  border-radius: 14px;
+}
+
+.points-shop-reward-card-fallback {
+  border-radius: 14px;
+  background:
+    repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.08) 8px, rgba(255, 255, 255, 0.02) 8px, rgba(255, 255, 255, 0.02) 16px),
+    linear-gradient(180deg, rgba(28, 54, 83, 0.95), rgba(16, 36, 56, 0.95));
+}
+
+.points-shop-floating-tooltip {
+  position: fixed;
+  width: min(280px, 38vw);
+  padding: 12px 14px;
+  border: 3px solid #121212;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.46);
+  pointer-events: none;
+  z-index: 50020;
+}
+
+.points-shop-floating-tooltip-title {
+  margin: 0;
+  color: #111;
+  font: 0/0 Arial;
+}
+
+.points-shop-floating-tooltip-body {
+  margin: 0;
+  color: #202020;
+  font: 900 15px/1.28 "Arial Black", Arial, sans-serif;
+  letter-spacing: 0.01em;
+  text-wrap: pretty;
+  white-space: normal;
+}
+
+.points-shop-category-empty {
+  grid-column: 1 / -1;
+  padding: 10px 8px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  color: #e9f0ff;
+  background: rgba(10, 24, 42, 0.22);
+  border: 2px dashed rgba(255, 255, 255, 0.24);
+  border-radius: 12px;
+}
+
+.points-shop-reward-card:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  filter: grayscale(0.25);
+}
+
+.points-shop-reward-card.is-unaffordable:not(.is-sold-out) {
+  opacity: 1;
+}
+
+.points-shop-reward-card.is-unaffordable:not(.is-sold-out)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 12px;
+  background: rgba(203, 33, 33, 0.32);
+  pointer-events: none;
+  z-index: 3;
+}
+
+.points-shop-reward-card p,
+.points-shop-history-meta,
+.points-shop-inventory-meta,
+.points-shop-empty,
+.points-shop-confirm p {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  color: #deebff;
+  line-height: 1.26;
+}
+
+.points-shop-reward-footer {
+  margin-top: auto;
+  display: grid;
+}
+
+.points-shop-reward-footer button,
+.points-shop-inventory-item button {
+  width: 100%;
+  border-radius: 12px;
+  font-size: 13px;
+}
+
+.points-shop-inventory-item,
+.points-shop-history-item {
+  border: 2px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 9px;
+  background: rgba(6, 17, 31, 0.7);
+  display: grid;
+  gap: 7px;
+}
+
+.points-shop-inventory {
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  align-content: start;
+  gap: 12px;
+}
+
+.points-shop-inventory-card {
+  border: 2px solid rgba(20, 20, 20, 0.42);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.94);
+  padding: 8px;
+  display: grid;
+  gap: 8px;
+}
+
+.points-shop-inventory-image-wrap {
+  width: 100%;
+  min-height: 210px;
+  display: grid;
+  align-items: start;
+  justify-items: center;
+}
+
+.points-shop-inventory-image,
+.points-shop-inventory-fallback {
+  width: auto;
+  max-width: 100%;
+  max-height: 210px;
+  height: auto;
+  display: block;
+  border-radius: 10px;
+}
+
+.points-shop-inventory-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.points-shop-inventory-actions button {
+  width: 100%;
+}
+
+.points-shop-inventory-redeem {
+  background: linear-gradient(180deg, #2fd37a, #0f9d52);
+  color: #fff;
+}
+
+.points-shop-inventory-sell {
+  background: linear-gradient(180deg, #f0a347, #cf6d1a);
+  color: #fff;
+}
+
+.points-shop-inventory-item.redeemed {
+  opacity: 0.66;
+}
+
+.points-shop-history {
+  max-height: 63vh;
+}
+
+.points-shop-history-item.undone {
+  opacity: 0.45;
+}
+
+.points-shop-confirm {
+  min-height: 44px;
+  padding: 8px;
+}
+
+.points-shop-confirm-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.points-shop-confirm-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 13, 22, 0.6);
+  z-index: 50005;
+}
+
+.points-shop-confirm-overlay.open {
+  display: flex;
+}
+
+.points-shop-confirm-dialog {
+  width: min(540px, 88vw);
+  border: 3px solid #141313;
+  border-radius: 16px;
+  padding: 18px 16px 14px;
+  background: linear-gradient(180deg, rgba(29, 56, 87, 0.98), rgba(18, 39, 61, 0.98));
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.55);
+}
+
+.points-shop-confirm-dialog p {
+  margin: 0;
+  text-align: center;
+  font: 900 24px/1.2 "Arial Black", Arial, sans-serif;
+  text-transform: uppercase;
+  color: #f4f7ff;
+  text-shadow: 1px 1px 0 #111;
+}
+
+.points-shop-confirm-dialog .points-shop-confirm-actions {
+  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 10px;
+}
+
+.points-shop-confirm-dialog .points-shop-confirm-actions .points-shop-confirm-btn {
+  min-width: 0;
+  width: 100%;
+  border-radius: 999px;
+  font-size: 16px;
+  padding: 12px 14px;
+}
+
+.points-shop-confirm-dialog .points-shop-confirm-actions .points-shop-confirm-accept {
+  background: linear-gradient(180deg, #2fd37a, #0f9d52);
+  color: #fff;
+}
+
+.points-shop-confirm-dialog .points-shop-confirm-actions .points-shop-confirm-cancel {
+  background: linear-gradient(180deg, #ef4f4f, #b82424);
+  color: #fff;
+}
+
+.points-shop-confirm-dialog .points-shop-confirm-actions .points-shop-confirm-sell {
+  background: linear-gradient(180deg, #f0a347, #cf6d1a);
+  color: #fff;
+}
+
+.points-shop-purchase-flash {
+  animation: points-shop-purchase-flash 480ms ease;
+}
+
+.points-shop-inventory-pulse {
+  animation: points-shop-inventory-pulse 560ms ease;
+}
+
+@keyframes points-shop-purchase-flash {
+  0% {
+    box-shadow:
+      0 28px 92px rgba(0, 0, 0, 0.65),
+      inset 0 0 0 4px rgba(255, 255, 255, 0.08),
+      0 0 0 rgba(255, 235, 154, 0);
+  }
+  35% {
+    box-shadow:
+      0 28px 92px rgba(0, 0, 0, 0.65),
+      inset 0 0 0 4px rgba(255, 255, 255, 0.08),
+      0 0 40px rgba(255, 235, 154, 0.6);
+  }
+  100% {
+    box-shadow:
+      0 28px 92px rgba(0, 0, 0, 0.65),
+      inset 0 0 0 4px rgba(255, 255, 255, 0.08),
+      0 0 0 rgba(255, 235, 154, 0);
+  }
+}
+
+@keyframes points-shop-inventory-pulse {
+  0% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+  45% {
+    transform: scale(1.014);
+    filter: brightness(1.18);
+  }
+  100% {
+    transform: scale(1);
+    filter: brightness(1);
+  }
+}
+
+@media (max-width: 1300px) {
+  .points-shop-header-points-value {
+    font-size: clamp(26px, 2.8vw, 34px);
+  }
+
+  .points-shop-category-grid {
+    gap: 10px;
+  }
+
+  .points-shop-reward-card {
+    width: calc((100% - (10px * 3)) / 4);
+  }
+}
+
+@media (max-width: 1040px) {
+  .points-shop-modal {
+    inset: 1.7% 1.7% 1.7% 1.7%;
+    border-radius: 20px;
+  }
+
+  .points-shop-heading-wrap {
+    gap: 8px;
+  }
+
+  .points-shop-tabs {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .points-shop-header-points {
+    margin-left: 0;
+  }
+
+  .points-shop-rewards {
+    max-height: none;
+  }
+
+  .points-shop-category-grid {
+    justify-content: center;
+  }
+
+  .points-shop-reward-card {
+    width: calc((100% - (10px * 2)) / 3);
+    min-width: 170px;
+    max-width: 250px;
+  }
+
+  .points-shop-inventory {
+    max-height: 58vh;
+  }
+}
+
+@media (max-width: 740px) {
+  .points-shop-header {
+    padding: 12px;
+  }
+
+  .points-shop-content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .points-shop-header h2 {
+    font-size: clamp(22px, 7vw, 30px);
+  }
+
+  .points-shop-tab {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+
+  .points-shop-header-points {
+    min-width: 110px;
+    padding: 5px 9px 6px;
+  }
+
+  .points-shop-header-points-label {
+    font-size: 10px;
+  }
+
+  .points-shop-header-points-value {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+
+  .points-shop-category-grid {
+    justify-content: center;
+  }
+
+  .points-shop-reward-card {
+    min-height: 0;
+    width: calc((100% - 10px) / 2);
+    min-width: 140px;
+  }
+
+  .points-shop-category-banner {
+    font-size: 24px;
+  }
+
+  .points-shop-confirm-dialog p {
+    font-size: 20px;
+  }
+}

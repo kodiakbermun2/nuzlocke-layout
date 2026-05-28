@@ -6,12 +6,19 @@ from pathlib import Path
 from typing import Dict, List, Optional
 import logging
 import json
+import os
 import re
 import struct
+import time
 
 from save_parser import SaveSection
 
 LOGGER = logging.getLogger(__name__)
+
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    raw = str(os.getenv(name, "1" if default else "0")).strip().lower()
+    return raw in {"1", "true", "yes", "on"}
 
 # FRLG and many FireRed-based hack offsets for SaveBlock1 section payloads.
 PARTY_COUNT_CANDIDATES = [0x034, 0x234]
@@ -342,6 +349,11 @@ class PartyParser:
 
     def __init__(self, parser_mode: str = ParserMode.AUTO.value):
         self._forced_mode = self._coerce_mode(parser_mode)
+        # Full-slot brute-force scanning is extremely expensive and can starve
+        # the realtime tracker loop on some saves. Keep it opt-in for diagnosis.
+        self._enable_full_slot_scan = _env_flag("POKEMON_OVERLAY_ENABLE_FULL_SLOT_PC_SCAN", default=False)
+        self._last_pc_parse_warning_at: float = 0.0
+        self._pc_parse_warning_interval_seconds: float = 60.0
 
     def parse(
         self,
@@ -352,11 +364,22 @@ class PartyParser:
         parser_mode: Optional[str] = None,
         slot_raw: Optional[bytes] = None,
     ) -> Dict[str, List[Dict]]:
+        t_parse_started = time.perf_counter()
         mode = self.resolve_mode(saveblock=saveblock, sections=sections, parser_mode=parser_mode, debug=debug)
+        t_party_started = time.perf_counter()
         party = self._parse_party(saveblock, mode=mode, debug=debug, sections=sections)
-        boxed = self._parse_pc(saveblock, mode=mode, debug=debug, sections=sections, slot_raw=slot_raw) if include_pc else []
+        party_parse_ms = (time.perf_counter() - t_party_started) * 1000.0
+
+        pc_parse_ms = 0.0
+        if include_pc:
+            t_pc_started = time.perf_counter()
+            boxed = self._parse_pc(saveblock, mode=mode, debug=debug, sections=sections, slot_raw=slot_raw)
+            pc_parse_ms = (time.perf_counter() - t_pc_started) * 1000.0
+        else:
+            boxed = []
 
         # Memorial policy: Box 25 is reserved for dead mons and must never appear in PC.
+        t_memorial_started = time.perf_counter()
         pc: List[Dict] = []
         dead: List[Dict] = []
         for mon in boxed:
@@ -365,6 +388,8 @@ class PartyParser:
                 dead.append(mon)
             else:
                 pc.append(mon)
+        memorial_split_ms = (time.perf_counter() - t_memorial_started) * 1000.0
+        parse_total_ms = (time.perf_counter() - t_parse_started) * 1000.0
 
         if debug:
             seen_boxes = sorted({int(mon.get("box")) for mon in boxed if isinstance(mon.get("box"), int)})
@@ -390,6 +415,12 @@ class PartyParser:
             "dead": dead,
             "meta": {
                 "parser_mode": mode.value,
+                "timings_ms": {
+                    "party_parse": round(party_parse_ms, 3),
+                    "pc_parse": round(pc_parse_ms, 3),
+                    "memorial_split": round(memorial_split_ms, 3),
+                    "parse_total": round(parse_total_ms, 3),
+                },
             },
         }
 
@@ -614,10 +645,12 @@ class PartyParser:
             if from_rr_sections:
                 return from_rr_sections
 
-        if slot_raw:
+        if slot_raw and self._enable_full_slot_scan:
             from_slot = self._parse_pc_from_full_slot(slot_raw=slot_raw, mode=mode, debug=debug, sections=sections)
             if from_slot:
                 return from_slot
+        elif debug and slot_raw and not self._enable_full_slot_scan:
+            LOGGER.debug("Skipping full-slot PC scan (set POKEMON_OVERLAY_ENABLE_FULL_SLOT_PC_SCAN=1 to enable)")
 
         if sections:
             from_sections = self._parse_pc_from_sections(sections=sections, mode=mode, debug=debug)
@@ -668,7 +701,10 @@ class PartyParser:
                     quality_hits,
                 )
 
-        LOGGER.warning("PC parser could not find a valid PC block; returning an empty PC list")
+        now = time.time()
+        if (now - self._last_pc_parse_warning_at) >= self._pc_parse_warning_interval_seconds:
+            LOGGER.warning("PC parser could not find a valid PC block; returning an empty PC list")
+            self._last_pc_parse_warning_at = now
         return []
 
     def _parse_pc_from_rr_sections(

@@ -1,0 +1,2650 @@
+{
+  "ace_alexa": {
+    "name": "Ace Alexa",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Clefable",
+        83
+      ],
+      [
+        "Wigglytuff",
+        83
+      ],
+      [
+        "Chansey",
+        83
+      ],
+      [
+        "Komala",
+        83
+      ],
+      [
+        "Audino",
+        84
+      ]
+    ],
+    "flag_id": 1684,
+    "points": 1
+  },
+  "ace_caroline": {
+    "name": "Ace Caroline",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Bellossom",
+        83
+      ],
+      [
+        "Parasect",
+        83
+      ],
+      [
+        "Vileplume",
+        83
+      ],
+      [
+        "Amoonguss",
+        83
+      ],
+      [
+        "Lopunny",
+        84
+      ]
+    ],
+    "flag_id": 1683,
+    "points": 1
+  },
+  "ace_colby": {
+    "name": "Ace Colby",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Feraligatr",
+        83
+      ],
+      [
+        "Swanna",
+        83
+      ],
+      [
+        "Walrein",
+        83
+      ],
+      [
+        "Sharpedo",
+        84
+      ],
+      [
+        "Empoleon",
+        84
+      ]
+    ],
+    "flag_id": 1674,
+    "points": 1
+  },
+  "ace_cole": {
+    "name": "Ace Cole",
+    "class": "Trainer",
+    "location": "Route 8",
+    "region": "Unknown",
+    "team": [
+      [
+        "Yanmega",
+        103
+      ],
+      [
+        "Tyrantrum",
+        103
+      ],
+      [
+        "Weezing",
+        103
+      ],
+      [
+        "Ferrothorn",
+        103
+      ],
+      [
+        "Gastrodon",
+        103
+      ],
+      [
+        "Centiskorch",
+        103
+      ]
+    ],
+    "flag_id": 1298,
+    "points": 1
+  },
+  "ace_derek": {
+    "name": "Ace Derek",
+    "class": "Trainer",
+    "location": "Cinnabar Island Gym",
+    "region": "Unknown",
+    "team": [
+      [
+        "Mienshao",
+        101
+      ],
+      [
+        "Arcanine",
+        104
+      ],
+      [
+        "Rhyperior",
+        104
+      ],
+      [
+        "Centiskorch",
+        101
+      ],
+      [
+        "Sunflora",
+        101
+      ]
+    ],
+    "flag_id": 1459,
+    "points": 1
+  },
+  "ace_george": {
+    "name": "Ace George",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Exeggutor",
+        83
+      ],
+      [
+        "Donphan",
+        84
+      ],
+      [
+        "Cloyster",
+        84
+      ],
+      [
+        "Mienshao",
+        84
+      ],
+      [
+        "Pinsir",
+        84
+      ]
+    ],
+    "flag_id": 1673,
+    "points": 1
+  },
+  "ace_haley": {
+    "name": "Ace Haley",
+    "class": "Trainer",
+    "location": "Route 15",
+    "region": "Unknown",
+    "team": [
+      [
+        "Magnezone",
+        103
+      ],
+      [
+        "Hawlucha",
+        103
+      ],
+      [
+        "Magmortar",
+        103
+      ],
+      [
+        "Cursola",
+        103
+      ],
+      [
+        "Starmie",
+        103
+      ],
+      [
+        "Sandaconda",
+        103
+      ]
+    ],
+    "flag_id": 1295,
+    "points": 1
+  },
+  "ace_lucy": {
+    "name": "Ace Lucy",
+    "class": "Trainer",
+    "location": "Cinnabar Island Gym",
+    "region": "Unknown",
+    "team": [
+      [
+        "Lycanroc",
+        104
+      ],
+      [
+        "Darmanitan",
+        104
+      ],
+      [
+        "Gliscor",
+        104
+      ],
+      [
+        "Ursaluna",
+        101
+      ],
+      [
+        "Charizard",
+        104
+      ]
+    ],
+    "flag_id": 1495,
+    "points": 1
+  },
+  "ace_naomi": {
+    "name": "Ace Naomi",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Maushold",
+        101
+      ],
+      [
+        "Veluza",
+        101
+      ],
+      [
+        "Shedinja",
+        101
+      ],
+      [
+        "Absol",
+        101
+      ],
+      [
+        "Galvantula",
+        101
+      ]
+    ],
+    "flag_id": 1686,
+    "points": 1
+  },
+  "ace_nelle_viridian_forest": {
+    "name": "Ace Nelle",
+    "class": "Trainer",
+    "location": "Viridian Forest",
+    "region": "Unknown",
+    "team": [
+      [
+        "Charcadet",
+        102
+      ],
+      [
+        "Gulpin",
+        102
+      ]
+    ],
+    "flag_id": 1301,
+    "points": 1
+  },
+  "ace_rolando": {
+    "name": "Ace Rolando",
+    "class": "Trainer",
+    "location": "Victory Road",
+    "region": "Unknown",
+    "team": [
+      [
+        "Cyclizar",
+        101
+      ],
+      [
+        "Flygon",
+        101
+      ],
+      [
+        "Crobat",
+        101
+      ],
+      [
+        "Kingler",
+        101
+      ],
+      [
+        "Hatterene",
+        101
+      ]
+    ],
+    "flag_id": 1676,
+    "points": 1
+  },
+  "ace_wilton": {
+    "name": "Ace Wilton",
+    "class": "Trainer",
+    "location": "Route 18",
+    "region": "Unknown",
+    "team": [
+      [
+        "Dragapult",
+        104
+      ],
+      [
+        "Kilowattrel",
+        104
+      ],
+      [
+        "Pinsir",
+        104
+      ],
+      [
+        "Omastar",
+        104
+      ]
+    ],
+    "flag_id": 1587,
+    "points": 1
+  },
+  "ace_zac": {
+    "name": "Ace Zac",
+    "class": "Trainer",
+    "location": "Cinnabar Island Gym",
+    "region": "Unknown",
+    "team": [
+      [
+        "Nidoking",
+        101
+      ],
+      [
+        "Noivern",
+        104
+      ],
+      [
+        "Braviary",
+        101
+      ],
+      [
+        "Excadrill",
+        104
+      ],
+      [
+        "Volcarona",
+        101
+      ]
+    ],
+    "flag_id": 1460,
+    "points": 1
+  },
+  "admin_archer_cerulean_cave": {
+    "name": "Admin Archer",
+    "class": "Trainer",
+    "location": "Cerulean Cave",
+    "region": "Unknown",
+    "team": [
+      [
+        "Mamoswine",
+        77
+      ],
+      [
+        "Durant",
+        78
+      ],
+      [
+        "Mimikyu",
+        79
+      ],
+      [
+        "Houndoom",
+        79
+      ]
+    ],
+    "flag_id": 1347,
+    "points": 1
+  },
+  "admin_archer_mt_moon": {
+    "name": "Admin Archer",
+    "class": "Trainer",
+    "location": "Mt. Moon",
+    "region": "Unknown",
+    "team": [
+      [
+        "Glimmet",
+        18
+      ],
+      [
+        "Houndour",
+        19
+      ],
+      [
+        "Mightyena",
+        21
+      ]
+    ],
+    "flag_id": 1326,
+    "points": 2
+  },
+  "admin_ariana_archer_silph": {
+    "name": "Admin Ariana & Archer",
+    "class": "Trainer",
+    "location": "Silph Co.",
+    "region": "Unknown",
+    "team": [],
+    "flag_id": 1334,
+    "points": 1
+  },
+  "admin_ariana_cerulean_cave": {
+    "name": "Admin Ariana",
+    "class": "Trainer",
+    "location": "Cerulean Cave",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hatterene",
+        77
+      ],
+      [
+        "Rhyperior",
+        78
+      ],
+      [
+        "Honchkrow",
+        78
+      ],
+      [
+        "Mawile",
+        79
+      ]
+    ],
+    "flag_id": 1348,
+    "points": 1
+  },
+  "agatha": {
+    "name": "Agatha",
+    "class": "Trainer",
+    "location": "Elite Four",
+    "region": "Unknown",
+    "team": [
+      [
+        "Zoroark",
+        103
+      ],
+      [
+        "Gholdengo",
+        103
+      ],
+      [
+        "Marshadow",
+        103
+      ],
+      [
+        "Flutter Mane",
+        103
+      ],
+      [
+        "Chien-Pao",
+        103
+      ],
+      [
+        "Gengar",
+        103
+      ]
+    ],
+    "flag_id": 1210,
+    "points": 2
+  },
+  "ann_and_brooks": {
+    "name": "Ann & Brooks",
+    "class": "Trainer",
+    "location": "S.S. Anne",
+    "region": "Unknown",
+    "team": [],
+    "flag_id": 1406,
+    "points": 1
+  },
+  "beauty_sam": {
+    "name": "Beauty Sam",
+    "class": "Trainer",
+    "location": "Celadon City Hotel",
+    "region": "Unknown",
+    "team": [
+      [
+        "Luvdisc",
+        103
+      ],
+      [
+        "Flapple",
+        103
+      ],
+      [
+        "Farfetch\u2019d",
+        103
+      ]
+    ],
+    "flag_id": 1296,
+    "points": 1
+  },
+  "beauty_shelly": {
+    "name": "Beauty Shelly",
+    "class": "Trainer",
+    "location": "Celadon City Hotel",
+    "region": "Unknown",
+    "team": [
+      [
+        "Dodrio",
+        103
+      ],
+      [
+        "Granbull",
+        103
+      ],
+      [
+        "Appletun",
+        103
+      ],
+      [
+        "Cinccino",
+        103
+      ]
+    ],
+    "flag_id": 1297,
+    "points": 1
+  },
+  "biker_hideo": {
+    "name": "Biker Hideo",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Stunfisk",
+        101
+      ],
+      [
+        "Dracovish",
+        104
+      ],
+      [
+        "Beedrill",
+        104
+      ],
+      [
+        "Greninja",
+        104
+      ],
+      [
+        "Aron",
+        1
+      ]
+    ],
+    "flag_id": 1481,
+    "points": 1
+  },
+  "biker_jared": {
+    "name": "Biker Jared",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Crustle",
+        104
+      ],
+      [
+        "Leavanny",
+        104
+      ],
+      [
+        "Camerupt",
+        104
+      ],
+      [
+        "Mamoswine",
+        104
+      ]
+    ],
+    "flag_id": 1475,
+    "points": 1
+  },
+  "biker_lao": {
+    "name": "Biker Lao",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Mienshao",
+        104
+      ],
+      [
+        "Heliolisk",
+        104
+      ],
+      [
+        "Dugtrio",
+        104
+      ]
+    ],
+    "flag_id": 1479,
+    "points": 1
+  },
+  "biker_ruben": {
+    "name": "Biker Ruben",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Accelgor",
+        104
+      ],
+      [
+        "Gigalith",
+        104
+      ],
+      [
+        "Roserade",
+        104
+      ],
+      [
+        "Houndstone",
+        101
+      ]
+    ],
+    "flag_id": 1482,
+    "points": 1
+  },
+  "biker_william": {
+    "name": "Biker William",
+    "class": "Trainer",
+    "location": "Route 18",
+    "region": "Unknown",
+    "team": [
+      [
+        "Magnezone",
+        104
+      ],
+      [
+        "Whiscash",
+        104
+      ],
+      [
+        "Salamence",
+        104
+      ],
+      [
+        "Starmie",
+        104
+      ]
+    ],
+    "flag_id": 1486,
+    "points": 1
+  },
+  "bird_keeper_jacob": {
+    "name": "Bird Keeper Jacob",
+    "class": "Trainer",
+    "location": "Route 18",
+    "region": "Unknown",
+    "team": [
+      [
+        "Cramorant",
+        103
+      ],
+      [
+        "Decidueye",
+        104
+      ],
+      [
+        "Mantine",
+        104
+      ],
+      [
+        "Nidoqueen",
+        104
+      ]
+    ],
+    "flag_id": 1589,
+    "points": 1
+  },
+  "bird_keeper_perry": {
+    "name": "Bird Keeper Perry",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Rhyperior",
+        104
+      ],
+      [
+        "Gardevoir",
+        104
+      ],
+      [
+        "Rapidash",
+        104
+      ],
+      [
+        "Dragapult",
+        104
+      ]
+    ],
+    "flag_id": 1581,
+    "points": 1
+  },
+  "bird_keeper_robert": {
+    "name": "Bird Keeper Robert",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Exeggutor",
+        104
+      ],
+      [
+        "Archeops",
+        104
+      ],
+      [
+        "Emboar",
+        104
+      ],
+      [
+        "Jolteon",
+        104
+      ]
+    ],
+    "flag_id": 1582,
+    "points": 1
+  },
+  "bird_keeper_sebastian": {
+    "name": "Bird Keeper Sebastian",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Gliscor",
+        101
+      ],
+      [
+        "Charizard",
+        104
+      ],
+      [
+        "Togekiss",
+        104
+      ],
+      [
+        "Tropius",
+        104
+      ]
+    ],
+    "flag_id": 1580,
+    "points": 1
+  },
+  "black_belt_ketchup": {
+    "name": "Black Belt Ketchup",
+    "class": "Trainer",
+    "location": "Cerulean Cave",
+    "region": "Unknown",
+    "team": [
+      [
+        "Cloyster",
+        103
+      ],
+      [
+        "Chandelure",
+        103
+      ],
+      [
+        "Ampharos",
+        103
+      ],
+      [
+        "Tapu Bulu",
+        103
+      ],
+      [
+        "Urshifu",
+        103
+      ],
+      [
+        "Urshifu",
+        103
+      ]
+    ],
+    "flag_id": 1299,
+    "points": 1
+  },
+  "blaine": {
+    "name": "Blaine",
+    "class": "Trainer",
+    "location": "Cinnabar Island",
+    "region": "Unknown",
+    "team": [
+      [
+        "Armarouge",
+        75
+      ],
+      [
+        "Slither Wing",
+        76
+      ],
+      [
+        "Exeggutor",
+        76
+      ],
+      [
+        "Typhlosion",
+        76
+      ],
+      [
+        "Ogerpon",
+        76
+      ],
+      [
+        "Charizard",
+        76
+      ]
+    ],
+    "flag_id": 1206,
+    "points": 2
+  },
+  "brendan_route_23": {
+    "name": "Brendan",
+    "class": "Trainer",
+    "location": "Route 23",
+    "region": "Unknown",
+    "team": [
+      [
+        "Deoxys",
+        81
+      ],
+      [
+        "Jirachi",
+        81
+      ],
+      [
+        "Landorus",
+        82
+      ],
+      [
+        "Zapdos",
+        81
+      ],
+      [
+        "Huntail",
+        81
+      ],
+      [
+        "Sceptile",
+        82
+      ]
+    ],
+    "flag_id": 1306,
+    "points": 1
+  },
+  "brendan_safari_zone": {
+    "name": "Brendan",
+    "class": "Trainer",
+    "location": "Safari Zone",
+    "region": "Unknown",
+    "team": [
+      [
+        "Deoxys",
+        81
+      ],
+      [
+        "Jirachi",
+        81
+      ],
+      [
+        "Landorus",
+        82
+      ],
+      [
+        "Zapdos",
+        81
+      ],
+      [
+        "Huntail",
+        81
+      ],
+      [
+        "Sceptile",
+        82
+      ]
+    ],
+    "flag_id": 1306,
+    "points": 1
+  },
+  "brendan_ss_anne": {
+    "name": "Brendan",
+    "class": "Trainer",
+    "location": "S.S. Anne",
+    "region": "Unknown",
+    "team": [
+      [
+        "Loudred",
+        103
+      ],
+      [
+        "Lunatone",
+        103
+      ],
+      [
+        "Crawdaunt",
+        103
+      ],
+      [
+        "Grovyle",
+        103
+      ]
+    ],
+    "flag_id": 1330,
+    "points": 2
+  },
+  "brendan_viridian_forest": {
+    "name": "Brendan",
+    "class": "Trainer",
+    "location": "Viridian Forest",
+    "region": "Unknown",
+    "team": [
+      [
+        "Corphish",
+        7
+      ],
+      [
+        "Treecko",
+        8
+      ]
+    ],
+    "flag_id": 1324,
+    "points": 1
+  },
+  "brock": {
+    "name": "Brock",
+    "class": "Trainer",
+    "location": "Pewter City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Great Tusk",
+        103
+      ],
+      [
+        "Omastar",
+        103
+      ],
+      [
+        "Ursaluna",
+        103
+      ],
+      [
+        "Tyranitar",
+        103
+      ],
+      [
+        "Arcanine",
+        103
+      ],
+      [
+        "Aerodactyl",
+        103
+      ]
+    ],
+    "flag_id": 1200,
+    "points": 2
+  },
+  "brock_rematch": {
+    "name": "Brock (Rematch)",
+    "class": "Trainer",
+    "location": "Pewter City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Great Tusk",
+        103
+      ],
+      [
+        "Omastar",
+        103
+      ],
+      [
+        "Ursaluna",
+        103
+      ],
+      [
+        "Tyranitar",
+        103
+      ],
+      [
+        "Arcanine",
+        103
+      ],
+      [
+        "Aerodactyl",
+        103
+      ]
+    ],
+    "flag_id": 1336,
+    "points": 2
+  },
+  "bruno": {
+    "name": "Bruno",
+    "class": "Trainer",
+    "location": "Elite Four",
+    "region": "Unknown",
+    "team": [
+      [
+        "Infernape",
+        103
+      ],
+      [
+        "Urshifu",
+        103
+      ],
+      [
+        "Kommo-o",
+        103
+      ],
+      [
+        "Iron Valiant",
+        103
+      ],
+      [
+        "Zacian",
+        103
+      ],
+      [
+        "Lucario",
+        103
+      ]
+    ],
+    "flag_id": 1209,
+    "points": 2
+  },
+  "bugsy": {
+    "name": "Bugsy",
+    "class": "Trainer",
+    "location": "Route 25",
+    "region": "Unknown",
+    "team": [
+      [
+        "Kleavor",
+        103
+      ],
+      [
+        "Scizor",
+        103
+      ],
+      [
+        "Scyther",
+        103
+      ],
+      [
+        "Lokix",
+        103
+      ],
+      [
+        "Araquanid",
+        103
+      ],
+      [
+        "Vikavolt",
+        103
+      ]
+    ],
+    "flag_id": 1288,
+    "points": 2
+  },
+  "burglar_anson": {
+    "name": "Burglar Anson",
+    "class": "Trainer",
+    "location": "Pokemon Mansion 4F",
+    "region": "Unknown",
+    "team": [
+      [
+        "Shiftry",
+        101
+      ],
+      [
+        "Okidogi",
+        101
+      ],
+      [
+        "Munkidori",
+        101
+      ],
+      [
+        "Scream Tail",
+        101
+      ],
+      [
+        "Persian",
+        101
+      ]
+    ],
+    "flag_id": 1735,
+    "points": 1
+  },
+  "burglar_max": {
+    "name": "Burglar Max",
+    "class": "Trainer",
+    "location": "Pokemon Mansion 4F",
+    "region": "Unknown",
+    "team": [
+      [
+        "Qwilfish",
+        101
+      ],
+      [
+        "Wugtrio",
+        101
+      ],
+      [
+        "Magcargo",
+        101
+      ],
+      [
+        "Hydrapple",
+        101
+      ],
+      [
+        "Fezandipiti",
+        101
+      ]
+    ],
+    "flag_id": 1734,
+    "points": 1
+  },
+  "camper_ethan": {
+    "name": "Camper Ethan",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Mabosstiff",
+        102
+      ],
+      [
+        "Salandit",
+        103
+      ],
+      [
+        "Misdreavus",
+        102
+      ]
+    ],
+    "flag_id": 1424,
+    "points": 1
+  },
+  "camper_justin": {
+    "name": "Camper Justin",
+    "class": "Trainer",
+    "location": "Route 12",
+    "region": "Unknown",
+    "team": [
+      [
+        "Darmanitan",
+        104
+      ],
+      [
+        "Sandslash",
+        104
+      ],
+      [
+        "Conkeldurr",
+        104
+      ]
+    ],
+    "flag_id": 1757,
+    "points": 1
+  },
+  "catcher_cale": {
+    "name": "Catcher Cale",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Vivillon",
+        104
+      ],
+      [
+        "Butterfree",
+        101
+      ],
+      [
+        "Wormadam",
+        101
+      ]
+    ],
+    "flag_id": 1390,
+    "points": 1
+  },
+  "chuck": {
+    "name": "Chuck",
+    "class": "Trainer",
+    "location": "Saffron City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hitmontop",
+        103
+      ],
+      [
+        "Sneasler",
+        103
+      ],
+      [
+        "Breloom",
+        103
+      ],
+      [
+        "Quaquaval",
+        103
+      ],
+      [
+        "Lucario",
+        103
+      ],
+      [
+        "Gallade",
+        103
+      ]
+    ],
+    "flag_id": 1597,
+    "points": 2
+  },
+  "clair": {
+    "name": "Clair",
+    "class": "Trainer",
+    "location": "Viridian City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Dragapult",
+        103
+      ],
+      [
+        "Dialga",
+        103
+      ],
+      [
+        "Dragonite",
+        103
+      ],
+      [
+        "Flapple",
+        103
+      ],
+      [
+        "Kyurem",
+        103
+      ],
+      [
+        "Genesect",
+        103
+      ]
+    ],
+    "flag_id": 1318,
+    "points": 2
+  },
+  "cue_ball_camron": {
+    "name": "Cue Ball Camron",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Swampert",
+        104
+      ],
+      [
+        "Revavroom",
+        104
+      ],
+      [
+        "Scizor",
+        104
+      ],
+      [
+        "Cacturne",
+        104
+      ]
+    ],
+    "flag_id": 1531,
+    "points": 1
+  },
+  "cue_ball_koji": {
+    "name": "Cue Ball Koji",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Dracozolt",
+        104
+      ]
+    ],
+    "flag_id": 1529,
+    "points": 1
+  },
+  "cue_ball_luke": {
+    "name": "Cue Ball Luke",
+    "class": "Trainer",
+    "location": "Route 16",
+    "region": "Unknown",
+    "team": [
+      [
+        "Dugtrio",
+        104
+      ],
+      [
+        "Hariyama",
+        104
+      ]
+    ],
+    "flag_id": 1530,
+    "points": 1
+  },
+  "dumass_jojo_fan": {
+    "name": "Dumass Jojo Fan",
+    "class": "Trainer",
+    "location": "Power Plant",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hoopa",
+        103
+      ],
+      [
+        "Aegislash",
+        103
+      ],
+      [
+        "Ogerpon",
+        103
+      ],
+      [
+        "Simisear",
+        103
+      ],
+      [
+        "Celebi",
+        103
+      ],
+      [
+        "Machamp",
+        103
+      ]
+    ],
+    "flag_id": 1346,
+    "points": 1
+  },
+  "dumass_kid": {
+    "name": "Dumass Kid",
+    "class": "Trainer",
+    "location": "Saffron City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Swampert",
+        103
+      ],
+      [
+        "Pelipper",
+        103
+      ],
+      [
+        "Scizor",
+        103
+      ],
+      [
+        "Frosmoth",
+        103
+      ],
+      [
+        "Seaking",
+        103
+      ],
+      [
+        "Swampert",
+        103
+      ]
+    ],
+    "flag_id": 1305,
+    "points": 1
+  },
+  "dumbass_creator": {
+    "name": "Dumbass Creator",
+    "class": "Trainer",
+    "location": "Indigo Plateau",
+    "region": "Unknown",
+    "team": [
+      [
+        "Gigalith",
+        250
+      ],
+      [
+        "Shedinja",
+        250
+      ],
+      [
+        "Shedinja",
+        250
+      ],
+      [
+        "Shedinja",
+        250
+      ],
+      [
+        "Shedinja",
+        250
+      ],
+      [
+        "Shedinja",
+        250
+      ]
+    ],
+    "flag_id": 1304,
+    "points": 1
+  },
+  "edmond_and_trevor": {
+    "name": "Edmond & Trevor",
+    "class": "Trainer",
+    "location": "S.S. Anne",
+    "region": "Unknown",
+    "team": [],
+    "flag_id": 1414,
+    "points": 1
+  },
+  "erika": {
+    "name": "Erika",
+    "class": "Trainer",
+    "location": "Celadon City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Ogerpon",
+        103
+      ],
+      [
+        "Meowscarada",
+        103
+      ],
+      [
+        "Hawlucha",
+        103
+      ],
+      [
+        "Sinistcha",
+        103
+      ],
+      [
+        "Lilligant",
+        103
+      ],
+      [
+        "Venusaur",
+        103
+      ]
+    ],
+    "flag_id": 1203,
+    "points": 2
+  },
+  "erika_rematch": {
+    "name": "Erika (Rematch)",
+    "class": "Trainer",
+    "location": "Celadon City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Ogerpon",
+        103
+      ],
+      [
+        "Meowscarada",
+        103
+      ],
+      [
+        "Hawlucha",
+        103
+      ],
+      [
+        "Sinistcha",
+        103
+      ],
+      [
+        "Lilligant",
+        103
+      ],
+      [
+        "Venusaur",
+        103
+      ]
+    ],
+    "flag_id": 1345,
+    "points": 2
+  },
+  "falkner": {
+    "name": "Falkner",
+    "class": "Trainer",
+    "location": "Pewter City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Rufflet",
+        12
+      ],
+      [
+        "Wattrel",
+        14
+      ],
+      [
+        "Flittle",
+        14
+      ]
+    ],
+    "flag_id": 1325,
+    "points": 2
+  },
+  "fisherman_andrew": {
+    "name": "Fisherman Andrew",
+    "class": "Trainer",
+    "location": "Route 12",
+    "region": "Unknown",
+    "team": [
+      [
+        "Froslass",
+        104
+      ],
+      [
+        "Arctozolt",
+        104
+      ]
+    ],
+    "flag_id": 1513,
+    "points": 1
+  },
+  "ghost_pokemon_tower": {
+    "name": "Ghost",
+    "class": "Trainer",
+    "location": "Pokemon Tower",
+    "region": "Unknown",
+    "team": [
+      [
+        "Marowak",
+        58
+      ]
+    ],
+    "flag_id": 3281,
+    "points": 1
+  },
+  "giovanni": {
+    "name": "Giovanni",
+    "class": "Trainer",
+    "location": "Silph Co.",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hippowdon",
+        56
+      ],
+      [
+        "Excadrill",
+        57
+      ],
+      [
+        "Kangaskhan",
+        57
+      ],
+      [
+        "Garganacl",
+        57
+      ],
+      [
+        "Garchomp",
+        57
+      ],
+      [
+        "Torterra",
+        56
+      ]
+    ],
+    "flag_id": 1207,
+    "points": 2
+  },
+  "giovanni_cerulean_cave": {
+    "name": "Giovanni",
+    "class": "Trainer",
+    "location": "Cerulean Cave",
+    "region": "Unknown",
+    "team": [
+      [
+        "Tapu Lele",
+        80
+      ],
+      [
+        "Scrafty",
+        80
+      ],
+      [
+        "Excadrill",
+        80
+      ],
+      [
+        "Tyranitar",
+        80
+      ],
+      [
+        "Celesteela",
+        80
+      ],
+      [
+        "Mewtwo",
+        80
+      ]
+    ],
+    "flag_id": 1349,
+    "points": 2
+  },
+  "giovannia_rocket_hideout": {
+    "name": "Giovannia",
+    "class": "Trainer",
+    "location": "Rocket Hideout",
+    "region": "Unknown",
+    "team": [
+      [
+        "Nidoking",
+        45
+      ],
+      [
+        "Honchkrow",
+        45
+      ],
+      [
+        "Infernape",
+        46
+      ],
+      [
+        "Kangaskhan",
+        46
+      ],
+      [
+        "Orthworm",
+        47
+      ],
+      [
+        "Veluza",
+        46
+      ]
+    ],
+    "flag_id": 1628,
+    "points": 2
+  },
+  "jasmine": {
+    "name": "Jasmine",
+    "class": "Trainer",
+    "location": "Cinnabar Island Lab",
+    "region": "Unknown",
+    "team": [
+      [
+        "Steelix",
+        103
+      ],
+      [
+        "Melmetal",
+        103
+      ],
+      [
+        "Duraludon",
+        103
+      ],
+      [
+        "Durant",
+        103
+      ],
+      [
+        "Samurott",
+        103
+      ],
+      [
+        "Aggron",
+        103
+      ]
+    ],
+    "flag_id": 1342,
+    "points": 2
+  },
+  "koga": {
+    "name": "Koga",
+    "class": "Trainer",
+    "location": "Fushsia City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Swellow",
+        67
+      ],
+      [
+        "Accelgor",
+        68
+      ],
+      [
+        "Greninja",
+        68
+      ],
+      [
+        "Drapion",
+        68
+      ],
+      [
+        "Iron Valiant",
+        68
+      ],
+      [
+        "Toxtricity",
+        68
+      ]
+    ],
+    "flag_id": 1204,
+    "points": 2
+  },
+  "lance": {
+    "name": "Lance",
+    "class": "Trainer",
+    "location": "Elite Four",
+    "region": "Unknown",
+    "team": [
+      [
+        "Aerodactyl",
+        103
+      ],
+      [
+        "Melmetal",
+        103
+      ],
+      [
+        "Iron Jugulis",
+        103
+      ],
+      [
+        "Dragonite",
+        103
+      ],
+      [
+        "Dialga",
+        103
+      ],
+      [
+        "Salamence",
+        103
+      ]
+    ],
+    "flag_id": 1211,
+    "points": 2
+  },
+  "lass_ali": {
+    "name": "Lass Ali",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Jigglypuff",
+        102
+      ],
+      [
+        "Amaura",
+        101
+      ],
+      [
+        "Brionne",
+        101
+      ]
+    ],
+    "flag_id": 1403,
+    "points": 1
+  },
+  "lass_anne_viridian_forest": {
+    "name": "Lass Anne",
+    "class": "Trainer",
+    "location": "Viridian Forest",
+    "region": "Unknown",
+    "team": [
+      [
+        "Stufful",
+        102
+      ],
+      [
+        "Clefairy",
+        104
+      ],
+      [
+        "Audino",
+        102
+      ]
+    ],
+    "flag_id": 1284,
+    "points": 1
+  },
+  "lass_reli": {
+    "name": "Lass Reli",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Greedent",
+        101
+      ],
+      [
+        "Togetic",
+        104
+      ],
+      [
+        "Clamperl",
+        101
+      ]
+    ],
+    "flag_id": 1402,
+    "points": 1
+  },
+  "left_guard_rocket_hideout": {
+    "name": "Left Guard",
+    "class": "Trainer",
+    "location": "Rocket Hideout",
+    "region": "Unknown",
+    "team": [
+      [
+        "Weezing",
+        101
+      ],
+      [
+        "Slaking",
+        101
+      ],
+      [
+        "Crobat",
+        101
+      ],
+      [
+        "Dipplin",
+        101
+      ]
+    ],
+    "flag_id": 1646,
+    "points": 1
+  },
+  "lola_and_sheila": {
+    "name": "Lola & Sheila",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [],
+    "flag_id": 1548,
+    "points": 1
+  },
+  "lorelei": {
+    "name": "Lorelei",
+    "class": "Trainer",
+    "location": "Elite Four",
+    "region": "Unknown",
+    "team": [
+      [
+        "Ninetales",
+        103
+      ],
+      [
+        "Glaceon",
+        103
+      ],
+      [
+        "Rotom",
+        103
+      ],
+      [
+        "Calyrex",
+        103
+      ],
+      [
+        "Abomasnow",
+        103
+      ],
+      [
+        "Baxcalibur",
+        103
+      ]
+    ],
+    "flag_id": 1208,
+    "points": 2
+  },
+  "lt_surge": {
+    "name": "Lt. Surge",
+    "class": "Trainer",
+    "location": "Unknown",
+    "region": "Unknown",
+    "team": [
+      [
+        "Iron Treads",
+        103
+      ],
+      [
+        "Bellibolt",
+        103
+      ],
+      [
+        "Rotom",
+        103
+      ],
+      [
+        "Pawmot",
+        103
+      ],
+      [
+        "Manectric",
+        103
+      ],
+      [
+        "Iron Hands",
+        103
+      ]
+    ],
+    "flag_id": 1202,
+    "points": 2
+  },
+  "lt_surge_rematch": {
+    "name": "Lt. Surge (Rematch)",
+    "class": "Trainer",
+    "location": "Vermillion City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Iron Treads",
+        103
+      ],
+      [
+        "Bellibolt",
+        103
+      ],
+      [
+        "Rotom",
+        103
+      ],
+      [
+        "Pawmot",
+        103
+      ],
+      [
+        "Manectric",
+        103
+      ],
+      [
+        "Iron Hands",
+        103
+      ]
+    ],
+    "flag_id": 1331,
+    "points": 2
+  },
+  "may_cinnabar": {
+    "name": "May",
+    "class": "Trainer",
+    "location": "Cinnabar Island",
+    "region": "Unknown",
+    "team": [
+      [
+        "Solrock",
+        71
+      ],
+      [
+        "Breloom",
+        71
+      ],
+      [
+        "Manectric",
+        72
+      ],
+      [
+        "Relicanth",
+        72
+      ],
+      [
+        "Flygon",
+        72
+      ],
+      [
+        "Blaziken",
+        73
+      ]
+    ],
+    "flag_id": 1341,
+    "points": 1
+  },
+  "misty": {
+    "name": "Misty",
+    "class": "Trainer",
+    "location": "Cerulean City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Pikachu",
+        103
+      ],
+      [
+        "Kyogre",
+        103
+      ],
+      [
+        "Goodra",
+        103
+      ],
+      [
+        "Kingdra",
+        103
+      ],
+      [
+        "Drednaw",
+        103
+      ],
+      [
+        "Floatzel",
+        103
+      ]
+    ],
+    "flag_id": 1201,
+    "points": 2
+  },
+  "misty_rematch": {
+    "name": "Misty (Rematch)",
+    "class": "Trainer",
+    "location": "Cerulean City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Pikachu",
+        103
+      ],
+      [
+        "Kyogre",
+        103
+      ],
+      [
+        "Goodra",
+        103
+      ],
+      [
+        "Kingdra",
+        103
+      ],
+      [
+        "Drednaw",
+        103
+      ],
+      [
+        "Floatzel",
+        103
+      ]
+    ],
+    "flag_id": 1312,
+    "points": 2
+  },
+  "morty": {
+    "name": "Morty",
+    "class": "Trainer",
+    "location": "Lavender Town",
+    "region": "Unknown",
+    "team": [
+      [
+        "Mimikyu",
+        103
+      ],
+      [
+        "Dusknoir",
+        103
+      ],
+      [
+        "Zoroark",
+        103
+      ],
+      [
+        "Skeledirge",
+        103
+      ],
+      [
+        "Gengar",
+        103
+      ],
+      [
+        "Ceruledge",
+        103
+      ]
+    ],
+    "flag_id": 1332,
+    "points": 2
+  },
+  "picknicker_alma": {
+    "name": "Picknicker Alma",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Tangrowth",
+        104
+      ],
+      [
+        "Chansey",
+        104
+      ],
+      [
+        "Chandelure",
+        104
+      ],
+      [
+        "Altaria",
+        104
+      ]
+    ],
+    "flag_id": 1746,
+    "points": 1
+  },
+  "picknicker_caitlin": {
+    "name": "Picknicker Caitlin",
+    "class": "Trainer",
+    "location": "Route 9",
+    "region": "Unknown",
+    "team": [
+      [
+        "Smeargle",
+        103
+      ],
+      [
+        "Spinda",
+        103
+      ],
+      [
+        "Sneasel",
+        101
+      ],
+      [
+        "Liepard",
+        101
+      ]
+    ],
+    "flag_id": 1435,
+    "points": 1
+  },
+  "picknicker_susie": {
+    "name": "Picknicker Susie",
+    "class": "Trainer",
+    "location": "Route 13",
+    "region": "Unknown",
+    "team": [
+      [
+        "Shiftry",
+        104
+      ],
+      [
+        "Goodra",
+        104
+      ],
+      [
+        "Espeon",
+        104
+      ],
+      [
+        "Arcanine",
+        104
+      ],
+      [
+        "Alcremie",
+        104
+      ]
+    ],
+    "flag_id": 1747,
+    "points": 1
+  },
+  "pryce": {
+    "name": "Pryce",
+    "class": "Trainer",
+    "location": "Seafoam Islands",
+    "region": "Unknown",
+    "team": [
+      [
+        "Abomasnow",
+        103
+      ],
+      [
+        "Calyrex",
+        103
+      ],
+      [
+        "Kyurem",
+        103
+      ],
+      [
+        "Wishiwashi",
+        103
+      ],
+      [
+        "Donphan",
+        103
+      ],
+      [
+        "Heracross",
+        103
+      ]
+    ],
+    "flag_id": 1359,
+    "points": 2
+  },
+  "right_guard_rocket_hideout": {
+    "name": "Right Guard",
+    "class": "Trainer",
+    "location": "Rocket Hideout",
+    "region": "Unknown",
+    "team": [
+      [
+        "Talonflame",
+        102
+      ],
+      [
+        "Shiftry",
+        101
+      ],
+      [
+        "Toxicroak",
+        101
+      ],
+      [
+        "Eelektross",
+        102
+      ]
+    ],
+    "flag_id": 1647,
+    "points": 1
+  },
+  "rival_cerulean_city": {
+    "name": "Rival",
+    "class": "Trainer",
+    "location": "Cerulean City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Kirlia",
+        102
+      ],
+      [
+        "Staravia",
+        101
+      ],
+      [
+        "Pawniard",
+        103
+      ],
+      [
+        "Wartortle",
+        102
+      ]
+    ],
+    "flag_id": 1612,
+    "points": 1
+  },
+  "rival_elite_four_champion": {
+    "name": "Rival",
+    "class": "Trainer",
+    "location": "Elite Four Champion",
+    "region": "Unknown",
+    "team": [
+      [
+        "Pheromosa",
+        85
+      ],
+      [
+        "Metagross",
+        85
+      ],
+      [
+        "Koraidon",
+        85
+      ],
+      [
+        "Yveltal",
+        85
+      ],
+      [
+        "Eternatus",
+        85
+      ],
+      [
+        "Ditto",
+        85
+      ]
+    ],
+    "flag_id": 1212,
+    "points": 2
+  },
+  "rival_rematch_route_22": {
+    "name": "Rival (Rematch)",
+    "class": "Trainer",
+    "location": "Route 22",
+    "region": "Unknown",
+    "team": [
+      [
+        "Starly",
+        9
+      ],
+      [
+        "Squirtle",
+        9
+      ]
+    ],
+    "flag_id": 1715,
+    "points": 1
+  },
+  "rival_route_22": {
+    "name": "Rival",
+    "class": "Trainer",
+    "location": "Route 22",
+    "region": "Unknown",
+    "team": [
+      [
+        "Starly",
+        9
+      ],
+      [
+        "Squirtle",
+        9
+      ]
+    ],
+    "flag_id": 1609,
+    "points": 1
+  },
+  "rival_silph_co": {
+    "name": "Rival",
+    "class": "Trainer",
+    "location": "Silph Co.",
+    "region": "Unknown",
+    "team": [
+      [
+        "Staraptor",
+        101
+      ],
+      [
+        "Kingambit",
+        102
+      ],
+      [
+        "Jumpluff",
+        102
+      ],
+      [
+        "Darmanitan",
+        102
+      ],
+      [
+        "Blastoise",
+        103
+      ]
+    ],
+    "flag_id": 1712,
+    "points": 1
+  },
+  "rocker_luca": {
+    "name": "Rocker Luca",
+    "class": "Trainer",
+    "location": "Route 12",
+    "region": "Unknown",
+    "team": [
+      [
+        "Piloswine",
+        104
+      ],
+      [
+        "Heliolisk",
+        104
+      ],
+      [
+        "Nidoqueen",
+        104
+      ],
+      [
+        "Yanmega",
+        104
+      ],
+      [
+        "Walrein",
+        104
+      ]
+    ],
+    "flag_id": 1565,
+    "points": 1
+  },
+  "rocket_grunt_dig_house": {
+    "name": "Rocket Grunt",
+    "class": "Trainer",
+    "location": "Dig House",
+    "region": "Unknown",
+    "team": [
+      [
+        "Persian",
+        101
+      ],
+      [
+        "Golbat",
+        102
+      ],
+      [
+        "Oinkologne",
+        104
+      ],
+      [
+        "Octillery",
+        102
+      ]
+    ],
+    "flag_id": 1635,
+    "points": 1
+  },
+  "rocket_grunt_nugget_bridge": {
+    "name": "Rocket Grunt",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Growlithe",
+        103
+      ],
+      [
+        "Gabite",
+        101
+      ],
+      [
+        "Togedemaru",
+        101
+      ],
+      [
+        "Komala",
+        101
+      ]
+    ],
+    "flag_id": 1636,
+    "points": 2
+  },
+  "rocket_guard_game_corner": {
+    "name": "Rocket Guard",
+    "class": "Trainer",
+    "location": "Game Corner",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hypno",
+        102
+      ],
+      [
+        "Aerodactyl",
+        102
+      ],
+      [
+        "Granbull",
+        101
+      ],
+      [
+        "Obstagoon",
+        101
+      ]
+    ],
+    "flag_id": 1637,
+    "points": 1
+  },
+  "sabrina": {
+    "name": "Sabrina",
+    "class": "Trainer",
+    "location": "Saffron City",
+    "region": "Unknown",
+    "team": [
+      [
+        "Hatterene",
+        57
+      ],
+      [
+        "Indeedee",
+        57
+      ],
+      [
+        "Brute Bonnet",
+        58
+      ],
+      [
+        "Porygon2",
+        58
+      ],
+      [
+        "Ursaluna",
+        59
+      ],
+      [
+        "Gardevoir",
+        59
+      ]
+    ],
+    "flag_id": 1205,
+    "points": 2
+  },
+  "super_nerd_miguel": {
+    "name": "Super Nerd Miguel",
+    "class": "Trainer",
+    "location": "Mt. Moon",
+    "region": "Unknown",
+    "team": [
+      [
+        "Thwackey",
+        104
+      ],
+      [
+        "Voltorb",
+        104
+      ],
+      [
+        "Bibarel",
+        104
+      ],
+      [
+        "Sableye",
+        104
+      ]
+    ],
+    "flag_id": 1450,
+    "points": 1
+  },
+  "tamer_ramiro": {
+    "name": "Tamer Ramiro",
+    "class": "Trainer",
+    "location": "Route 18",
+    "region": "Unknown",
+    "team": [
+      [
+        "Pikachu",
+        101
+      ],
+      [
+        "Milotic",
+        101
+      ],
+      [
+        "Lapras",
+        101
+      ],
+      [
+        "Goodra",
+        104
+      ]
+    ],
+    "flag_id": 1588,
+    "points": 1
+  },
+  "whitney": {
+    "name": "Whitney",
+    "class": "Trainer",
+    "location": "Route 11",
+    "region": "Unknown",
+    "team": [
+      [
+        "Tinkaton",
+        103
+      ],
+      [
+        "Farigiraf",
+        103
+      ],
+      [
+        "Miltank",
+        103
+      ],
+      [
+        "Drampa",
+        103
+      ],
+      [
+        "Dudunsparce",
+        103
+      ]
+    ],
+    "flag_id": 1329,
+    "points": 2
+  },
+  "youngster_timmy": {
+    "name": "Youngster Timmy",
+    "class": "Trainer",
+    "location": "Nugget Bridge",
+    "region": "Unknown",
+    "team": [
+      [
+        "Plusle",
+        101
+      ],
+      [
+        "Electrike",
+        101
+      ],
+      [
+        "Snover",
+        101
+      ]
+    ],
+    "flag_id": 1372,
+    "points": 1
+  }
+}

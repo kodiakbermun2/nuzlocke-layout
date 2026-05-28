@@ -107,9 +107,13 @@ class MgbaJsonBridgeReader(BaseMemoryReader):
 
     def _read_bridge_payload_with_retry(self) -> Dict[str, Any]:
         last_exc: Exception | None = None
-        for _attempt in range(4):
+        # The bridge writer can briefly expose partially-written JSON on some
+        # Windows setups. Retry for a wider window before marking unavailable.
+        for _attempt in range(20):
             try:
                 text = self._config.bridge_path.read_text(encoding="utf-8")
+                if not text or not text.strip():
+                    raise MemoryReaderUnavailableError("Memory bridge JSON is empty")
                 payload = json.loads(text)
                 if not isinstance(payload, dict):
                     raise MemoryReaderUnavailableError("Memory bridge JSON root is not an object")
@@ -120,9 +124,11 @@ class MgbaJsonBridgeReader(BaseMemoryReader):
                 last_exc = exc
             except json.JSONDecodeError as exc:
                 last_exc = exc
+            except MemoryReaderUnavailableError as exc:
+                last_exc = exc
 
             # Bridge writer replaces files atomically; short waits avoid transient races.
-            time.sleep(0.02)
+            time.sleep(0.03)
 
         if isinstance(last_exc, FileNotFoundError):
             raise MemoryReaderUnavailableError(
@@ -136,6 +142,8 @@ class MgbaJsonBridgeReader(BaseMemoryReader):
             raise MemoryReaderUnavailableError(
                 f"Invalid memory bridge JSON: {last_exc}"
             )
+        if isinstance(last_exc, MemoryReaderUnavailableError):
+            raise last_exc
 
         raise MemoryReaderUnavailableError(
             f"Unable to read memory bridge payload: {self._config.bridge_path}"

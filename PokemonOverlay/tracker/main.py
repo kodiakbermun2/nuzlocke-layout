@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 import argparse
 from collections import Counter
+import copy
 import json
 import logging
 import os
@@ -15,11 +16,21 @@ import time
 from party_parser import PartyParser
 from config_loader import load_project_config, resolve_tracker_config
 from live_ws import LiveWebSocketServer, WebSocketRuntimeConfig
+from points_manager import PointsManager
 from save_parser import SaveParser
 from state_provider import EmulatorMemoryProvider, SaveFileProvider, choose_provider_order
 from state_manager import StateManager
 
 LOGGER = logging.getLogger("pokemon_overlay_tracker")
+
+
+def _env_flag(name: str, default: bool = False) -> bool:
+    raw = str(os.getenv(name, "1" if default else "0")).strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def now_ms() -> int:
+    return int(time.time() * 1000)
 
 
 def setup_logging(debug: bool) -> None:
@@ -30,10 +41,46 @@ def setup_logging(debug: bool) -> None:
         datefmt="%H:%M:%S",
     )
 
+    # Keep tracker debug useful without drowning in per-mon or websocket frame noise.
+    verbose_parser = _env_flag("POKEMON_OVERLAY_VERBOSE_PARSER", default=False)
+    if not verbose_parser:
+        logging.getLogger("party_parser").setLevel(logging.INFO)
+        logging.getLogger("save_parser").setLevel(logging.INFO)
+
+    verbose_ws = _env_flag("POKEMON_OVERLAY_VERBOSE_WS", default=False)
+    if not verbose_ws:
+        logging.getLogger("websockets.server").setLevel(logging.INFO)
+
 
 def log_event(event: str, **fields: Any) -> None:
+    if event.startswith("overlay_ui_") and not _env_flag("POKEMON_OVERLAY_VERBOSE_OVERLAY_UI", default=False):
+        return
     payload = {"event": event, **fields}
     LOGGER.info(json.dumps(payload, default=str, sort_keys=True))
+
+
+def trainer_profile_key_from_meta(meta: Dict[str, Any]) -> str:
+    if not isinstance(meta, dict):
+        return ""
+
+    explicit = str(meta.get("trainer_profile_key") or "").strip()
+    if explicit and explicit != "00000-00000":
+        return explicit
+
+    public_id = meta.get("trainer_public_id")
+    secret_id = meta.get("trainer_secret_id")
+    if isinstance(public_id, int) and isinstance(secret_id, int):
+        if int(public_id) == 0 and int(secret_id) == 0:
+            return ""
+        return f"{max(0, public_id):05d}-{max(0, secret_id):05d}"
+
+    trainer_id = meta.get("trainer_id")
+    if isinstance(trainer_id, int):
+        if int(trainer_id) <= 0:
+            return ""
+        return str(max(0, trainer_id))
+
+    return str(meta.get("trainer_id") or "").strip()
 
 
 def make_default_state() -> Dict[str, List[Dict]]:
@@ -42,6 +89,18 @@ def make_default_state() -> Dict[str, List[Dict]]:
         "pc": [],
         "pc_cached": [],
         "dead": [],
+        "points_shop": {
+            "current_points": 0,
+            "inventory": [],
+            "transactions": [],
+            "awarded_trainers": [],
+            "version": 1,
+        },
+        "overlay_ui": {
+            "points_shop_open": False,
+            "points_shop_last_changed_by": None,
+            "points_shop_changed_at": 0,
+        },
         "meta": {
             "parser_mode": "auto",
         },
@@ -591,6 +650,18 @@ def run_loop(
     revived_dead_counts: Dict[Tuple[Any, ...], int] = {}
     save_reconcile_interval_seconds = max(3.0, poll_seconds * 4.0)
     last_forced_save_reconcile_at = 0.0
+    last_save_reconcile_failure_warn_at = 0.0
+    last_forced_profile_probe_at = 0.0
+    last_forced_trainer_flag_probe_at = 0.0
+    last_perf_report_at = time.perf_counter()
+    perf_report_interval_seconds = 5.0
+    perf_tick_count = 0
+    perf_tick_total_ms = 0.0
+    perf_tick_worst_ms = 0.0
+
+    def warn_if_slow(label: str, duration_ms: float, threshold_ms: float) -> None:
+        if duration_ms >= threshold_ms:
+            log_event("perf_warning", phase=label, duration_ms=round(duration_ms, 3), threshold_ms=threshold_ms)
 
     ws_server = LiveWebSocketServer(
         WebSocketRuntimeConfig(
@@ -600,6 +671,188 @@ def run_loop(
             heartbeat_seconds=websocket_heartbeat_seconds,
         )
     )
+    points_state_path = state_path.parent / "points_state.json"
+    points_manager = PointsManager(points_state_path)
+    active_profile_key = str(points_manager.get_state_snapshot().get("trainer_profile_key") or "").strip()
+    overlay_ui_state: Dict[str, Any] = {
+        "points_shop_open": False,
+        "points_shop_tab": "shop",
+        "points_shop_scroll_top": 0,
+        "points_shop_last_changed_by": None,
+        "points_shop_changed_at": now_ms(),
+    }
+    latest_live_state: Dict[str, Any] = make_default_state()
+
+    def reset_profile_runtime_state(*, current_party: Optional[List[Dict[str, Any]]] = None) -> None:
+        nonlocal pc_quarantine_applied
+        nonlocal stable_party_sig
+        nonlocal stable_party_snapshot
+        nonlocal candidate_party_sig
+        nonlocal candidate_party_streak
+        nonlocal stable_ambiguous_pc_sig
+        nonlocal stable_ambiguous_pc_snapshot
+        nonlocal candidate_ambiguous_pc_sig
+        nonlocal candidate_ambiguous_pc_streak
+
+        pc_cache.clear()
+        dead_cache.clear()
+        revived_dead_counts.clear()
+        pc_quarantine_applied = False
+
+        stable_party_sig = None
+        stable_party_snapshot = []
+        candidate_party_sig = None
+        candidate_party_streak = 0
+        stable_ambiguous_pc_sig = None
+        stable_ambiguous_pc_snapshot = []
+        candidate_ambiguous_pc_sig = None
+        candidate_ambiguous_pc_streak = 0
+
+        if isinstance(current_party, list):
+            last_party_snapshot[:] = [dict(mon) for mon in current_party]
+        else:
+            last_party_snapshot.clear()
+
+    def overlay_ui_snapshot() -> Dict[str, Any]:
+        return {
+            "points_shop_open": bool(overlay_ui_state.get("points_shop_open", False)),
+            "points_shop_tab": str(overlay_ui_state.get("points_shop_tab") or "shop"),
+            "points_shop_scroll_top": int(overlay_ui_state.get("points_shop_scroll_top") or 0),
+            "points_shop_last_changed_by": overlay_ui_state.get("points_shop_last_changed_by"),
+            "points_shop_changed_at": int(overlay_ui_state.get("points_shop_changed_at") or 0),
+        }
+
+    def set_points_shop_open(*, is_open: bool, source_client_id: str) -> bool:
+        desired = bool(is_open)
+        current = bool(overlay_ui_state.get("points_shop_open", False))
+        if current == desired:
+            return False
+
+        overlay_ui_state["points_shop_open"] = desired
+        overlay_ui_state["points_shop_last_changed_by"] = source_client_id or None
+        overlay_ui_state["points_shop_changed_at"] = now_ms()
+        return True
+
+    def set_points_shop_view(*, tab: str, scroll_top: int, source_client_id: str) -> bool:
+        normalized_tab = str(tab or "shop").strip().lower()
+        if normalized_tab not in {"shop", "inventory", "log"}:
+            normalized_tab = "shop"
+        normalized_scroll = max(0, int(scroll_top or 0))
+
+        changed = False
+        if str(overlay_ui_state.get("points_shop_tab") or "shop") != normalized_tab:
+            overlay_ui_state["points_shop_tab"] = normalized_tab
+            changed = True
+        if int(overlay_ui_state.get("points_shop_scroll_top") or 0) != normalized_scroll:
+            overlay_ui_state["points_shop_scroll_top"] = normalized_scroll
+            changed = True
+        if not changed:
+            return False
+
+        overlay_ui_state["points_shop_last_changed_by"] = source_client_id or None
+        overlay_ui_state["points_shop_changed_at"] = now_ms()
+        return True
+
+    def handle_points_command(payload: Dict[str, Any]) -> Dict[str, Any]:
+        nonlocal latest_live_state
+        nonlocal active_profile_key
+        command = str(payload.get("command") or "").strip().lower()
+        data = payload.get("payload") if isinstance(payload.get("payload"), dict) else {}
+
+        if command in {"force_profile_reset", "force_new_game_reset"}:
+            requested_key = str(data.get("trainer_profile_key") or "").strip()
+            if not requested_key:
+                seed = active_profile_key or "manual_profile"
+                requested_key = f"{seed}__forced_{now_ms()}"
+
+            # Ensure this key differs from active binding so PointsManager executes reset.
+            if requested_key == active_profile_key:
+                requested_key = f"{requested_key}__{now_ms()}"
+
+            reset_result = points_manager.sync_trainer_profile(requested_key)
+            reset_profile_runtime_state(current_party=[])
+            active_profile_key = requested_key
+
+            log_event(
+                "manual_profile_reset",
+                requested_key=requested_key,
+                ok=bool(reset_result.get("ok")),
+                message=str(reset_result.get("message") or ""),
+            )
+
+            return {
+                "ok": bool(reset_result.get("ok", True)),
+                "message": str(reset_result.get("message") or "forced profile reset applied"),
+                "state": points_manager.get_state_snapshot(),
+                "overlay_ui": overlay_ui_snapshot(),
+                "overlay_ui_changed": False,
+            }
+
+        if command in {"open_points_shop", "close_points_shop", "toggle_points_shop"}:
+            source_client_id = str(data.get("source_client_id") or "").strip()
+            if command == "open_points_shop":
+                desired_open = True
+            elif command == "close_points_shop":
+                desired_open = False
+            else:
+                desired_open = not bool(overlay_ui_state.get("points_shop_open", False))
+
+            changed = set_points_shop_open(
+                is_open=desired_open,
+                source_client_id=source_client_id,
+            )
+            ui_snapshot = overlay_ui_snapshot()
+            log_event(
+                "overlay_ui_command_received",
+                command=command,
+                source_client_id=source_client_id,
+                changed=changed,
+                points_shop_open=bool(ui_snapshot.get("points_shop_open", False)),
+            )
+            if changed:
+                log_event(
+                    "overlay_ui_broadcast",
+                    points_shop_open=bool(ui_snapshot.get("points_shop_open", False)),
+                    changed_at=int(ui_snapshot.get("points_shop_changed_at") or 0),
+                )
+
+            return {
+                "ok": True,
+                "message": "points shop state synchronized",
+                "state": None,
+                "overlay_ui": ui_snapshot,
+                "overlay_ui_changed": changed,
+            }
+
+        if command == "sync_points_shop_view":
+            source_client_id = str(data.get("source_client_id") or "").strip()
+            changed = set_points_shop_view(
+                tab=str(data.get("tab") or "shop"),
+                scroll_top=int(data.get("scroll_top") or 0),
+                source_client_id=source_client_id,
+            )
+            ui_snapshot = overlay_ui_snapshot()
+            return {
+                "ok": True,
+                "message": "points shop view synchronized",
+                "state": None,
+                "overlay_ui": ui_snapshot,
+                "overlay_ui_changed": changed,
+            }
+
+        result = points_manager.handle_command(payload)
+        if isinstance(result, dict):
+            result["overlay_ui"] = overlay_ui_snapshot()
+
+        log_event(
+            "points_command",
+            command=command,
+            ok=bool(result.get("ok")),
+            message=str(result.get("message") or ""),
+        )
+        return result
+
+    ws_server.set_command_handler(handle_points_command)
     ws_started = ws_server.start()
     if websocket_enabled and not ws_started:
         raise RuntimeError(
@@ -628,19 +881,33 @@ def run_loop(
         log_save_diagnostics(save_parser, save_path)
 
     # Ensure an initial state exists even before the first save parse.
-    state_manager.update_if_changed(make_default_state())
+    initial_state = make_default_state()
+    initial_state["points_shop"] = points_manager.get_state_snapshot()
+    initial_state["overlay_ui"] = overlay_ui_snapshot()
+    latest_live_state = copy.deepcopy(initial_state)
+    state_manager.update_if_changed(initial_state)
+    ws_server.broadcast_state(initial_state, parser_mode=parser_mode, debug=debug)
 
     try:
         provider_order = choose_provider_order(provider_mode)
         sleep_seconds = max(0.05, min(poll_seconds, memory_poll_seconds if memory_enabled else poll_seconds))
         memory_warning_active = False
         while True:
+            tick_started = time.perf_counter()
             if debug_json_path:
                 state = load_debug_state(Path(debug_json_path))
+                state["overlay_ui"] = overlay_ui_snapshot()
+                latest_live_state = copy.deepcopy(state)
+                t_state_write = time.perf_counter()
                 changed = state_manager.update_if_changed(state)
+                state_write_ms = (time.perf_counter() - t_state_write) * 1000.0
+                warn_if_slow("state_persist", state_write_ms, 50.0)
                 if changed:
                     mode_name = str((state.get("meta", {}) or {}).get("parser_mode", parser_mode))
+                    t_ws = time.perf_counter()
                     ws_server.broadcast_state(state, parser_mode=mode_name, debug=debug)
+                    ws_ms = (time.perf_counter() - t_ws) * 1000.0
+                    warn_if_slow("ws_broadcast_state", ws_ms, 50.0)
                 time.sleep(sleep_seconds)
                 continue
 
@@ -650,7 +917,14 @@ def run_loop(
 
             for provider_name in provider_order:
                 if provider_name == "memory":
+                    t_memory_poll = time.perf_counter()
                     result = memory_provider.poll()
+                    memory_poll_ms = (time.perf_counter() - t_memory_poll) * 1000.0
+                    warn_if_slow("memory_poll", memory_poll_ms, 50.0)
+                    if result.timings_ms:
+                        for key, value in result.timings_ms.items():
+                            if ("parse" in key) or ("memorial" in key) or key in {"memory_read", "save_read", "total"}:
+                                warn_if_slow(f"memory_{key}", float(value), 50.0)
                     if result.status == "ok" and result.state is not None:
                         chosen_state = result.state
                         chosen_provider = "memory"
@@ -659,7 +933,14 @@ def run_loop(
                         memory_unavailable_detail = result.detail
                     continue
 
+                t_save_poll = time.perf_counter()
                 result = save_provider.poll()
+                save_poll_ms = (time.perf_counter() - t_save_poll) * 1000.0
+                warn_if_slow("save_poll", save_poll_ms, 50.0)
+                if result.timings_ms:
+                    for key, value in result.timings_ms.items():
+                        if ("parse" in key) or ("memorial" in key) or key in {"save_read", "trainer_flag_scan", "total"}:
+                            warn_if_slow(f"save_{key}", float(value), 50.0)
                 if result.status == "ok" and result.state is not None:
                     chosen_state = result.state
                     chosen_provider = "save"
@@ -691,6 +972,80 @@ def run_loop(
                 memory_warning_active = False
 
             state = chosen_state
+            latest_live_state = copy.deepcopy(state)
+
+            meta_for_profile = state.get("meta", {}) if isinstance(state.get("meta"), dict) else {}
+            profile_key = trainer_profile_key_from_meta(meta_for_profile)
+            if chosen_provider == "memory":
+                # Memory bridge payloads may omit trainer profile identifiers.
+                # When that happens, force a save parse so profile-change resets
+                # (points + caches) are not skipped by mtime short-circuiting.
+                force_profile_parse = not bool(profile_key)
+                now_profile_probe = time.time()
+                if force_profile_parse:
+                    # Avoid forcing a heavy save parse every 100ms loop.
+                    force_profile_parse = (
+                        (now_profile_probe - last_forced_profile_probe_at) >= 5.0
+                    )
+                    if force_profile_parse:
+                        last_forced_profile_probe_at = now_profile_probe
+                # Even with a known profile, periodically force a save parse to
+                # refresh profile metadata.
+                force_trainer_flag_parse = (
+                    (now_profile_probe - last_forced_trainer_flag_probe_at) >= 3.0
+                )
+                if force_trainer_flag_parse:
+                    last_forced_trainer_flag_probe_at = now_profile_probe
+
+                force_save_probe = bool(force_profile_parse or force_trainer_flag_parse)
+                t_profile_probe = time.perf_counter()
+                save_profile_probe = save_provider.poll(force_parse=force_save_probe, include_pc_override=False)
+                warn_if_slow("save_profile_probe", (time.perf_counter() - t_profile_probe) * 1000.0, 50.0)
+                if save_profile_probe.status == "ok" and isinstance(save_profile_probe.state, dict):
+                    save_meta = save_profile_probe.state.get("meta", {})
+                    if isinstance(save_meta, dict):
+                        save_profile_key = trainer_profile_key_from_meta(save_meta)
+                        if save_profile_key:
+                            profile_key = save_profile_key
+                            if isinstance(meta_for_profile, dict):
+                                meta_for_profile["trainer_profile_key"] = save_profile_key
+                                public_id = save_meta.get("trainer_public_id")
+                                secret_id = save_meta.get("trainer_secret_id")
+                                trainer_name = save_meta.get("trainer_name")
+                                trainer_id = save_meta.get("trainer_id")
+                                if isinstance(public_id, int):
+                                    meta_for_profile["trainer_public_id"] = int(public_id)
+                                if isinstance(secret_id, int):
+                                    meta_for_profile["trainer_secret_id"] = int(secret_id)
+                                if isinstance(trainer_name, str) and trainer_name.strip():
+                                    meta_for_profile["trainer_name"] = trainer_name
+                                if isinstance(trainer_id, int):
+                                    meta_for_profile["trainer_id"] = int(trainer_id)
+
+                # If memory still lacks a valid identity, keep the existing
+                # profile binding instead of resetting points/runtime state.
+                if not profile_key and active_profile_key:
+                    profile_key = active_profile_key
+
+            latest_live_state = copy.deepcopy(state)
+
+            t_profile_sync = time.perf_counter()
+            profile_sync = points_manager.sync_trainer_profile(profile_key)
+            warn_if_slow("points_profile_sync", (time.perf_counter() - t_profile_sync) * 1000.0, 50.0)
+            if str(profile_sync.get("message") or "").lower().endswith("state reset"):
+                reset_profile_runtime_state(current_party=state.get("party", []))
+                state["pc"] = []
+                state["dead"] = []
+                state["pc_cached"] = []
+                log_event("points_profile_reset", trainer_profile_key=profile_key)
+                active_profile_key = profile_key
+            elif profile_key:
+                active_profile_key = profile_key
+
+            t_points_snapshot = time.perf_counter()
+            state["points_shop"] = points_manager.get_state_snapshot()
+            warn_if_slow("points_snapshot", (time.perf_counter() - t_points_snapshot) * 1000.0, 50.0)
+            state["overlay_ui"] = overlay_ui_snapshot()
             party_now = list(state.get("party", []))
             meta = state.get("meta", {}) if isinstance(state.get("meta"), dict) else {}
             bridge_pc = state.get("pc", [])
@@ -698,79 +1053,48 @@ def run_loop(
 
             pc_scope = str(meta.get("pc_scope") or "").strip().lower()
             pc_box_known = bool(meta.get("pc_box_known", True))
-            if chosen_provider == "memory" and pc_scope == "current_box" and not pc_box_known:
+            skip_memory_swap_inference = bool(chosen_provider == "memory" and pc_scope == "current_box" and not pc_box_known)
+            if skip_memory_swap_inference:
                 # Do not merge ambiguous current-box snapshots into shared cache,
                 # otherwise unknown boxes can pollute configured Box 1 views.
                 if not pc_quarantine_applied:
                     pc_quarantine_applied = True
+                    pc_cache.clear()
                     log_event(
                         "pc_cache_quarantine",
                         reason="untrusted_current_box_payload",
-                        action="ignore_bridge_pc",
+                        action="ignore_bridge_pc_and_clear_cache",
                     )
 
-                # Live bridge party can oscillate between contradictory snapshots
-                # for a few frames; require persistence before accepting changes.
+                # Trust non-empty memory party snapshots immediately so swaps/HP
+                # changes propagate without delay; only debounce empty glitches.
                 current_sig = party_signature(party_now)
                 if stable_party_sig is None:
                     stable_party_sig = current_sig
                     stable_party_snapshot = [dict(mon) for mon in party_now]
 
-                if current_sig != stable_party_sig:
-                    if candidate_party_sig == current_sig:
-                        candidate_party_streak += 1
-                    else:
-                        candidate_party_sig = current_sig
-                        candidate_party_streak = 1
-
-                    if candidate_party_streak >= 3:
-                        stable_party_sig = current_sig
-                        stable_party_snapshot = [dict(mon) for mon in party_now]
-                        candidate_party_sig = None
-                        candidate_party_streak = 0
-                    else:
-                        stable_keys = Counter(mon_identity_relaxed(mon) for mon in stable_party_snapshot)
-                        current_keys = Counter(mon_identity_relaxed(mon) for mon in party_now)
-                        add_candidates = Counter(current_keys)
-                        add_candidates.subtract(stable_keys)
-                        for key, count in add_candidates.items():
-                            if count <= 0:
-                                continue
-                            for mon in party_now:
-                                if mon_identity_relaxed(mon) == key:
-                                    add_to_pc_cache_first_free(pc_cache, mon, preferred_box=1)
-                                    count -= 1
-                                    if count <= 0:
-                                        break
-                        state["party"] = [dict(mon) for mon in stable_party_snapshot]
-                        party_now = list(state.get("party", []))
-                else:
+                if party_now:
+                    stable_party_sig = current_sig
+                    stable_party_snapshot = [dict(mon) for mon in party_now]
                     candidate_party_sig = None
                     candidate_party_streak = 0
-
-                current_pc_sig = pc_signature(bridge_pc_trusted)
-                if stable_ambiguous_pc_sig is None:
-                    stable_ambiguous_pc_sig = current_pc_sig
-                    stable_ambiguous_pc_snapshot = [dict(mon) for mon in bridge_pc_trusted]
-
-                if current_pc_sig != stable_ambiguous_pc_sig:
-                    if candidate_ambiguous_pc_sig == current_pc_sig:
-                        candidate_ambiguous_pc_streak += 1
-                    else:
-                        candidate_ambiguous_pc_sig = current_pc_sig
-                        candidate_ambiguous_pc_streak = 1
-
-                    if candidate_ambiguous_pc_streak >= 3:
-                        stable_ambiguous_pc_sig = current_pc_sig
-                        stable_ambiguous_pc_snapshot = [dict(mon) for mon in bridge_pc_trusted]
-                        candidate_ambiguous_pc_sig = None
-                        candidate_ambiguous_pc_streak = 0
-                    else:
-                        bridge_pc_trusted = [dict(mon) for mon in stable_ambiguous_pc_snapshot]
                 else:
-                    candidate_ambiguous_pc_sig = None
-                    candidate_ambiguous_pc_streak = 0
+                    empty_sig = current_sig
+                    if candidate_party_sig == empty_sig:
+                        candidate_party_streak += 1
+                    else:
+                        candidate_party_sig = empty_sig
+                        candidate_party_streak = 1
 
+                    if candidate_party_streak >= 5:
+                        stable_party_sig = empty_sig
+                        stable_party_snapshot = []
+                    else:
+                        state["party"] = [dict(mon) for mon in stable_party_snapshot]
+                        party_now = list(state.get("party", []))
+
+                # Fully ignore ambiguous memory PC payloads until box identity is known.
+                bridge_pc_trusted = []
                 state["pc"] = []
 
             has_live_pc = len(bridge_pc_trusted) > 0
@@ -780,7 +1104,13 @@ def run_loop(
                 # so reconcile cache-only zones from save snapshots when available.
                 now = time.time()
                 force_reconcile = (now - last_forced_save_reconcile_at) >= save_reconcile_interval_seconds
-                save_reconcile = save_provider.poll(force_parse=force_reconcile)
+                t_save_reconcile = time.perf_counter()
+                save_reconcile = save_provider.poll(force_parse=force_reconcile, include_pc_override=True)
+                warn_if_slow("save_reconcile_poll", (time.perf_counter() - t_save_reconcile) * 1000.0, 50.0)
+                if save_reconcile.timings_ms:
+                    for key, value in save_reconcile.timings_ms.items():
+                        if ("parse" in key) or ("memorial" in key) or key in {"save_read", "total"}:
+                            warn_if_slow(f"save_reconcile_{key}", float(value), 50.0)
                 if force_reconcile:
                     last_forced_save_reconcile_at = now
                 if save_reconcile.status == "ok" and save_reconcile.state is not None:
@@ -793,9 +1123,24 @@ def run_loop(
 
                     if isinstance(save_pc, list):
                         merge_pc_cache(pc_cache, save_pc, replace_seen_boxes=True)
+                else:
+                    if (now - last_save_reconcile_failure_warn_at) >= 60.0:
+                        detail = str(save_reconcile.detail or "save reconcile unavailable")
+                        log_event(
+                            "save_reconcile_unavailable",
+                            status=str(save_reconcile.status or "unknown"),
+                            detail=detail,
+                            save_path=str(save_path),
+                        )
+                        ws_server.broadcast_status(
+                            "warning",
+                            "PC/memorial sync waiting for valid save updates. "
+                            f"Check tracker.save_path ({save_path}). Detail: {detail}",
+                        )
+                        last_save_reconcile_failure_warn_at = now
 
             if chosen_provider == "memory":
-                if not has_live_pc:
+                if not has_live_pc and not skip_memory_swap_inference:
                     apply_memory_party_swap_inference(
                         pc_cache,
                         last_party_snapshot,
@@ -837,7 +1182,10 @@ def run_loop(
                 state["dead"] = [dict(mon) for mon in dead_cache]
             last_party_snapshot = [dict(mon) for mon in party_now]
 
+            t_state_write = time.perf_counter()
             updated = state_manager.update_if_changed(state)
+            state_write_ms = (time.perf_counter() - t_state_write) * 1000.0
+            warn_if_slow("state_persist", state_write_ms, 50.0)
             if updated:
                 log_event(
                     "provider_update",
@@ -855,8 +1203,42 @@ def run_loop(
                     dead=len(state.get("dead", [])),
                 )
                 mode_name = str((state.get("meta", {}) or {}).get("parser_mode", parser_mode))
+                t_ws_state = time.perf_counter()
                 ws_server.broadcast_state(state, parser_mode=mode_name, debug=debug)
+                ws_state_ms = (time.perf_counter() - t_ws_state) * 1000.0
+                warn_if_slow("ws_broadcast_state", ws_state_ms, 50.0)
+
+                t_ws_status = time.perf_counter()
                 ws_server.broadcast_status("ok", f"State updated ({chosen_provider})")
+                ws_status_ms = (time.perf_counter() - t_ws_status) * 1000.0
+                warn_if_slow("ws_broadcast_status", ws_status_ms, 50.0)
+
+            pending_ws = ws_server.pending_broadcast_count()
+            if pending_ws > 32:
+                log_event("ws_backlog_warning", pending_broadcasts=pending_ws)
+
+            tick_ms = (time.perf_counter() - tick_started) * 1000.0
+            perf_tick_count += 1
+            perf_tick_total_ms += tick_ms
+            perf_tick_worst_ms = max(perf_tick_worst_ms, tick_ms)
+            if tick_ms > 100.0:
+                log_event("tick_slow", duration_ms=round(tick_ms, 3), provider=chosen_provider)
+
+            now_perf = time.perf_counter()
+            if (now_perf - last_perf_report_at) >= perf_report_interval_seconds:
+                avg_ms = perf_tick_total_ms / max(1, perf_tick_count)
+                tick_rate = perf_tick_count / max(0.001, now_perf - last_perf_report_at)
+                log_event(
+                    "loop_perf",
+                    avg_tick_ms=round(avg_ms, 3),
+                    worst_tick_ms=round(perf_tick_worst_ms, 3),
+                    tick_rate_hz=round(tick_rate, 3),
+                    pending_ws_broadcasts=pending_ws,
+                )
+                perf_tick_count = 0
+                perf_tick_total_ms = 0.0
+                perf_tick_worst_ms = 0.0
+                last_perf_report_at = now_perf
 
             time.sleep(sleep_seconds)
 

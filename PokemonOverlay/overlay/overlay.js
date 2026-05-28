@@ -28,8 +28,66 @@ const overlayRoot = document.getElementById("overlayRoot");
 const statusLine = document.getElementById("statusLine");
 const statusStrip = document.getElementById("statusStrip");
 const cardTemplate = document.getElementById("pokemonCardTemplate");
+const pointsBadgeButton = document.getElementById("pointsBadgeButton");
+const pointsBadgeValue = document.getElementById("pointsBadgeValue");
 const LAYOUT_EDIT_QUERY_PARAM = "layoutEdit";
 const LAYOUT_PRESET_STORAGE_KEY = "nuzlockeOverlay.layoutVars.v2";
+const LAYOUT_EDIT_BASE_VARS = [
+  "--party-zone-left",
+  "--party-zone-top",
+  "--party-zone-width",
+  "--party-zone-height",
+  "--party-grid-gap",
+  "--party-sprite-x",
+  "--party-sprite-y",
+  "--party-sprite-scale",
+  "--party-right-sprite-right",
+  "--party-info-width",
+  "--party-sprite-size",
+  "--party-inner-gap",
+  "--party-info-pad-y",
+  "--party-info-pad-x",
+  "--party-info-row-gap",
+  "--party-info-offset-x",
+  "--party-info-offset-y",
+  "--party-name-size",
+  "--party-level-size",
+  "--party-type-size",
+  "--party-status-size",
+  "--party-hp-size",
+  "--party-topline-gap",
+  "--party-types-gap",
+  "--party-info-overlap-alpha",
+  "--party-info-solid-alpha",
+  "--party-info-overlap-width",
+  "--pc-zone-left",
+  "--pc-zone-top",
+  "--pc-zone-width",
+  "--pc-zone-height",
+  "--pc-grid-gap",
+  "--pc-row-overlap-y",
+  "--memorial-zone-left",
+  "--memorial-zone-top",
+  "--memorial-zone-width",
+  "--memorial-zone-height",
+  "--memorial-columns",
+  "--memorial-grid-gap",
+  "--memorial-row-overlap-y",
+  "--memorial-row1-y-offset",
+  "--memorial-row2-y-offset",
+  "--memorial-points-barrier-width",
+  "--memorial-overlap-x",
+  "--memorial-sprite-size",
+  "--memorial-sprite-scale",
+  "--points-badge-left",
+  "--points-badge-bottom",
+  "--points-badge-width",
+  "--points-badge-height",
+  "--points-count-single-x",
+  "--points-count-single-y",
+  "--points-count-double-x",
+  "--points-count-double-y",
+];
 
 const FALLBACK_SPRITE_DATA_URI =
   "data:image/svg+xml;utf8," +
@@ -47,7 +105,14 @@ let wsReconnectAttempts = 0;
 let wsReconnectTimer = null;
 let pollInFlight = false;
 let wsFallbackPollingActive = false;
+let pointsShopUi = null;
+let pointsCommandSeq = 0;
+const overlayClientId = (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function")
+  ? crypto.randomUUID()
+  : `overlay_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+const pendingPointsCommands = new Map();
 const pcBoxCache = new Map();
+let lastTrainerProfileKey = "";
 
 const spriteResolutionCache = new Map();
 const spriteLoadPromiseCache = new Map();
@@ -76,6 +141,61 @@ function logDebug(...args) {
 
 function sanitizeArray(value) {
   return Array.isArray(value) ? value : [];
+}
+
+function getLayoutEditVarNames() {
+  const vars = [...LAYOUT_EDIT_BASE_VARS];
+  for (let slot = 1; slot <= 6; slot += 1) {
+    vars.push(`--party-slot${slot}-sprite-x`);
+    vars.push(`--party-slot${slot}-sprite-y`);
+    vars.push(`--party-slot${slot}-sprite-scale`);
+  }
+  return vars;
+}
+
+function getLayoutVarsSnapshot() {
+  const style = getComputedStyle(document.documentElement);
+  const out = {};
+  for (const varName of getLayoutEditVarNames()) {
+    out[varName] = style.getPropertyValue(varName).trim();
+  }
+  return out;
+}
+
+function applyLayoutVarsToRoot(layoutVars) {
+  if (!layoutVars || typeof layoutVars !== "object") {
+    return false;
+  }
+  const rootStyle = document.documentElement.style;
+  for (const [varName, varValue] of Object.entries(layoutVars)) {
+    if (!String(varName).startsWith("--")) {
+      continue;
+    }
+    rootStyle.setProperty(varName, String(varValue));
+  }
+  return true;
+}
+
+function loadSavedLayoutVarsFromLocalStorage() {
+  try {
+    const raw = localStorage.getItem(LAYOUT_PRESET_STORAGE_KEY);
+    if (!raw) {
+      return null;
+    }
+    const saved = JSON.parse(raw);
+    return saved && typeof saved === "object" ? saved : null;
+  } catch (_error) {
+    return null;
+  }
+}
+
+function persistLayoutVarsToLocalStorage(layoutVars) {
+  try {
+    localStorage.setItem(LAYOUT_PRESET_STORAGE_KEY, JSON.stringify(layoutVars));
+    return true;
+  } catch (_error) {
+    return false;
+  }
 }
 
 function normalizePokemon(raw, section, index) {
@@ -193,6 +313,65 @@ function normalizeState(data) {
   return { party, pc, dead };
 }
 
+function trainerProfileKeyFromRaw(data) {
+  const meta = data && typeof data === "object" && data.meta && typeof data.meta === "object"
+    ? data.meta
+    : {};
+  const explicit = String(meta.trainer_profile_key || "").trim();
+  if (explicit) {
+    return explicit;
+  }
+  const publicId = Number(meta.trainer_public_id);
+  const secretId = Number(meta.trainer_secret_id);
+  if (Number.isFinite(publicId) && Number.isFinite(secretId)) {
+    return `${Math.max(0, Math.trunc(publicId))}-${Math.max(0, Math.trunc(secretId))}`;
+  }
+  const trainerId = String(meta.trainer_id || "").trim();
+  return trainerId;
+}
+
+function purchaseLockedInBattleFromRaw(data) {
+  const meta = data && typeof data === "object" && data.meta && typeof data.meta === "object"
+    ? data.meta
+    : {};
+
+  const booleanKeys = [
+    "in_battle",
+    "is_in_battle",
+    "battle_active",
+    "battle_locked",
+    "is_battle",
+  ];
+  for (const key of booleanKeys) {
+    const value = meta[key];
+    if (typeof value === "boolean") {
+      return value;
+    }
+    if (typeof value === "number") {
+      return value !== 0;
+    }
+    if (typeof value === "string") {
+      const normalized = value.trim().toLowerCase();
+      if (["1", "true", "yes", "on"].includes(normalized)) {
+        return true;
+      }
+      if (["0", "false", "no", "off"].includes(normalized)) {
+        return false;
+      }
+    }
+  }
+
+  const textKeys = ["game_state", "state", "mode", "scene"];
+  for (const key of textKeys) {
+    const value = String(meta[key] || "").trim().toLowerCase();
+    if (value.includes("battle")) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function monSignature(mon) {
   return JSON.stringify([
     mon.species,
@@ -211,6 +390,102 @@ function monSignature(mon) {
 
 function stateDigest(state) {
   return JSON.stringify(state);
+}
+
+function applyPointsState(pointsState) {
+  if (!pointsState || typeof pointsState !== "object") {
+    return;
+  }
+
+  logDebug("points_update_incoming", {
+    points: Number(pointsState.current_points || 0),
+    inventory_count: Array.isArray(pointsState.inventory) ? pointsState.inventory.length : 0,
+    transaction_count: Array.isArray(pointsState.transactions) ? pointsState.transactions.length : 0,
+  });
+
+  if (pointsBadgeValue) {
+    pointsBadgeValue.textContent = String(pointsState.current_points || 0);
+  }
+
+  if (pointsShopUi) {
+    pointsShopUi.setState(pointsState);
+  }
+}
+
+async function sendPointsCommand(command, payload) {
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    return {
+      ok: false,
+      message: "Live tracker connection is required for points actions.",
+    };
+  }
+
+  pointsCommandSeq += 1;
+  const requestId = `points_${Date.now()}_${pointsCommandSeq}`;
+  const message = {
+    type: "points_shop_command",
+    request_id: requestId,
+    command,
+    payload,
+  };
+
+  const waiter = new Promise((resolve) => {
+    pendingPointsCommands.set(requestId, {
+      resolve,
+      timeoutId: setTimeout(() => {
+        pendingPointsCommands.delete(requestId);
+        resolve({ ok: false, message: "Points command timed out." });
+      }, 4500),
+    });
+  });
+
+  try {
+    ws.send(JSON.stringify(message));
+  } catch (_error) {
+    const pending = pendingPointsCommands.get(requestId);
+    if (pending) {
+      clearTimeout(pending.timeoutId);
+      pendingPointsCommands.delete(requestId);
+      pending.resolve({ ok: false, message: "Failed to send points command." });
+    }
+  }
+
+  return waiter;
+}
+
+async function sendPointsUiCommand(command, payload) {
+  const uiPayload = payload && typeof payload === "object" ? payload : {};
+  return sendPointsCommand(command, {
+    source_client_id: overlayClientId,
+    timestamp: Date.now(),
+    ...uiPayload,
+  });
+}
+
+function applyOverlayUiState(overlayUi, source) {
+  if (!pointsShopUi || !overlayUi || typeof overlayUi !== "object") {
+    return;
+  }
+  pointsShopUi.applyOverlayUiState(overlayUi, source);
+}
+
+function initPointsShopUi() {
+  if (!overlayRoot || !pointsBadgeButton || !pointsBadgeValue || typeof window.PointsShopUI !== "function") {
+    return;
+  }
+
+  if (pointsShopUi) {
+    return;
+  }
+
+  pointsShopUi = new window.PointsShopUI({
+    root: overlayRoot,
+    badgeButton: pointsBadgeButton,
+    badgeValue: pointsBadgeValue,
+    onCommand: sendPointsCommand,
+    onUiCommand: sendPointsUiCommand,
+    log: (event, fields) => logDebug(event, fields),
+  });
 }
 
 function statusMode(text, mode) {
@@ -291,7 +566,10 @@ function spriteNameCandidates(mon) {
     out.push(value);
   };
 
-  const nameBase = toSpriteNameBase(mon.species);
+  let nameBase = toSpriteNameBase(mon.species);
+  if (nameBase.toUpperCase() === "FLABB" || nameBase.toUpperCase().startsWith("FLABB_")) {
+    nameBase = nameBase.replace(/^FLABB/i, "FLABEBE");
+  }
   const isPlaceholderName = /^species_[0-9]+$/i.test(nameBase);
   const gender = String(mon.gender || "").toLowerCase();
   const hint = getSpriteHint(mon);
@@ -748,6 +1026,42 @@ function renderSectionDiff(grid, mons) {
   return touchedKeys;
 }
 
+function parseCssNumericValue(raw, fallback = 0) {
+  const value = Number(String(raw || "").replace(/[^0-9.-]/g, ""));
+  return Number.isFinite(value) ? value : fallback;
+}
+
+function applyMemorialTokenLayout() {
+  if (!deadGrid) {
+    return;
+  }
+
+  const tokens = Array.from(deadGrid.querySelectorAll(".pokemon-token[data-key]"));
+  if (!tokens.length) {
+    return;
+  }
+
+  const rootComputed = getComputedStyle(document.documentElement);
+  const configuredColumns = parseCssNumericValue(rootComputed.getPropertyValue("--memorial-columns"), 10);
+  const columns = Math.max(1, Math.round(configuredColumns));
+
+  tokens.forEach((token, index) => {
+    const columnIndex = index % columns;
+    const rowIndex = Math.floor(index / columns);
+
+    token.style.setProperty(
+      "--memorial-runtime-margin-left",
+      columnIndex === 0 ? "0px" : "calc(var(--memorial-overlap-x) * -1)"
+    );
+
+    if (rowIndex <= 0) {
+      token.style.setProperty("--memorial-runtime-translate-y", "var(--memorial-row1-y-offset)");
+    } else {
+      token.style.setProperty("--memorial-runtime-translate-y", "var(--memorial-row2-y-offset)");
+    }
+  });
+}
+
 function preloadSprites(state) {
   const allMons = [...state.party, ...state.pc, ...state.dead];
   allMons.forEach((mon) => {
@@ -772,6 +1086,8 @@ function render(state) {
   for (const key of renderSectionDiff(deadGrid, state.dead)) {
     touchedKeys.add(key);
   }
+
+  applyMemorialTokenLayout();
 
   requestAnimationFrame(() => applyFlipAnimation(beforeRects, touchedKeys));
 
@@ -830,6 +1146,21 @@ function clearReconnectTimer() {
 }
 
 function applyIncomingRawState(raw, source) {
+  if (pointsShopUi && typeof pointsShopUi.setPurchaseLockDuringBattle === "function") {
+    pointsShopUi.setPurchaseLockDuringBattle(purchaseLockedInBattleFromRaw(raw));
+  }
+
+  applyPointsState(raw?.points_shop);
+  applyOverlayUiState(raw?.overlay_ui, source);
+
+  const incomingProfileKey = trainerProfileKeyFromRaw(raw || {});
+  if (incomingProfileKey && lastTrainerProfileKey && incomingProfileKey !== lastTrainerProfileKey) {
+    pcBoxCache.clear();
+  }
+  if (incomingProfileKey) {
+    lastTrainerProfileKey = incomingProfileKey;
+  }
+
   const state = normalizeState(raw);
   const digest = stateDigest(state);
 
@@ -931,6 +1262,9 @@ function connectWebSocket() {
     }
     statusMode("Connected to live tracker feed.", "ok");
     logDebug("WebSocket connected", { url });
+    sendPointsCommand("get_state", {}).catch((_error) => {
+      // Best effort refresh; websocket state_update still drives the overlay.
+    });
   };
 
   ws.onmessage = (event) => {
@@ -946,6 +1280,44 @@ function connectWebSocket() {
       return;
     }
 
+    if (payload.type === "points_shop_response") {
+      logDebug("points_ws_response", {
+        request_id: String(payload.request_id || ""),
+        command: String(payload.command || ""),
+        ok: Boolean(payload.ok),
+      });
+      const requestId = String(payload.request_id || "");
+      const pending = pendingPointsCommands.get(requestId);
+      if (pending) {
+        clearTimeout(pending.timeoutId);
+        pendingPointsCommands.delete(requestId);
+        pending.resolve(payload);
+      }
+      if (payload.state) {
+        applyPointsState(payload.state);
+      }
+      if (payload.overlay_ui) {
+        applyOverlayUiState(payload.overlay_ui, "points_shop_response");
+      }
+      return;
+    }
+
+    if (payload.type === "points_shop_update") {
+      logDebug("points_ws_update", {
+        points: Number((payload.state || {}).current_points || 0),
+      });
+      applyPointsState(payload.state);
+      if (payload.overlay_ui) {
+        applyOverlayUiState(payload.overlay_ui, "points_shop_update");
+      }
+      return;
+    }
+
+    if (payload.type === "overlay_ui_update") {
+      applyOverlayUiState(payload.overlay_ui, "overlay_ui_update");
+      return;
+    }
+
     if (payload.type === "state_update" && payload.state) {
       applyIncomingRawState(payload.state, "WebSocket");
       return;
@@ -954,6 +1326,13 @@ function connectWebSocket() {
     if (payload.type === "tracker_status") {
       const status = String(payload.status || "").toLowerCase();
       const message = String(payload.message || "Tracker status update");
+      const lowerMessage = message.toLowerCase();
+      if (
+        lowerMessage.includes("pc/memorial sync waiting for valid save updates") ||
+        lowerMessage.includes("save reconcile unavailable")
+      ) {
+        return;
+      }
       if (status === "ok") {
         statusMode(message, "ok");
       } else if (status === "warning") {
@@ -997,6 +1376,13 @@ window.addEventListener("beforeunload", () => {
   if (timerId) {
     clearTimeout(timerId);
   }
+
+  for (const pending of pendingPointsCommands.values()) {
+    clearTimeout(pending.timeoutId);
+    pending.resolve({ ok: false, message: "Overlay shutting down." });
+  }
+  pendingPointsCommands.clear();
+
   closeSocket();
 });
 
@@ -1176,6 +1562,7 @@ function initLayoutEditMode() {
     <div class="layout-edit-row"><label>PC Width %</label><input data-var="--pc-zone-width" data-unit="%" type="number" step="0.1"></div>
     <div class="layout-edit-row"><label>PC Height %</label><input data-var="--pc-zone-height" data-unit="%" type="number" step="0.1"></div>
     <div class="layout-edit-row"><label>PC Grid Gap px</label><input data-var="--pc-grid-gap" data-unit="px" type="number" step="0.5"></div>
+    <div class="layout-edit-row"><label>PC Row Overlap px</label><input data-var="--pc-row-overlap-y" data-unit="px" type="number" step="1" min="0" max="40"></div>
     <h3>Memorial Layout Edit</h3>
     <div class="layout-edit-row"><label>Memorial Left %</label><input data-var="--memorial-zone-left" data-unit="%" type="number" step="0.1"></div>
     <div class="layout-edit-row"><label>Memorial Top %</label><input data-var="--memorial-zone-top" data-unit="%" type="number" step="0.1"></div>
@@ -1183,9 +1570,27 @@ function initLayoutEditMode() {
     <div class="layout-edit-row"><label>Memorial Height %</label><input data-var="--memorial-zone-height" data-unit="%" type="number" step="0.1"></div>
     <div class="layout-edit-row"><label>Memorial Columns</label><input data-var="--memorial-columns" data-unit="" type="number" step="1" min="1" max="30"></div>
     <div class="layout-edit-row"><label>Memorial Gap px</label><input data-var="--memorial-grid-gap" data-unit="px" type="number" step="0.5"></div>
+    <div class="layout-edit-row"><label>Memorial Row Overlap px</label><input data-var="--memorial-row-overlap-y" data-unit="px" type="number" step="1" min="0" max="60"></div>
+    <div class="layout-edit-row"><label>Memorial Row 1 Y px</label><input data-var="--memorial-row1-y-offset" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Memorial Row 2 Y px</label><input data-var="--memorial-row2-y-offset" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Points Barrier Width px</label><input data-var="--memorial-points-barrier-width" data-unit="px" type="number" step="1" min="0" max="240"></div>
     <div class="layout-edit-row"><label>Memorial Overlap px</label><input data-var="--memorial-overlap-x" data-unit="px" type="number" step="1" min="0" max="80"></div>
     <div class="layout-edit-row"><label>Memorial Sprite px</label><input data-var="--memorial-sprite-size" data-unit="px" type="number" step="1"></div>
     <div class="layout-edit-row"><label>Memorial Scale</label><input data-var="--memorial-sprite-scale" data-unit="" type="number" step="0.01"></div>
+    <h3>Points Badge Edit</h3>
+    <div class="layout-edit-row"><label>Badge Left %</label><input data-var="--points-badge-left" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Badge Bottom %</label><input data-var="--points-badge-bottom" data-unit="%" type="number" step="0.1"></div>
+    <div class="layout-edit-row"><label>Badge Width px</label><input data-var="--points-badge-width" data-unit="px" type="number" step="1"></div>
+    <div class="layout-edit-row"><label>Badge Height px</label><input data-var="--points-badge-height" data-unit="px" type="number" step="1"></div>
+    <div class="layout-edit-row"><label>Points Single X px</label><input data-var="--points-count-single-x" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Points Single Y px</label><input data-var="--points-count-single-y" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Points Double X px</label><input data-var="--points-count-double-x" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Points Double Y px</label><input data-var="--points-count-double-y" data-unit="px" type="number" step="1" min="-80" max="80"></div>
+    <div class="layout-edit-row"><label>Points Preview Value</label><input id="pointsPreviewValue" type="text" placeholder="5 or 55"></div>
+    <div class="layout-edit-actions">
+      <button data-action="preview-points">Apply Points Preview</button>
+      <button data-action="clear-preview-points">Clear Points Preview</button>
+    </div>
     <h3>Per Slot Sprite</h3>
     <div class="layout-edit-row">
       <label>Edit Slot</label>
@@ -1253,57 +1658,31 @@ function initLayoutEditMode() {
     const formatted = expr ? expr.replace("%v", String(value)) : `${value}${unit}`;
     rootStyle.setProperty(cssVar, formatted);
     updateOutput();
+    scheduleLayoutAutosave();
+  }
+
+  let autosaveTimerId = null;
+
+  function scheduleLayoutAutosave() {
+    if (autosaveTimerId) {
+      clearTimeout(autosaveTimerId);
+    }
+    autosaveTimerId = setTimeout(() => {
+      autosaveTimerId = null;
+      persistLayoutVarsToLocalStorage(getLayoutVarsSnapshot());
+    }, 140);
+  }
+
+  function flushLayoutAutosave() {
+    if (autosaveTimerId) {
+      clearTimeout(autosaveTimerId);
+      autosaveTimerId = null;
+    }
+    persistLayoutVarsToLocalStorage(getLayoutVarsSnapshot());
   }
 
   function updateOutput() {
-    const vars = [
-      "--party-zone-left",
-      "--party-zone-top",
-      "--party-zone-width",
-      "--party-zone-height",
-      "--party-grid-gap",
-      "--party-sprite-x",
-      "--party-sprite-y",
-      "--party-sprite-scale",
-      "--party-right-sprite-right",
-      "--party-info-width",
-      "--party-sprite-size",
-      "--party-inner-gap",
-      "--party-info-pad-y",
-      "--party-info-pad-x",
-      "--party-info-row-gap",
-      "--party-info-offset-x",
-      "--party-info-offset-y",
-      "--party-name-size",
-      "--party-level-size",
-      "--party-type-size",
-      "--party-status-size",
-      "--party-hp-size",
-      "--party-topline-gap",
-      "--party-types-gap",
-      "--party-info-overlap-alpha",
-      "--party-info-solid-alpha",
-      "--party-info-overlap-width",
-      "--pc-zone-left",
-      "--pc-zone-top",
-      "--pc-zone-width",
-      "--pc-zone-height",
-      "--pc-grid-gap",
-      "--memorial-zone-left",
-      "--memorial-zone-top",
-      "--memorial-zone-width",
-      "--memorial-zone-height",
-      "--memorial-columns",
-      "--memorial-grid-gap",
-      "--memorial-overlap-x",
-      "--memorial-sprite-size",
-      "--memorial-sprite-scale",
-    ];
-    for (let slot = 1; slot <= 6; slot += 1) {
-      vars.push(`--party-slot${slot}-sprite-x`);
-      vars.push(`--party-slot${slot}-sprite-y`);
-      vars.push(`--party-slot${slot}-sprite-scale`);
-    }
+    const vars = getLayoutEditVarNames();
     const lines = [":root {"];
     for (const v of vars) {
       lines.push(`  ${v}: ${getComputedStyle(document.documentElement).getPropertyValue(v).trim()};`);
@@ -1316,61 +1695,7 @@ function initLayoutEditMode() {
   }
 
   function getLayoutVarsObject() {
-    const vars = [
-      "--party-zone-left",
-      "--party-zone-top",
-      "--party-zone-width",
-      "--party-zone-height",
-      "--party-grid-gap",
-      "--party-sprite-x",
-      "--party-sprite-y",
-      "--party-sprite-scale",
-      "--party-right-sprite-right",
-      "--party-info-width",
-      "--party-sprite-size",
-      "--party-inner-gap",
-      "--party-info-pad-y",
-      "--party-info-pad-x",
-      "--party-info-row-gap",
-      "--party-info-offset-x",
-      "--party-info-offset-y",
-      "--party-name-size",
-      "--party-level-size",
-      "--party-type-size",
-      "--party-status-size",
-      "--party-hp-size",
-      "--party-topline-gap",
-      "--party-types-gap",
-      "--party-info-overlap-alpha",
-      "--party-info-solid-alpha",
-      "--party-info-overlap-width",
-      "--pc-zone-left",
-      "--pc-zone-top",
-      "--pc-zone-width",
-      "--pc-zone-height",
-      "--pc-grid-gap",
-      "--memorial-zone-left",
-      "--memorial-zone-top",
-      "--memorial-zone-width",
-      "--memorial-zone-height",
-      "--memorial-columns",
-      "--memorial-grid-gap",
-      "--memorial-overlap-x",
-      "--memorial-sprite-size",
-      "--memorial-sprite-scale",
-    ];
-    for (let slot = 1; slot <= 6; slot += 1) {
-      vars.push(`--party-slot${slot}-sprite-x`);
-      vars.push(`--party-slot${slot}-sprite-y`);
-      vars.push(`--party-slot${slot}-sprite-scale`);
-    }
-
-    const style = getComputedStyle(document.documentElement);
-    const out = {};
-    for (const v of vars) {
-      out[v] = style.getPropertyValue(v).trim();
-    }
-    return out;
+    return getLayoutVarsSnapshot();
   }
 
   function syncInputsFromCssVars() {
@@ -1382,14 +1707,9 @@ function initLayoutEditMode() {
   }
 
   function applySavedLayoutVars(savedVars) {
-    if (!savedVars || typeof savedVars !== "object") {
+    const ok = applyLayoutVarsToRoot(savedVars);
+    if (!ok) {
       return false;
-    }
-    for (const [varName, varValue] of Object.entries(savedVars)) {
-      if (!String(varName).startsWith("--")) {
-        continue;
-      }
-      rootStyle.setProperty(varName, String(varValue));
     }
     syncInputsFromCssVars();
     updateOutput();
@@ -1445,6 +1765,7 @@ function initLayoutEditMode() {
     rootStyle.setProperty(slotVar(slot, "y"), `${Number.isFinite(y) ? y : 0}px`);
     rootStyle.setProperty(slotVar(slot, "scale"), String(Number.isFinite(scale) ? scale : 1));
     updateOutput();
+    scheduleLayoutAutosave();
   }
 
   slotSelect?.addEventListener("change", syncSlotInputs);
@@ -1457,6 +1778,27 @@ function initLayoutEditMode() {
   const loadButton = panel.querySelector('button[data-action="load"]');
   const clearButton = panel.querySelector('button[data-action="clear"]');
   const hideButton = panel.querySelector('button[data-action="hide"]');
+  const pointsPreviewInput = panel.querySelector("#pointsPreviewValue");
+  const previewPointsButton = panel.querySelector('button[data-action="preview-points"]');
+  const clearPreviewPointsButton = panel.querySelector('button[data-action="clear-preview-points"]');
+
+  previewPointsButton?.addEventListener("click", () => {
+    if (!pointsShopUi) {
+      return;
+    }
+    const value = String(pointsPreviewInput?.value || "").trim();
+    pointsShopUi.setPreviewPoints(value || null);
+  });
+
+  clearPreviewPointsButton?.addEventListener("click", () => {
+    if (!pointsShopUi) {
+      return;
+    }
+    if (pointsPreviewInput) {
+      pointsPreviewInput.value = "";
+    }
+    pointsShopUi.setPreviewPoints(null);
+  });
 
   copyButton?.addEventListener("click", async () => {
     const output = panel.querySelector("#layoutEditOutput")?.textContent || "";
@@ -1475,14 +1817,13 @@ function initLayoutEditMode() {
   });
 
   saveButton?.addEventListener("click", () => {
-    try {
-      const vars = getLayoutVarsObject();
-      localStorage.setItem(LAYOUT_PRESET_STORAGE_KEY, JSON.stringify(vars));
+    const saved = persistLayoutVarsToLocalStorage(getLayoutVarsObject());
+    if (saved) {
       saveButton.textContent = "Saved";
       setTimeout(() => {
         saveButton.textContent = "Save";
       }, 900);
-    } catch (_error) {
+    } else {
       saveButton.textContent = "Save failed";
       setTimeout(() => {
         saveButton.textContent = "Save";
@@ -1491,27 +1832,20 @@ function initLayoutEditMode() {
   });
 
   loadButton?.addEventListener("click", () => {
-    try {
-      const raw = localStorage.getItem(LAYOUT_PRESET_STORAGE_KEY);
-      if (!raw) {
-        loadButton.textContent = "No save";
-        setTimeout(() => {
-          loadButton.textContent = "Load";
-        }, 900);
-        return;
-      }
-      const saved = JSON.parse(raw);
-      const ok = applySavedLayoutVars(saved);
-      loadButton.textContent = ok ? "Loaded" : "Load failed";
+    const savedVars = loadSavedLayoutVarsFromLocalStorage();
+    if (!savedVars) {
+      loadButton.textContent = "No save";
       setTimeout(() => {
         loadButton.textContent = "Load";
       }, 900);
-    } catch (_error) {
-      loadButton.textContent = "Load failed";
-      setTimeout(() => {
-        loadButton.textContent = "Load";
-      }, 1200);
+      return;
     }
+
+    const ok = applySavedLayoutVars(savedVars);
+    loadButton.textContent = ok ? "Loaded" : "Load failed";
+    setTimeout(() => {
+      loadButton.textContent = "Load";
+    }, 900);
   });
 
   clearButton?.addEventListener("click", () => {
@@ -1590,6 +1924,7 @@ function initLayoutEditMode() {
       if (leftInput) leftInput.value = leftPct.toFixed(2);
       if (topInput) topInput.value = topPct.toFixed(2);
       updateOutput();
+      scheduleLayoutAutosave();
     }
 
     if (resizeState) {
@@ -1604,10 +1939,14 @@ function initLayoutEditMode() {
       if (widthInput) widthInput.value = widthPct.toFixed(2);
       if (heightInput) heightInput.value = heightPct.toFixed(2);
       updateOutput();
+      scheduleLayoutAutosave();
     }
   }
 
   function endPointer() {
+    if (dragState || resizeState) {
+      flushLayoutAutosave();
+    }
     dragState = null;
     resizeState = null;
   }
@@ -1618,6 +1957,10 @@ function initLayoutEditMode() {
   window.addEventListener("pointerup", endPointer);
 
   syncSlotInputs();
+  const initialLocalVars = loadSavedLayoutVarsFromLocalStorage();
+  if (initialLocalVars) {
+    applySavedLayoutVars(initialLocalVars);
+  }
   syncInputsFromCssVars();
   updateOutput();
 }
@@ -1712,15 +2055,7 @@ async function loadConfig() {
       typeof overlay.layout_vars === "object" && overlay.layout_vars
         ? overlay.layout_vars
         : null;
-    if (layoutVars) {
-      const rootStyle = document.documentElement.style;
-      for (const [varName, varValue] of Object.entries(layoutVars)) {
-        if (!String(varName).startsWith("--")) {
-          continue;
-        }
-        rootStyle.setProperty(varName, String(varValue));
-      }
-    }
+    applyLayoutVarsToRoot(layoutVars);
 
     document.documentElement.style.setProperty("--overlay-scale", String(config.overlayScale));
     document.documentElement.setAttribute("data-theme", config.theme);
@@ -1733,8 +2068,10 @@ async function loadConfig() {
 (async function bootstrap() {
   statusMode("Loading overlay...", "loading");
   await loadConfig();
+  applyLayoutVarsToRoot(loadSavedLayoutVarsFromLocalStorage());
   await applyTemplateAspect();
   applyTemplateFit();
+  initPointsShopUi();
   initLayoutEditMode();
   startDataPipeline();
 })();

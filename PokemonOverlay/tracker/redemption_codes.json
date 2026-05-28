@@ -1,0 +1,590 @@
+{
+  "rival": {
+    "points": 1,
+    "awards": []
+  },
+  "brendan": {
+    "points": 1,
+    "awards": []
+  },
+  "anne": {
+    "points": 1,
+    "awards": []
+  },
+  "nelle": {
+    "points": 1,
+    "awards": []
+  },
+  "falkner": {
+    "points": 2,
+    "awards": ["Bird Watcher.png"]
+  },
+  "brock": {
+    "points": 2,
+    "awards": ["Revive 2.png"]
+  },
+  "miguel": {
+    "points": 1,
+    "awards": []
+  },
+  "archer": {
+    "points": 2,
+    "awards": []
+  },
+  "rival2": {
+    "points": 1,
+    "awards": []
+  },
+  "cale": {
+    "points": 1,
+    "awards": []
+  },
+  "ali": {
+    "points": 1,
+    "awards": []
+  },
+  "timmy": {
+    "points": 1,
+    "awards": []
+  },
+  "reli": {
+    "points": 1,
+    "awards": []
+  },
+  "ethan": {
+    "points": 1,
+    "awards": []
+  },
+  "grunt": {
+    "points": 2,
+    "awards": []
+  },
+  "bugsy": {
+    "points": 2,
+    "awards": ["Bug Catcher.png"]
+  },
+  "misty": {
+    "points": 2,
+    "awards": ["Fishing Boon 2.png"]
+  },
+  "grunt2": {
+    "points": 1,
+    "awards": []
+  },
+  "ann&brooks": {
+    "points": 1,
+    "awards": []
+  },
+  "edmond&trevor": {
+    "points": 1,
+    "awards": []
+  },
+  "brendan2": {
+    "points": 2,
+    "awards": []
+  },
+  "whitney": {
+    "points": 2,
+    "awards": ["Ex-Boyfriend.png"]
+  },
+  "lt.surge": {
+    "points": 2,
+    "awards": ["Boss Reset 2.png"]
+  },
+  "caitlin": {
+    "points": 1,
+    "awards": []
+  },
+  "morty": {
+    "points": 2,
+    "awards": ["Next Of Kin 2.png"]
+  },
+  "erika": {
+    "points": 2,
+    "awards": ["Hatch Of The Day.png"]
+  },
+  "guard": {
+    "points": 1,
+    "awards": []
+  },
+  "leftguard": {
+    "points": 1,
+    "awards": []
+  },
+  "rightguard": {
+    "points": 1,
+    "awards": []
+  },
+  "giovanni": {
+    "points": 2,
+    "awards": []
+  },
+  "cole": {
+    "points": 1,
+    "awards": []
+  },
+  "sam": {
+    "points": 1,
+    "awards": []
+  },
+  "shelly": {
+    "points": 1,
+    "awards": []
+  },
+  "ghost": {
+    "points": 1,
+    "awards": []
+  },
+  "rival3": {
+    "points": 1,
+    "awards": []
+  },
+  "ariana&archer": {
+    "points": 1,
+    "awards": []
+  },
+  "giovanni2": {
+    "points": 2,
+    "awards": []
+  },
+  "chuck": {
+    "points": 2,
+    "awards": []
+  },
+  "sabrina": {
+    "points": 2,
+    "awards": []
+  },
+  "kid": {
+    "points": 1,
+    "awards": []
+  },
+  "luca": {
+    "points": 1,
+    "awards": []
+  },
+  "justin": {
+    "points": 1,
+    "awards": []
+  },
+  "andrew": {
+    "points": 1,
+    "awards": []
+  },
+  "sebastian": {
+    "points": 1,
+    "awards": []
+  },
+  "susie": {
+    "points": 1,
+    "awards": []
+  },
+  "alma": {
+    "points": 1,
+    "awards": []
+  },
+  "lola&sheila": {
+    "points": 1,
+    "awards": []
+  },
+  "perry": {
+    "points": 1,
+    "awards": []
+  },
+  "jared": {
+    "points": 1,
+    "awards": []
+  },
+  "robert": {
+    "points": 1,
+    "awards": []
+  },
+  "haley": {
+    "points": 1,
+    "awards": []
+  },
+  "lao": {
+    "points": 1,
+    "awards": []
+  },
+  "koji": {
+    "points": 1,
+    "awards": []
+  },
+  "luke": {
+    "points": 1,
+    "awards": []
+  },
+  "ruben": {
+    "points": 1,
+    "awards": []
+  },
+  "camron": {
+    "points": 1,
+    "awards": []
+  },
+  "hideo": {
+    "points": 1,
+    "awards": []
+  },
+  "william": {
+    "points": 1,
+    "awards": []
+  },
+  "jacob": {
+    "points": 1,
+    "awards": []
+  },
+  "ramiro": {
+    "points": 1,
+    "awards": []
+  },
+  "wilton": {
+    "points": 1,
+    "awards": []
+  },
+  "brendan3": {
+    "points": 1,
+    "awards": []
+  },
+  "brock2": {
+    "points": 2,
+    "awards": []
+  },
+  "misty2": {
+    "points": 2,
+    "awards": []
+  },
+  "lt.surge2": {
+    "points": 2,
+    "awards": []
+  },
+  "erika2": {
+    "points": 2,
+    "awards": []
+  },
+  "koga": {
+    "points": 2,
+    "awards": []
+  },
+  "jojofan": {
+    "points": 1,
+    "awards": []
+  },
+  "pryce": {
+    "points": 2,
+    "awards": []
+  },
+  "may": {
+    "points": 1,
+    "awards": []
+  },
+  "jasmine": {
+    "points": 2,
+    "awards": []
+  },
+  "derek": {
+    "points": 1,
+    "awards": []
+  },
+  "lucy": {
+    "points": 1,
+    "awards": []
+  },
+  "zac": {
+    "points": 1,
+    "awards": []
+  },
+  "blaine": {
+    "points": 2,
+    "awards": []
+  },
+  "archer2": {
+    "points": 1,
+    "awards": []
+  },
+  "ariana": {
+    "points": 1,
+    "awards": []
+  },
+  "giovanni3": {
+    "points": 2,
+    "awards": []
+  },
+  "ketchup": {
+    "points": 1,
+    "awards": []
+  },
+  "clair": {
+    "points": 2,
+    "awards": []
+  },
+  "max": {
+    "points": 1,
+    "awards": []
+  },
+  "anson": {
+    "points": 1,
+    "awards": []
+  },
+  "rival4": {
+    "points": 1,
+    "awards": []
+  },
+  "brendan4": {
+    "points": 1,
+    "awards": []
+  },
+  "naomi": {
+    "points": 1,
+    "awards": []
+  },
+  "rolando": {
+    "points": 1,
+    "awards": []
+  },
+  "george": {
+    "points": 1,
+    "awards": []
+  },
+  "caroline": {
+    "points": 1,
+    "awards": []
+  },
+  "colby": {
+    "points": 1,
+    "awards": []
+  },
+  "alexa": {
+    "points": 1,
+    "awards": []
+  },
+  "soupercell": {
+    "points": 1,
+    "awards": []
+  },
+  "lorelei": {
+    "points": 2,
+    "awards": []
+  },
+  "bruno": {
+    "points": 2,
+    "awards": []
+  },
+  "agatha": {
+    "points": 2,
+    "awards": []
+  },
+  "lance": {
+    "points": 2,
+    "awards": []
+  },
+  "rival5": {
+    "points": 2,
+    "awards": []
+  },
+  "oak": {
+    "points": 2,
+    "awards": []
+  },
+  "oak2": {
+    "points": 2,
+    "awards": []
+  },
+  "clair2": {
+    "points": 2,
+    "awards": []
+  },
+  "misty3": {
+    "points": 2,
+    "awards": []
+  },
+  "falkner2": {
+    "points": 2,
+    "awards": []
+  },
+  "gian": {
+    "points": 2,
+    "awards": []
+  },
+  "pryce2": {
+    "points": 2,
+    "awards": []
+  },
+  "runan": {
+    "points": 2,
+    "awards": []
+  },
+  "samantha": {
+    "points": 2,
+    "awards": []
+  },
+  "symes": {
+    "points": 2,
+    "awards": []
+  },
+  "morty2": {
+    "points": 2,
+    "awards": []
+  },
+  "jojofan2": {
+    "points": 2,
+    "awards": []
+  },
+  "amara": {
+    "points": 1,
+    "awards": []
+  },
+  "abigail": {
+    "points": 1,
+    "awards": []
+  },
+  "red": {
+    "points": 2,
+    "awards": []
+  },
+  "claire": {
+    "points": 1,
+    "awards": []
+  },
+  "tanya": {
+    "points": 1,
+    "awards": []
+  },
+  "bryce": {
+    "points": 1,
+    "awards": []
+  },
+  "garrett": {
+    "points": 1,
+    "awards": []
+  },
+  "mik&kia": {
+    "points": 1,
+    "awards": []
+  },
+  "shea": {
+    "points": 1,
+    "awards": []
+  },
+  "hugh": {
+    "points": 1,
+    "awards": []
+  },
+  "sharon": {
+    "points": 1,
+    "awards": []
+  },
+  "finn": {
+    "points": 1,
+    "awards": []
+  },
+  "maria": {
+    "points": 1,
+    "awards": []
+  },
+  "tommy": {
+    "points": 1,
+    "awards": []
+  },
+  "bugsy2": {
+    "points": 2,
+    "awards": []
+  },
+  "beth": {
+    "points": 1,
+    "awards": []
+  },
+  "logan": {
+    "points": 1,
+    "awards": []
+  },
+  "jocelyn": {
+    "points": 1,
+    "awards": []
+  },
+  "ariana2": {
+    "points": 2,
+    "awards": []
+  },
+  "archer3": {
+    "points": 2,
+    "awards": []
+  },
+  "whitney2": {
+    "points": 2,
+    "awards": []
+  },
+  "andrew2": {
+    "points": 1,
+    "awards": []
+  },
+  "rachel": {
+    "points": 1,
+    "awards": []
+  },
+  "goon1": {
+    "points": 1,
+    "awards": []
+  },
+  "goon2": {
+    "points": 1,
+    "awards": []
+  },
+  "goon3": {
+    "points": 1,
+    "awards": []
+  },
+  "gangboss": {
+    "points": 1,
+    "awards": []
+  },
+  "joy&meg": {
+    "points": 1,
+    "awards": []
+  },
+  "violet": {
+    "points": 1,
+    "awards": []
+  },
+  "alexis": {
+    "points": 1,
+    "awards": []
+  },
+  "tisha": {
+    "points": 1,
+    "awards": []
+  },
+  "amira": {
+    "points": 1,
+    "awards": []
+  },
+  "nikki": {
+    "points": 1,
+    "awards": []
+  },
+  "barry": {
+    "points": 2,
+    "awards": []
+  },
+  "sharon2": {
+    "points": 2,
+    "awards": []
+  },
+  "nick": {
+    "points": 2,
+    "awards": []
+  },
+  "janny": {
+    "points": 2,
+    "awards": []
+  },
+  "spirit": {
+    "points": 1,
+    "awards": []
+  },
+  "owen": {
+    "points": 2,
+    "awards": []
+  }
+}

@@ -1,5 +1,6 @@
 :root {
   --template-image: url("../../background.png");
+  --template-backdrop: transparent;
   --template-aspect: 1.777778;
   --overlay-scale: 1;
   --status-bg: rgba(0, 0, 0, 0.58);
@@ -63,15 +64,24 @@
   --pc-grid-gap: 0px;
   --pc-row-overlap-y: 6px;
 
-  --memorial-zone-left: 15%;
-  --memorial-zone-top: 90%;
-  --memorial-zone-width: 40%;
-  --memorial-zone-height: 4%;
-  --memorial-columns: 5;
+  --memorial-zone-left: 9%;
+  --memorial-zone-top: 89%;
+  --memorial-zone-width: 55%;
+  --memorial-zone-height: 21%;
+  --memorial-columns: 10;
   --memorial-grid-gap: 0px;
   --memorial-overlap-x: 38px;
-  --memorial-sprite-size: 108px;
+  --memorial-row-overlap-y: 48px;
+  --memorial-row1-y-offset: 0px;
+  --memorial-row2-y-offset: -50px;
+  --memorial-points-barrier-width: 25px;
+  --memorial-sprite-size: 100px;
   --memorial-sprite-scale: 1;
+
+  --points-count-single-x: 0px;
+  --points-count-single-y: 1px;
+  --points-count-double-x: 0px;
+  --points-count-double-y: 0px;
 }
 
 * {
@@ -83,6 +93,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  background: transparent;
 }
 
 body {
@@ -95,15 +106,18 @@ body {
 
 .overlay-shell {
   position: relative;
-  width: 100vw;
-  height: 100vh;
+  width: min(100vw, calc(100vh * var(--template-aspect)));
+  height: min(100vh, calc(100vw / var(--template-aspect)));
+  max-width: 100vw;
+  max-height: 100vh;
+  aspect-ratio: var(--template-aspect);
   transform: scale(var(--overlay-scale));
   transform-origin: center center;
   background-image: var(--template-image);
   background-size: 100% 100%;
   background-position: center;
   background-repeat: no-repeat;
-  background-color: #000;
+  background-color: var(--template-backdrop);
   contain: layout paint style;
 }
 
@@ -168,6 +182,7 @@ body {
   top: var(--memorial-zone-top);
   width: var(--memorial-zone-width);
   height: var(--memorial-zone-height);
+  overflow: hidden;
 }
 
 .pokemon-grid {
@@ -200,12 +215,14 @@ body {
 }
 
 .dead-grid {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: var(--memorial-grid-gap);
-  justify-content: center;
-  align-items: center;
-  align-content: center;
+  display: grid;
+  grid-template-columns: repeat(var(--memorial-columns), minmax(0, max-content));
+  grid-auto-rows: min-content;
+  row-gap: calc(-1 * var(--memorial-row-overlap-y));
+  padding-left: var(--memorial-points-barrier-width);
+  justify-content: start;
+  align-content: start;
+  align-items: end;
   overflow: visible;
 }
 
@@ -265,10 +282,8 @@ body {
   min-height: 0;
   overflow: visible;
   margin-right: 0;
-}
-
-.memorial-zone .pokemon-token + .pokemon-token {
-  margin-left: calc(var(--memorial-overlap-x) * -1);
+  margin-left: var(--memorial-runtime-margin-left, 0px);
+  transform: translateY(var(--memorial-runtime-translate-y, 0px));
 }
 
 .party-banner {

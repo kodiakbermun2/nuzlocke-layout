@@ -19,6 +19,18 @@
   "pc": [],
   "dead": [],
   "meta": {
-    "source": "mgba_script"
+    "source": "mgba_script",
+    "trainer_defeat_flags": {
+      "FLAG_DEFEATED_BROCK": false,
+      "FLAG_DEFEATED_MISTY": false,
+      "FLAG_DEFEATED_LT_SURGE": false,
+      "FLAG_DEFEATED_ERIKA": false,
+      "FLAG_DEFEATED_KOGA": false,
+      "FLAG_DEFEATED_SABRINA": false,
+      "FLAG_DEFEATED_BLAINE": false,
+      "FLAG_DEFEATED_GIOVANNI": false
+    },
+    "trainer_defeat_flag_keys": [],
+    "trainer_defeat_flags_bytes": []
   }
 }

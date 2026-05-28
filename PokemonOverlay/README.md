@@ -204,6 +204,18 @@ From `PokemonOverlay/tracker`:
 python main.py
 ```
 
+Recommended (from `PokemonOverlay`) to avoid duplicate instances and `8765` conflicts:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\start_tracker.ps1 -Debug
+```
+
+Stop all tracker instances:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\stop_tracker.ps1
+```
+
 Or with explicit overrides:
 
 ```powershell

@@ -10,7 +10,8 @@
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="style.css?v=20260523l" />
+    <link rel="stylesheet" href="style.css?v=20260525c" />
+    <link rel="stylesheet" href="points_shop.css?v=20260526i" />
   </head>
   <body>
     <main class="overlay-shell" id="overlayRoot">
@@ -29,6 +30,10 @@
       <section class="zone memorial-zone" aria-label="Memorial Box">
         <div class="pokemon-grid dead-grid" id="deadGrid"></div>
       </section>
+
+      <button class="points-badge-button" id="pointsBadgeButton" type="button" aria-label="Open points shop">
+        <span class="points-badge-count" id="pointsBadgeValue">0</span>
+      </button>
     </main>
 
     <template id="pokemonCardTemplate">
@@ -39,6 +44,7 @@
       </figure>
     </template>
 
-    <script src="overlay.js?v=20260523h"></script>
+    <script src="points_shop.js?v=20260526m"></script>
+    <script src="overlay.js?v=20260526h"></script>
   </body>
 </html>

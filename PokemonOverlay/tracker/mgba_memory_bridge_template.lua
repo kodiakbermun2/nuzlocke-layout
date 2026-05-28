@@ -7,14 +7,28 @@
 
 local BRIDGE_PATH = "C:/Users/kodia/nuzlocke/PokemonOverlay/tracker/memory_state.json"
 local TEMP_PATH = BRIDGE_PATH .. ".tmp"
+local BRIDGE_LOG_PATH = "C:/Users/kodia/nuzlocke/PokemonOverlay/tracker/mgba_bridge_runtime.log"
 local WRITE_INTERVAL_SECONDS = 0.25
 local ENABLE_PC_SCAN = false
+local AUTO_MANAGE_TRACKER = false
+local TRACKER_PYTHON_PATH = "C:/Users/kodia/nuzlocke/.venv/Scripts/python.exe"
+local TRACKER_MAIN_PATH = "C:/Users/kodia/nuzlocke/PokemonOverlay/tracker/main.py"
+local TRACKER_CONFIG_PATH = "C:/Users/kodia/nuzlocke/PokemonOverlay/config.json"
+local TRACKER_START_DEBUG = true
 
 -- FireRed / Radical Red (FireRed-based) party memory layout.
 -- Addresses are in EWRAM in the running ROM process space.
 local ADDRESS_MAP = {
   party_count = 0x02024029,
   party_start = 0x02024284,
+  saveblock1_ptr_addr = 0x03005008,
+  saveblock2_ptr_addr = 0x0300500C,
+  saveblock1_party_offset = 0x0038,
+  saveblock1_flags_offset = 0x0EE0,
+  saveblock1_flags_bytes = 0x120,
+  saveblock2_trainer_name_offset = 0x0000,
+  saveblock2_trainer_name_len = 8,
+  saveblock2_trainer_id_offset = 0x000A,
   party_slot_size = 100,
   box_size = 80,
   status_offset = 0x50,
@@ -31,7 +45,17 @@ local PC_MAP = {
   search_start = 0x02024000,
   search_end = 0x02034000,
   rescan_seconds = 10.0,
+  failed_rescan_seconds = 45.0,
+  preferred_stride = 32,
+  full_stride = 64,
   min_score = 12,
+}
+
+-- FireRed-family battle type flags (best-known live RAM location).
+-- Non-zero means the game is currently in battle context.
+local BATTLE_MAP = {
+  battle_type_flags_addr = 0x02022B4C,
+  battle_type_flags_mask = 0x003FFFFF,
 }
 
 local SUBSTRUCT_ORDERS = {
@@ -60,7 +84,69 @@ for i = 0, 9 do
 end
 
 local function log(msg)
-  print("[mgba_bridge] " .. tostring(msg))
+  local line = "[mgba_bridge] " .. tostring(msg)
+  print(line)
+  local f = io.open(BRIDGE_LOG_PATH, "a")
+  if f then
+    f:write(line .. "\n")
+    f:close()
+  end
+end
+
+local BRIDGE_INSTANCE_KEY = "__POKEMON_OVERLAY_BRIDGE_INSTANCE_ID"
+local BRIDGE_INSTANCE_ID = tostring(os.time()) .. "_" .. tostring(math.random(100000, 999999))
+local previous_instance = _G[BRIDGE_INSTANCE_KEY]
+_G[BRIDGE_INSTANCE_KEY] = BRIDGE_INSTANCE_ID
+
+local function bridge_instance_is_active()
+  return tostring(_G[BRIDGE_INSTANCE_KEY] or "") == BRIDGE_INSTANCE_ID
+end
+
+local function maybe_restart_tracker()
+  if not AUTO_MANAGE_TRACKER then
+    return
+  end
+
+  if not (os and type(os.execute) == "function") then
+    log("auto tracker management skipped: os.execute unavailable")
+    return
+  end
+
+  local arg_list_ps = string.format(
+    "@('%s','--config','%s'%s)",
+    TRACKER_MAIN_PATH,
+    TRACKER_CONFIG_PATH,
+    TRACKER_START_DEBUG and ",'--debug'" or ""
+  )
+
+  local ps = "$targets = Get-CimInstance Win32_Process | Where-Object { $_.Name -eq 'python.exe' -and ($_.CommandLine -match 'PokemonOverlay/tracker/main.py' -or $_.CommandLine -match '_emit_bridge_updates.py') }; if($targets){ $targets | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue } }; Start-Process -FilePath '"
+    .. TRACKER_PYTHON_PATH
+    .. "' -ArgumentList "
+    .. arg_list_ps
+    .. " -WindowStyle Minimized"
+
+  local command_ps = "powershell -NoProfile -ExecutionPolicy Bypass -Command \""
+    .. ps
+    .. "\""
+
+  local ok_ps, _, exit_ps = os.execute(command_ps)
+  if ok_ps then
+    log("tracker restart command issued (powershell)")
+    return
+  end
+
+  -- Fallback for environments where PowerShell invocation is restricted.
+  local debug_arg = TRACKER_START_DEBUG and " --debug" or ""
+  local kill_cmd = "wmic process where \"name='python.exe' and (CommandLine like '%PokemonOverlay/tracker/main.py%' or CommandLine like '%_emit_bridge_updates.py%')\" call terminate >NUL 2>NUL"
+  local start_cmd = "start \"\" /MIN \"" .. TRACKER_PYTHON_PATH .. "\" \"" .. TRACKER_MAIN_PATH .. "\" --config \"" .. TRACKER_CONFIG_PATH .. "\"" .. debug_arg
+  local command_cmd = "cmd /c \"" .. kill_cmd .. " & " .. start_cmd .. "\""
+
+  local ok_cmd, _, exit_cmd = os.execute(command_cmd)
+  if ok_cmd then
+    log("tracker restart command issued (cmd fallback)")
+  else
+    log("tracker restart command failed (powershell=" .. tostring(exit_ps) .. ", cmd=" .. tostring(exit_cmd) .. ")")
+  end
 end
 
 local has_bitops = (_G.bit32 ~= nil) or (_G.bit ~= nil)
@@ -327,6 +413,263 @@ local function detect_game_mode(party)
   return "vanilla_firered"
 end
 
+local TRAINER_DEFEAT_FLAGS = {
+  { key = "FLAG_DEFEATED_BROCK", id = 0x4B0 },
+  { key = "FLAG_DEFEATED_MISTY", id = 0x4B1 },
+  { key = "FLAG_DEFEATED_LT_SURGE", id = 0x4B2 },
+  { key = "FLAG_DEFEATED_ERIKA", id = 0x4B3 },
+  { key = "FLAG_DEFEATED_KOGA", id = 0x4B4 },
+  { key = "FLAG_DEFEATED_SABRINA", id = 0x4B5 },
+  { key = "FLAG_DEFEATED_BLAINE", id = 0x4B6 },
+  { key = "FLAG_DEFEATED_GIOVANNI", id = 0x4B7 },
+  { key = "FLAG_DEFEATED_LORELEI", id = 0x4B8 },
+  { key = "FLAG_DEFEATED_BRUNO", id = 0x4B9 },
+  { key = "FLAG_DEFEATED_AGATHA", id = 0x4BA },
+  { key = "FLAG_DEFEATED_LANCE", id = 0x4BB },
+  { key = "FLAG_DEFEATED_CHAMP", id = 0x4BC },
+}
+
+local function candidate_saveblock1_bases()
+  local out = {}
+
+  local function push(base)
+    if type(base) ~= "number" then
+      return
+    end
+    if base < 0x02000000 or base > 0x0207FFFF then
+      return
+    end
+    for i = 1, #out do
+      if out[i] == base then
+        return
+      end
+    end
+    out[#out + 1] = base
+  end
+
+  -- FireRed-family RAM pointers (commonly used in decomp/CFRU builds).
+  local ptr_addrs = {
+    ADDRESS_MAP.saveblock1_ptr_addr,
+    ADDRESS_MAP.saveblock2_ptr_addr,
+    0x03005010,
+  }
+  for i = 1, #ptr_addrs do
+    local ptr, _ = read_u32(ptr_addrs[i])
+    if ptr then
+      push(ptr)
+    end
+  end
+
+  -- Legacy fixed-base approximation (kept as fallback).
+  push(ADDRESS_MAP.party_start - ADDRESS_MAP.saveblock1_party_offset)
+
+  return out
+end
+
+local function validate_saveblock1_base(base)
+  if type(base) ~= "number" then
+    return false
+  end
+
+  local party_count, party_count_err = read_u8(ADDRESS_MAP.party_count)
+  if not party_count then
+    return false
+  end
+  if party_count < 0 or party_count > 6 then
+    return false
+  end
+
+  local flags_raw, flags_err = read_bytes(base + ADDRESS_MAP.saveblock1_flags_offset, ADDRESS_MAP.saveblock1_flags_bytes)
+  if not flags_raw then
+    return false
+  end
+
+  if party_count > 0 then
+    local live_personality, live_err = read_u32(ADDRESS_MAP.party_start)
+    local save_party_personality, save_err = read_u32(base + ADDRESS_MAP.saveblock1_party_offset)
+    if live_personality and save_party_personality and live_personality ~= 0 and save_party_personality ~= 0 then
+      if live_personality ~= save_party_personality then
+        return false
+      end
+    elseif live_err and save_err then
+      return false
+    end
+  end
+
+  return true
+end
+
+local function resolve_saveblock1_base()
+  local candidates = candidate_saveblock1_bases()
+  for i = 1, #candidates do
+    local base = candidates[i]
+    if validate_saveblock1_base(base) then
+      return base, nil
+    end
+  end
+
+  -- If no candidate validates, still return the first candidate as best effort.
+  if #candidates > 0 then
+    return candidates[1], "saveblock1_unvalidated"
+  end
+
+  return nil, "saveblock1_unresolved"
+end
+
+local function candidate_saveblock2_bases()
+  local out = {}
+
+  local function push(base)
+    if type(base) ~= "number" then
+      return
+    end
+    if base < 0x02000000 or base > 0x0207FFFF then
+      return
+    end
+    for i = 1, #out do
+      if out[i] == base then
+        return
+      end
+    end
+    out[#out + 1] = base
+  end
+
+  local ptr, _ = read_u32(ADDRESS_MAP.saveblock2_ptr_addr)
+  if ptr then
+    push(ptr)
+  end
+
+  local saveblock1_base, _ = resolve_saveblock1_base()
+  if saveblock1_base then
+    push(saveblock1_base)
+  end
+
+  return out
+end
+
+local function validate_saveblock2_base(base)
+  if type(base) ~= "number" then
+    return false
+  end
+
+  local trainer_id_full, _ = read_u32(base + ADDRESS_MAP.saveblock2_trainer_id_offset)
+  if not trainer_id_full or trainer_id_full == 0 then
+    return false
+  end
+
+  local name_raw, _ = read_bytes(base + ADDRESS_MAP.saveblock2_trainer_name_offset, ADDRESS_MAP.saveblock2_trainer_name_len)
+  if not name_raw then
+    return false
+  end
+
+  local trainer_name = decode_gen3_string(name_raw)
+  if is_blank_name(trainer_name) then
+    return false
+  end
+
+  return true
+end
+
+local function resolve_saveblock2_base()
+  local candidates = candidate_saveblock2_bases()
+  for i = 1, #candidates do
+    local base = candidates[i]
+    if validate_saveblock2_base(base) then
+      return base, nil
+    end
+  end
+
+  if #candidates > 0 then
+    return candidates[1], "saveblock2_unvalidated"
+  end
+
+  return nil, "saveblock2_unresolved"
+end
+
+local function read_trainer_defeat_flags()
+  local saveblock1_base, base_err = resolve_saveblock1_base()
+  if not saveblock1_base then
+    return {}, {}, {}, tostring(base_err or "saveblock1_missing")
+  end
+  local flags_addr = saveblock1_base + ADDRESS_MAP.saveblock1_flags_offset
+  local flags_raw, err = read_bytes(flags_addr, ADDRESS_MAP.saveblock1_flags_bytes)
+  if not flags_raw then
+    return {}, {}, {}, "flags_read_failed: " .. tostring(err)
+  end
+
+  local out_flags = {}
+  local out_keys = {}
+  for i = 1, #TRAINER_DEFEAT_FLAGS do
+    local def = TRAINER_DEFEAT_FLAGS[i]
+    local bit = tonumber(def.id or -1)
+    local byte_index = math.floor(bit / 8)
+    local mask = 2 ^ (bit % 8)
+    local byte_value = flags_raw[byte_index + 1] or 0
+    local defeated = band(byte_value, mask) ~= 0
+    out_flags[def.key] = defeated
+    if defeated then
+      out_keys[#out_keys + 1] = def.key
+    end
+  end
+
+  if base_err then
+    return out_flags, out_keys, flags_raw, tostring(base_err)
+  end
+
+  return out_flags, out_keys, flags_raw, nil
+end
+
+local function read_trainer_profile_meta()
+  local saveblock2_base, base_err = resolve_saveblock2_base()
+  if not saveblock2_base then
+    return {}, tostring(base_err or "saveblock2_missing")
+  end
+  local trainer_id_full, id_err = read_u32(saveblock2_base + ADDRESS_MAP.saveblock2_trainer_id_offset)
+  if not trainer_id_full then
+    return {}, "trainer_id_read_failed: " .. tostring(id_err)
+  end
+
+  local name_raw, name_err = read_bytes(
+    saveblock2_base + ADDRESS_MAP.saveblock2_trainer_name_offset,
+    ADDRESS_MAP.saveblock2_trainer_name_len
+  )
+  if not name_raw then
+    return {
+      trainer_id = trainer_id_full,
+      trainer_public_id = band(trainer_id_full, 0xFFFF),
+      trainer_secret_id = band(rshift(trainer_id_full, 16), 0xFFFF),
+      trainer_name = "",
+      trainer_profile_key = string.format(
+        "%05d-%05d",
+        band(trainer_id_full, 0xFFFF),
+        band(rshift(trainer_id_full, 16), 0xFFFF)
+      ),
+    }, "trainer_name_read_failed: " .. tostring(name_err)
+  end
+
+  local trainer_name = decode_gen3_string(name_raw)
+  local public_id = band(trainer_id_full, 0xFFFF)
+  local secret_id = band(rshift(trainer_id_full, 16), 0xFFFF)
+
+  return {
+    trainer_id = trainer_id_full,
+    trainer_public_id = public_id,
+    trainer_secret_id = secret_id,
+    trainer_name = trainer_name,
+    trainer_profile_key = string.format("%05d-%05d", public_id, secret_id),
+  }, base_err
+end
+
+local function read_in_battle_flag()
+  local raw, err = read_u32(BATTLE_MAP.battle_type_flags_addr)
+  if not raw then
+    return false, "battle_flag_read_failed: " .. tostring(err)
+  end
+
+  local masked = band(raw, BATTLE_MAP.battle_type_flags_mask)
+  return masked ~= 0, nil
+end
+
 local function decode_party_slot(slot_addr, slot_index)
   local core80, err = read_bytes(slot_addr, ADDRESS_MAP.box_size)
   if not core80 then
@@ -484,7 +827,7 @@ local function score_pc_base(base)
   return score, sampled
 end
 
-local last_pc_scan_clock = -999.0
+local next_pc_scan_clock = -999.0
 local cached_pc_base = nil
 
 local function find_pc_base(now)
@@ -492,18 +835,17 @@ local function find_pc_base(now)
     return cached_pc_base
   end
 
-  if (now - last_pc_scan_clock) < PC_MAP.rescan_seconds then
+  if now < next_pc_scan_clock then
     return nil
   end
 
-  last_pc_scan_clock = now
   local best_base = nil
   local best_score = -1
 
   local window = PC_MAP.record_size * PC_MAP.box_slots
 
-  local function scan_range(start_addr, end_addr)
-    for base = start_addr, (end_addr - window), 16 do
+  local function scan_range(start_addr, end_addr, stride)
+    for base = start_addr, (end_addr - window), stride do
       local score, sampled = score_pc_base(base)
       if sampled > 0 and score > best_score then
         best_score = score
@@ -512,9 +854,9 @@ local function find_pc_base(now)
     end
   end
 
-  scan_range(PC_MAP.preferred_start, PC_MAP.preferred_end)
+  scan_range(PC_MAP.preferred_start, PC_MAP.preferred_end, PC_MAP.preferred_stride)
   if best_score < PC_MAP.min_score then
-    scan_range(PC_MAP.search_start, PC_MAP.search_end)
+    scan_range(PC_MAP.search_start, PC_MAP.search_end, PC_MAP.full_stride)
   end
 
   if best_base ~= nil then
@@ -531,9 +873,12 @@ local function find_pc_base(now)
 
   if best_base ~= nil and best_score >= PC_MAP.min_score then
     cached_pc_base = best_base
+    next_pc_scan_clock = now + PC_MAP.rescan_seconds
     log(string.format("pc base selected: 0x%08X score=%d", best_base, best_score))
   else
     cached_pc_base = nil
+    next_pc_scan_clock = now + PC_MAP.failed_rescan_seconds
+    log("pc base scan inconclusive; deferring next scan")
   end
 
   return cached_pc_base
@@ -588,6 +933,53 @@ local function encode_types_json(types)
   return "[" .. table.concat(rows, ",") .. "]"
 end
 
+local function encode_string_array_json(values)
+  local rows = {}
+  for i = 1, #(values or {}) do
+    rows[#rows + 1] = '"' .. json_escape(values[i]) .. '"'
+  end
+  return "[" .. table.concat(rows, ",") .. "]"
+end
+
+local function encode_u8_array_json(values)
+  local rows = {}
+  for i = 1, #(values or {}) do
+    rows[#rows + 1] = tostring(tonumber(values[i] or 0))
+  end
+  return "[" .. table.concat(rows, ",") .. "]"
+end
+
+local function encode_trainer_flags_json(flags)
+  local rows = {}
+  for i = 1, #TRAINER_DEFEAT_FLAGS do
+    local key = TRAINER_DEFEAT_FLAGS[i].key
+    rows[#rows + 1] = string.format('"%s":%s', json_escape(key), flags[key] and "true" or "false")
+  end
+  return "{" .. table.concat(rows, ",") .. "}"
+end
+
+local function encode_trainer_profile_fields(meta)
+  if type(meta) ~= "table" then
+    return ""
+  end
+  local trainer_id = tonumber(meta.trainer_id)
+  local public_id = tonumber(meta.trainer_public_id)
+  local secret_id = tonumber(meta.trainer_secret_id)
+  local trainer_name = tostring(meta.trainer_name or "")
+  local trainer_profile_key = tostring(meta.trainer_profile_key or "")
+  if not trainer_id or not public_id or not secret_id then
+    return ""
+  end
+  return string.format(
+    ',"trainer_id":%d,"trainer_public_id":%d,"trainer_secret_id":%d,"trainer_name":"%s","trainer_profile_key":"%s"',
+    trainer_id,
+    public_id,
+    secret_id,
+    json_escape(trainer_name),
+    json_escape(trainer_profile_key)
+  )
+end
+
 local function encode_party_json(party)
   local rows = {}
   for i, mon in ipairs(party) do
@@ -631,21 +1023,9 @@ local function encode_pc_json(pc)
 end
 
 local function atomic_write(path, temp_path, payload)
-  -- Prefer direct overwrite on Windows to avoid delete/rename races that can
-  -- make readers observe transient missing-file states.
-  local direct, derr = io.open(path, "wb")
-  if direct then
-    local okw, ew = direct:write(payload)
-    direct:close()
-    if okw then
-      return true, nil
-    end
-    return false, "direct_write_failed: " .. tostring(ew)
-  end
-
   local f, err = io.open(temp_path, "wb")
   if not f then
-    return false, "open_failed: " .. tostring(err or derr)
+    return false, "open_failed: " .. tostring(err)
   end
   local okw, ew = f:write(payload)
   if not okw then
@@ -663,15 +1043,31 @@ local function atomic_write(path, temp_path, payload)
   return true, nil
 end
 
-local function build_payload(party, pc, detail, game_mode, pc_detail)
+local function build_payload(
+  party,
+  pc,
+  detail,
+  game_mode,
+  pc_detail,
+  in_battle,
+  trainer_flags,
+  trainer_flag_keys,
+  trainer_flag_bytes,
+  trainer_profile_meta
+)
   return string.format(
-    '{"timestamp_ms":%d,"party":%s,"pc":%s,"dead":[],"meta":{"provider":"mgba_live","game_mode":"%s","detail":"%s","pc_detail":"%s","pc_scope":"current_box","pc_box_known":false}}',
+    '{"timestamp_ms":%d,"party":%s,"pc":%s,"dead":[],"meta":{"provider":"mgba_live","game_mode":"%s","detail":"%s","pc_detail":"%s","in_battle":%s,"pc_scope":"current_box","pc_box_known":false,"trainer_defeat_flags":%s,"trainer_defeat_flag_keys":%s,"trainer_defeat_flags_bytes":%s%s}}',
     now_ms(),
     encode_party_json(party),
     encode_pc_json(pc),
     json_escape(game_mode or "unknown"),
     json_escape(detail or "ok"),
-    json_escape(pc_detail or "")
+    json_escape(pc_detail or ""),
+    in_battle and "true" or "false",
+    encode_trainer_flags_json(trainer_flags or {}),
+    encode_string_array_json(trainer_flag_keys or {}),
+    encode_u8_array_json(trainer_flag_bytes or {}),
+    encode_trainer_profile_fields(trainer_profile_meta or {})
   )
 end
 
@@ -738,6 +1134,9 @@ local function frame_advance()
 end
 
 local function bridge_write_tick(now)
+  if not bridge_instance_is_active() then
+    return
+  end
   if (now - last_write_clock) < WRITE_INTERVAL_SECONDS then
     return
   end
@@ -756,12 +1155,39 @@ local function bridge_write_tick(now)
   if ENABLE_PC_SCAN then
     pc, pc_detail = read_current_box_pc(now)
   end
-  local payload = build_payload(party, pc, detail, game_mode, pc_detail)
+  local trainer_flags, trainer_flag_keys, trainer_flag_bytes, trainer_flag_err = read_trainer_defeat_flags()
+  if trainer_flag_err then
+    detail = tostring(detail) .. " | " .. tostring(trainer_flag_err)
+  end
+  local trainer_profile_meta, trainer_profile_err = read_trainer_profile_meta()
+  if trainer_profile_err then
+    detail = tostring(detail) .. " | " .. tostring(trainer_profile_err)
+  end
+  local in_battle, in_battle_err = read_in_battle_flag()
+  if in_battle_err then
+    detail = tostring(detail) .. " | " .. tostring(in_battle_err)
+  end
+  local payload = build_payload(
+    party,
+    pc,
+    detail,
+    game_mode,
+    pc_detail,
+    in_battle,
+    trainer_flags,
+    trainer_flag_keys,
+    trainer_flag_bytes,
+    trainer_profile_meta
+  )
   local ok_write, err = atomic_write(BRIDGE_PATH, TEMP_PATH, payload)
   if ok_write then
     write_counter = write_counter + 1
     if (write_counter % 20) == 0 then
-      log(string.format("write ok #%d %s", write_counter, tostring(detail)))
+      local profile_key = ""
+      if type(trainer_profile_meta) == "table" then
+        profile_key = tostring(trainer_profile_meta.trainer_profile_key or "")
+      end
+      log(string.format("write ok #%d %s trainer_profile_key=%s", write_counter, tostring(detail), profile_key))
     end
   else
     log("write failure: " .. tostring(err))
@@ -770,6 +1196,9 @@ end
 
 local function try_register_frame_callback()
   local function on_frame()
+    if not bridge_instance_is_active() then
+      return
+    end
     bridge_write_tick(os.clock())
   end
 
@@ -823,7 +1252,11 @@ local function try_register_frame_callback()
 end
 
 log("bridge started")
+if previous_instance and tostring(previous_instance) ~= "" then
+  log("superseding previous bridge instance " .. tostring(previous_instance))
+end
 log(string.format("party_count=0x%08X party_start=0x%08X", ADDRESS_MAP.party_count, ADDRESS_MAP.party_start))
+maybe_restart_tracker()
 
 local tight_loop_count = 0
 local last_loop_clock = os.clock()
@@ -848,6 +1281,11 @@ local function loop_guard_check()
 end
 
 while true do
+  if not bridge_instance_is_active() then
+    log("bridge instance superseded; stopping old script")
+    break
+  end
+
   -- Prefer callback-driven ticking when available to avoid tight manual loops.
   if try_register_frame_callback() then
     log("registered frame callback mode")

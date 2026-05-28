@@ -1,0 +1,775 @@
+{
+  "total_rewards": 96,
+  "auto_wired_count": 13,
+  "missing_flag_id_count": 83,
+  "rewards": [
+    {
+      "trainer_id": "rival_route_22",
+      "trainer_name": "Rival (Route 22)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_RIVAL_ROUTE_22",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brendan_viridian_forest",
+      "trainer_name": "Brendan (Viridian Forest)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BRENDAN_VIRIDIAN_FOREST",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lass_anne_viridian_forest",
+      "trainer_name": "Lass Anne (Viridian Forest)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_LASS_ANNE_VIRIDIAN_FOREST",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_nelle_viridian_forest",
+      "trainer_name": "Ace Nelle (Viridian Forest)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_NELLE_VIRIDIAN_FOREST",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "falkner",
+      "trainer_name": "Falkner (Pewter City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_FALKNER_PEWTER_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brock",
+      "trainer_name": "Brock (Pewter City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BROCK",
+      "flag_id": 1200,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "super_nerd_miguel",
+      "trainer_name": "Super Nerd Miguel (Mt. Moon)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_SUPER_NERD_MIGUEL_MT_MOON",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "admin_archer_mt_moon",
+      "trainer_name": "Admin Archer (Mt. Moon)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_ADMIN_ARCHER_MT_MOON",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "rival_cerulean_city",
+      "trainer_name": "Rival (Cerulean City)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_RIVAL_CERULEAN_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "catcher_cale",
+      "trainer_name": "Catcher Cale (Nugget Bridge)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CATCHER_CALE_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lass_ali",
+      "trainer_name": "Lass Ali (Nugget Bridge)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_LASS_ALI_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "youngster_timmy",
+      "trainer_name": "Youngster Timmy (Nugget Bridge)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_YOUNGSTER_TIMMY_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lass_reli",
+      "trainer_name": "Lass Reli (Nugget Bridge)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_LASS_RELI_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "camper_ethan",
+      "trainer_name": "Camper Ethan (Nugget Bridge)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CAMPER_ETHAN_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "rocket_grunt_nugget_bridge",
+      "trainer_name": "Rocket Grunt (Nugget Bridge)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_ROCKET_GRUNT_NUGGET_BRIDGE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "bugsy",
+      "trainer_name": "Bugsy (Route 25)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BUGSY_ROUTE_25",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "misty",
+      "trainer_name": "Misty (Cerulean City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_MISTY",
+      "flag_id": 1201,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "rocket_grunt_dig_house",
+      "trainer_name": "Rocket Grunt (Dig House)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ROCKET_GRUNT_DIG_HOUSE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ann_and_brooks",
+      "trainer_name": "Ann & Brooks (S.S. Anne)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ANN_AND_BROOKS_SS_ANNE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "edmond_and_trevor",
+      "trainer_name": "Edmond & Trevor (S.S. Anne)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_EDMOND_AND_TREVOR_SS_ANNE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brendan_ss_anne",
+      "trainer_name": "Brendan (S.S. Anne)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BRENDAN_SS_ANNE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "whitney",
+      "trainer_name": "Whitney (Route 11)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_WHITNEY_ROUTE_11",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lt_surge",
+      "trainer_name": "Lt. Surge",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_LT_SURGE",
+      "flag_id": 1202,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "picknicker_caitlin",
+      "trainer_name": "Picknicker Caitlin (Route 9)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_PICKNICKER_CAITLIN_ROUTE_9",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "morty",
+      "trainer_name": "Morty (Lavender Town)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_MORTY_LAVENDER_TOWN",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "erika",
+      "trainer_name": "Erika (Celadon City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_ERIKA",
+      "flag_id": 1203,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "rocket_guard_game_corner",
+      "trainer_name": "Rocket Guard (Game Corner)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ROCKET_GUARD_GAME_CORNER",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "left_guard_rocket_hideout",
+      "trainer_name": "Left Guard (Rocket Hideout)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_LEFT_GUARD_ROCKET_HIDEOUT",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "right_guard_rocket_hideout",
+      "trainer_name": "Right Guard (Rocket Hideout)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_RIGHT_GUARD_ROCKET_HIDEOUT",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "giovannia_rocket_hideout",
+      "trainer_name": "Giovannia (Rocket Hideout)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_GIOVANNIA_ROCKET_HIDEOUT",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_cole",
+      "trainer_name": "Ace Cole (Route 8)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_COLE_ROUTE_8",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "beauty_sam",
+      "trainer_name": "Beauty Sam (Celadon City Hotel)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BEAUTY_SAM_CELADON_CITY_HOTEL",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "beauty_shelly",
+      "trainer_name": "Beauty Shelly (Celadon City Hotel)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BEAUTY_SHELLY_CELADON_CITY_HOTEL",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ghost_pokemon_tower",
+      "trainer_name": "Ghost (Pokemon Tower)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_GHOST_POKEMON_TOWER",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "rival_silph_co",
+      "trainer_name": "Rival (Silph Co.)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_RIVAL_SILPH_CO",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "admin_ariana_archer_silph",
+      "trainer_name": "Admin Ariana & Archer (Silph Co.)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ADMIN_ARIANA_ARCHER_SILPH_CO",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "giovanni",
+      "trainer_name": "Giovanni (Silph Co.)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_GIOVANNI",
+      "flag_id": 1207,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "chuck",
+      "trainer_name": "Chuck (Saffron City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_CHUCK_SAFFRON_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "sabrina",
+      "trainer_name": "Sabrina (Saffron City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_SABRINA",
+      "flag_id": 1205,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "dumass_kid",
+      "trainer_name": "Dumass Kid (Saffron City)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_DUMASS_KID_SAFFRON_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "rocker_luca",
+      "trainer_name": "Rocker Luca (Route 12)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ROCKER_LUCA_ROUTE_12",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "camper_justin",
+      "trainer_name": "Camper Justin (Route 12)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CAMPER_JUSTIN_ROUTE_12",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "fisherman_andrew",
+      "trainer_name": "Fisherman Andrew (Route 12)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_FISHERMAN_ANDREW_ROUTE_12",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "bird_keeper_sebastian",
+      "trainer_name": "Bird Keeper Sebastian (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIRD_KEEPER_SEBASTIAN_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "picknicker_susie",
+      "trainer_name": "Picknicker Susie (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_PICKNICKER_SUSIE_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "picknicker_alma",
+      "trainer_name": "Picknicker Alma (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_PICKNICKER_ALMA_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lola_and_sheila",
+      "trainer_name": "Lola & Sheila (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_LOLA_AND_SHEILA_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "bird_keeper_perry",
+      "trainer_name": "Bird Keeper Perry (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIRD_KEEPER_PERRY_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "biker_jared",
+      "trainer_name": "Biker Jared (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIKER_JARED_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "bird_keeper_robert",
+      "trainer_name": "Bird Keeper Robert (Route 13)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIRD_KEEPER_ROBERT_ROUTE_13",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_haley",
+      "trainer_name": "Ace Haley (Route 15)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_HALEY_ROUTE_15",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "biker_lao",
+      "trainer_name": "Biker Lao (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIKER_LAO_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "cue_ball_koji",
+      "trainer_name": "Cue Ball Koji (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CUE_BALL_KOJI_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "cue_ball_luke",
+      "trainer_name": "Cue Ball Luke (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CUE_BALL_LUKE_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "biker_ruben",
+      "trainer_name": "Biker Ruben (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIKER_RUBEN_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "cue_ball_camron",
+      "trainer_name": "Cue Ball Camron (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_CUE_BALL_CAMRON_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "biker_hideo",
+      "trainer_name": "Biker Hideo (Route 16)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIKER_HIDEO_ROUTE_16",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "biker_william",
+      "trainer_name": "Biker William (Route 18)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIKER_WILLIAM_ROUTE_18",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "bird_keeper_jacob",
+      "trainer_name": "Bird Keeper Jacob (Route 18)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BIRD_KEEPER_JACOB_ROUTE_18",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "tamer_ramiro",
+      "trainer_name": "Tamer Ramiro (Route 18)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_TAMER_RAMIRO_ROUTE_18",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_wilton",
+      "trainer_name": "Ace Wilton (Route 18)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_WILTON_ROUTE_18",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brendan_safari_zone",
+      "trainer_name": "Brendan (Safari Zone)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BRENDAN_SAFARI_ZONE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brock_rematch",
+      "trainer_name": "Brock (Rematch) (Pewter City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BROCK_REMATCH_PEWTER_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "misty_rematch",
+      "trainer_name": "Misty (Rematch) (Cerulean City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_MISTY_REMATCH_CERULEAN_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lt_surge_rematch",
+      "trainer_name": "Lt. Surge (Rematch) (Vermillion City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_LT_SURGE_REMATCH_VERMILLION_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "erika_rematch",
+      "trainer_name": "Erika (Rematch) (Celadon City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_ERIKA_REMATCH_CELADON_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "koga",
+      "trainer_name": "Koga (Fushsia City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_KOGA",
+      "flag_id": 1204,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "dumass_jojo_fan",
+      "trainer_name": "Dumass Jojo Fan (Power Plant)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_DUMASS_JOJO_FAN_POWER_PLANT",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "pryce",
+      "trainer_name": "Pryce (Seafoam Islands)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_PRYCE_SEAFOAM_ISLANDS",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "may_cinnabar",
+      "trainer_name": "May (Cinnabar Island)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_MAY_CINNABAR_ISLAND",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "jasmine",
+      "trainer_name": "Jasmine (Cinnabar Island Lab)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_JASMINE_CINNABAR_ISLAND_LAB",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_derek",
+      "trainer_name": "Ace Derek (Cinnabar Island Gym)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_DEREK_CINNABAR_ISLAND_GYM",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_lucy",
+      "trainer_name": "Ace Lucy (Cinnabar Island Gym)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_LUCY_CINNABAR_ISLAND_GYM",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_zac",
+      "trainer_name": "Ace Zac (Cinnabar Island Gym)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_ZAC_CINNABAR_ISLAND_GYM",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "blaine",
+      "trainer_name": "Blaine (Cinnabar Island)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BLAINE",
+      "flag_id": 1206,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "admin_archer_cerulean_cave",
+      "trainer_name": "Admin Archer (Cerulean Cave)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ADMIN_ARCHER_CERULEAN_CAVE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "admin_ariana_cerulean_cave",
+      "trainer_name": "Admin Ariana (Cerulean Cave)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ADMIN_ARIANA_CERULEAN_CAVE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "giovanni_cerulean_cave",
+      "trainer_name": "Giovanni (Cerulean Cave)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_GIOVANNI_CERULEAN_CAVE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "black_belt_ketchup",
+      "trainer_name": "Black Belt Ketchup (Cerulean Cave)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BLACK_BELT_KETCHUP_CERULEAN_CAVE",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "clair",
+      "trainer_name": "Clair (Viridian City)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_CLAIR_VIRIDIAN_CITY",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "burglar_max",
+      "trainer_name": "Burglar Max (Pokemon Mansion 4F)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BURGLAR_MAX_POKEMON_MANSION_4F",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "burglar_anson",
+      "trainer_name": "Burglar Anson (Pokemon Mansion 4F)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BURGLAR_ANSON_POKEMON_MANSION_4F",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "rival_rematch_route_22",
+      "trainer_name": "Rival (Rematch) (Route 22)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_RIVAL_REMATCH_ROUTE_22",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "brendan_route_23",
+      "trainer_name": "Brendan (Route 23)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_BRENDAN_ROUTE_23",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_naomi",
+      "trainer_name": "Ace Naomi (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_NAOMI_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_rolando",
+      "trainer_name": "Ace Rolando (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_ROLANDO_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_george",
+      "trainer_name": "Ace George (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_GEORGE_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_caroline",
+      "trainer_name": "Ace Caroline (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_CAROLINE_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_colby",
+      "trainer_name": "Ace Colby (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_COLBY_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "ace_alexa",
+      "trainer_name": "Ace Alexa (Victory Road)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_ACE_ALEXA_VICTORY_ROAD",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "dumbass_creator",
+      "trainer_name": "Dumbass Creator (Indigo Plateau)",
+      "points": 1,
+      "flag_key": "FLAG_DEFEATED_DUMBASS_CREATOR_INDIGO_PLATEAU",
+      "flag_id": null,
+      "auto_wired": false
+    },
+    {
+      "trainer_id": "lorelei",
+      "trainer_name": "Lorelei (Elite Four)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_LORELEI",
+      "flag_id": 1208,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "bruno",
+      "trainer_name": "Bruno (Elite Four)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_BRUNO",
+      "flag_id": 1209,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "agatha",
+      "trainer_name": "Agatha (Elite Four)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_AGATHA",
+      "flag_id": 1210,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "lance",
+      "trainer_name": "Lance (Elite Four)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_LANCE",
+      "flag_id": 1211,
+      "auto_wired": true
+    },
+    {
+      "trainer_id": "rival_elite_four_champion",
+      "trainer_name": "Rival (Elite Four Champion)",
+      "points": 2,
+      "flag_key": "FLAG_DEFEATED_CHAMP",
+      "flag_id": 1212,
+      "auto_wired": true
+    }
+  ]
+}
