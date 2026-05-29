@@ -1,0 +1,2084 @@
+{
+  "awarded_trainers": [
+    "left_guard_rocket_hideout",
+    "right_guard_rocket_hideout",
+    "rocket_grunt_dig_house",
+    "rocket_grunt_nugget_bridge",
+    "rocket_guard_game_corner",
+    "brendan_viridian_forest",
+    "lass_anne_viridian_forest",
+    "ace_wilton"
+  ],
+  "current_points": 11,
+  "inventory": [
+    {
+      "base_cost": 10,
+      "granted_at": 1779933938039,
+      "id": "soft_reset_1779933938039_0556",
+      "item_id": "soft_reset",
+      "metadata": {},
+      "name": "Soft Reset",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "shop_purchase",
+      "type": "soft_reset"
+    },
+    {
+      "base_cost": 3,
+      "granted_at": 1779933941185,
+      "id": "boss_reset_1779933941185_c6a4",
+      "item_id": "boss_reset",
+      "metadata": {},
+      "name": "Boss Reset",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "shop_purchase",
+      "type": "boss_reset"
+    },
+    {
+      "base_cost": 3,
+      "granted_at": 1779933943986,
+      "id": "boss_reset_1779933943986_ea88",
+      "item_id": "boss_reset",
+      "metadata": {},
+      "name": "Boss Reset",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "shop_purchase",
+      "type": "boss_reset"
+    },
+    {
+      "base_cost": 0,
+      "granted_at": 1779937780451,
+      "id": "boss_reset_2_1779937780451_6c93",
+      "item_id": "boss_reset_2",
+      "metadata": {
+        "award_filename": "Boss Reset 2.png",
+        "code": "lt.surge",
+        "source": "redeem_code"
+      },
+      "name": "Boss Reset 2",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "redeem_code",
+      "type": "boss_reset_2"
+    },
+    {
+      "base_cost": 3,
+      "granted_at": 1779939593746,
+      "id": "raid_roll_1779939593746_e96e",
+      "item_id": "raid_roll",
+      "metadata": {},
+      "name": "Raid Roll",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "shop_purchase",
+      "type": "raid_roll"
+    },
+    {
+      "base_cost": 0,
+      "granted_at": 1779962363290,
+      "id": "next_of_kin_2_1779962363290_a08a",
+      "item_id": "next_of_kin_2",
+      "metadata": {
+        "award_filename": "Next Of Kin 2.png",
+        "code": "morty",
+        "source": "redeem_code"
+      },
+      "name": "Next Of Kin 2",
+      "redeemed": false,
+      "redeemed_at": null,
+      "source": "redeem_code",
+      "type": "next_of_kin_2"
+    }
+  ],
+  "purchased_counts": {
+    "boss_reset": 2,
+    "encounter_reroll": 1,
+    "raid_roll": 1,
+    "revive": 2,
+    "soft_reset": 1
+  },
+  "redeemed_codes": {
+    "ali": true,
+    "ann&brooks": true,
+    "anne": true,
+    "archer": true,
+    "brendan": true,
+    "brendan2": true,
+    "brock": true,
+    "bugsy": true,
+    "caitlin": true,
+    "cale": true,
+    "edmond&trevor": true,
+    "erika": true,
+    "ethan": true,
+    "falkner": true,
+    "grunt": true,
+    "grunt2": true,
+    "lt.surge": true,
+    "miguel": true,
+    "misty": true,
+    "morty": true,
+    "nelle": true,
+    "reli": true,
+    "rival": true,
+    "rival2": true,
+    "timmy": true,
+    "whitney": true
+  },
+  "trainer_profile_key": "52412-28024",
+  "transactions": [
+    {
+      "cost": -1,
+      "id": "txn_1779829137943_2839",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 1
+      },
+      "points_after": 1,
+      "points_before": 0,
+      "timestamp": 1779829137943,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779829570316_e649",
+      "item": "Bird Watcher",
+      "metadata": {
+        "inventory_id": "bird_watcher_1779829570316_7026",
+        "item_id": "bird_watcher",
+        "notify_inventory": true,
+        "retroactive": true,
+        "reward_type": "battle_reward",
+        "source": "trainer_reward:falkner",
+        "trainer_id": "falkner",
+        "trainer_name": "Falkner"
+      },
+      "points_after": 1,
+      "points_before": 1,
+      "timestamp": 1779829570316,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779829748780_02cc",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1324,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "brendan_viridian_forest",
+        "trainer_name": "Brendan"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779829748780,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779829748821_74be",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1609,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "rival_route_22",
+        "trainer_name": "Rival"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779829748821,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779829775212_43d9",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 2
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779829775212,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779829822024_dd56",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 1
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779829822024,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830014781_9d83",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1324,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "brendan_viridian_forest",
+        "trainer_name": "Brendan"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779830014781,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830337274_acc5",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1646,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "left_guard_rocket_hideout",
+        "trainer_name": "Left Guard"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779830337274,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830337319_59d7",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1647,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "right_guard_rocket_hideout",
+        "trainer_name": "Right Guard"
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779830337319,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830337366_1111",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1635,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "rocket_grunt_dig_house",
+        "trainer_name": "Rocket Grunt"
+      },
+      "points_after": 5,
+      "points_before": 4,
+      "timestamp": 1779830337366,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779830337409_5d96",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1636,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "rocket_grunt_nugget_bridge",
+        "trainer_name": "Rocket Grunt"
+      },
+      "points_after": 7,
+      "points_before": 5,
+      "timestamp": 1779830337409,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830337454_726d",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1637,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "rocket_guard_game_corner",
+        "trainer_name": "Rocket Guard"
+      },
+      "points_after": 8,
+      "points_before": 7,
+      "timestamp": 1779830337454,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779830337494_928a",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 9,
+      "points_before": 8,
+      "timestamp": 1779830337494,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779830337638_4dcc",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1324,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "brendan_viridian_forest",
+        "trainer_name": "Brendan"
+      },
+      "points_after": 8,
+      "points_before": 9,
+      "timestamp": 1779830337638,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779830337687_7862",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1609,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "rival_route_22",
+        "trainer_name": "Rival"
+      },
+      "points_after": 7,
+      "points_before": 8,
+      "timestamp": 1779830337687,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 5,
+      "id": "txn_1779831059881_c33d",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 2
+      },
+      "points_after": 2,
+      "points_before": 7,
+      "timestamp": 1779831059881,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831092965_1098",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831092965,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831093438_29a5",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831093438,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831102581_e27b",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831102581,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831102612_fc81",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831102612,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831103947_04c0",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831103947,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831104005_9bf1",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831104005,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831116745_38d0",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831116745,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831116776_7197",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831116776,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831199790_54a6",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831199790,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831199929_19c8",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831199929,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831200601_0e99",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831200601,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831200651_7969",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831200651,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831218567_86de",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831218567,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831218631_6750",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831218631,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831236603_bb43",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831236603,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831236635_1b30",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831236635,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831243489_e998",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831243489,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831243555_f731",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831243555,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831243826_c8f3",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831243826,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831243858_4058",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831243858,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831244361_4694",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831244361,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831244435_36d3",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831244435,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831258365_fc2c",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831258365,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831258407_5464",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 3,
+      "timestamp": 1779831258407,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779831279848_9a10",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 1,
+      "points_before": 2,
+      "timestamp": 1779831279848,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831279918_557b",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 2,
+      "points_before": 1,
+      "timestamp": 1779831279918,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831306175_ea17",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1324,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "brendan_viridian_forest",
+        "trainer_name": "Brendan"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831306175,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831306225_5b5b",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1609,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "rival_route_22",
+        "trainer_name": "Rival"
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779831306225,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 2,
+      "id": "txn_1779831356077_7131",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 2
+      },
+      "points_after": 2,
+      "points_before": 4,
+      "timestamp": 1779831356077,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779831806379_31c3",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1284,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "lass_anne_viridian_forest",
+        "trainer_name": "Lass Anne"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779831806379,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779832028588_3922",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 4
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779832028588,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779832117957_546a",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 5,
+      "points_before": 4,
+      "timestamp": 1779832117957,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779832118988_a5fd",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1609,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "rival_route_22",
+        "trainer_name": "Rival"
+      },
+      "points_after": 4,
+      "points_before": 5,
+      "timestamp": 1779832118988,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779832121890_7e44",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 4,
+      "timestamp": 1779832121890,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779832122512_d17c",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779832122512,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779832139244_145a",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 3,
+      "points_before": 4,
+      "timestamp": 1779832139244,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779832140119_5757",
+      "item": "trainer_reward",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1587,
+        "manual_verified": false,
+        "source": "trainer_reward",
+        "trainer_id": "ace_wilton",
+        "trainer_name": "Ace Wilton"
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779832140119,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779832140160_912d",
+      "item": "trainer_reward_revoke",
+      "metadata": {
+        "detection_source": "trainer_db_transition",
+        "flag_id": 1588,
+        "flag_reverted": true,
+        "reason": "flag_reverted",
+        "source": "trainer_reward_revoke",
+        "trainer_id": "tamer_ramiro",
+        "trainer_name": "Tamer Ramiro"
+      },
+      "points_after": 3,
+      "points_before": 4,
+      "timestamp": 1779832140160,
+      "type": "award_revoke",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779832516570_df7d",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 4
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779832516570,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779833633723_d8db",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 6
+      },
+      "points_after": 6,
+      "points_before": 4,
+      "timestamp": 1779833633723,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779839057400_cc53",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "brock",
+        "source": "redeem_code"
+      },
+      "points_after": 8,
+      "points_before": 6,
+      "timestamp": 1779839057400,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779839057400_3bfb",
+      "item": "Revive 2",
+      "metadata": {
+        "award_filename": "Revive 2.png",
+        "code": "brock",
+        "inventory_id": "revive_2_1779839057400_32ec",
+        "item_id": "revive_2",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 8,
+      "points_before": 8,
+      "timestamp": 1779839057400,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": 6,
+      "id": "txn_1779840005029_d37e",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 2
+      },
+      "points_after": 2,
+      "points_before": 8,
+      "timestamp": 1779840005029,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779840023510_de1b",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "rival",
+        "source": "redeem_code"
+      },
+      "points_after": 3,
+      "points_before": 2,
+      "timestamp": 1779840023510,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779840031485_0672",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "brendan",
+        "source": "redeem_code"
+      },
+      "points_after": 4,
+      "points_before": 3,
+      "timestamp": 1779840031485,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779840036472_3d5e",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "anne",
+        "source": "redeem_code"
+      },
+      "points_after": 5,
+      "points_before": 4,
+      "timestamp": 1779840036472,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779840049385_02a2",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "nelle",
+        "source": "redeem_code"
+      },
+      "points_after": 6,
+      "points_before": 5,
+      "timestamp": 1779840049385,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779840057980_12e3",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "falkner",
+        "source": "redeem_code"
+      },
+      "points_after": 8,
+      "points_before": 6,
+      "timestamp": 1779840057980,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779840057980_d31d",
+      "item": "Bird Watcher",
+      "metadata": {
+        "award_filename": "Bird Watcher.png",
+        "code": "falkner",
+        "inventory_id": "bird_watcher_1779840057980_1452",
+        "item_id": "bird_watcher",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 8,
+      "points_before": 8,
+      "timestamp": 1779840057980,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779840060507_c0a6",
+      "item": "Bird Watcher",
+      "metadata": {
+        "base_cost": 0,
+        "inventory_id": "bird_watcher_1779829570316_7026",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779829570316,
+          "id": "bird_watcher_1779829570316_7026",
+          "item_id": "bird_watcher",
+          "metadata": {
+            "retroactive": true,
+            "reward_type": "battle_reward",
+            "trainer_id": "falkner",
+            "trainer_name": "Falkner"
+          },
+          "name": "Bird Watcher",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "trainer_reward:falkner",
+          "type": "bird_watcher"
+        },
+        "refund": 0
+      },
+      "points_after": 8,
+      "points_before": 8,
+      "timestamp": 1779840060507,
+      "type": "sell",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779843298163_cc7b",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "miguel",
+        "source": "redeem_code"
+      },
+      "points_after": 9,
+      "points_before": 8,
+      "timestamp": 1779843298163,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779843606867_b4fc",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "archer",
+        "source": "redeem_code"
+      },
+      "points_after": 11,
+      "points_before": 9,
+      "timestamp": 1779843606867,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 1,
+      "id": "txn_1779843732056_9719",
+      "item": "Encounter Reroll",
+      "metadata": {
+        "inventory_id": "encounter_reroll_1779843732056_01f9",
+        "item_id": "encounter_reroll"
+      },
+      "points_after": 10,
+      "points_before": 11,
+      "timestamp": 1779843732056,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779843738562_bf6a",
+      "item": "Encounter Reroll",
+      "metadata": {
+        "inventory_id": "encounter_reroll_1779843732056_01f9",
+        "item_snapshot": {
+          "base_cost": 1,
+          "granted_at": 1779843732056,
+          "id": "encounter_reroll_1779843732056_01f9",
+          "item_id": "encounter_reroll",
+          "metadata": {},
+          "name": "Encounter Reroll",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "shop_purchase",
+          "type": "encounter_reroll"
+        }
+      },
+      "points_after": 10,
+      "points_before": 10,
+      "timestamp": 1779843738562,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779845416380_6b87",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "rival2",
+        "source": "redeem_code"
+      },
+      "points_after": 11,
+      "points_before": 10,
+      "timestamp": 1779845416380,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779845622992_375d",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "cale",
+        "source": "redeem_code"
+      },
+      "points_after": 12,
+      "points_before": 11,
+      "timestamp": 1779845622992,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779845795820_2179",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "ali",
+        "source": "redeem_code"
+      },
+      "points_after": 13,
+      "points_before": 12,
+      "timestamp": 1779845795820,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779846090236_bdfc",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "timmy",
+        "source": "redeem_code"
+      },
+      "points_after": 14,
+      "points_before": 13,
+      "timestamp": 1779846090236,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779846270365_6172",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "reli",
+        "source": "redeem_code"
+      },
+      "points_after": 15,
+      "points_before": 14,
+      "timestamp": 1779846270365,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779846474322_8949",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "ethan",
+        "source": "redeem_code"
+      },
+      "points_after": 16,
+      "points_before": 15,
+      "timestamp": 1779846474322,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779847355867_8223",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "grunt",
+        "source": "redeem_code"
+      },
+      "points_after": 18,
+      "points_before": 16,
+      "timestamp": 1779847355867,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779874158518_5147",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "bugsy",
+        "source": "redeem_code"
+      },
+      "points_after": 20,
+      "points_before": 18,
+      "timestamp": 1779874158518,
+      "type": "award",
+      "undone": true,
+      "undone_at": 1779874574569
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779874595640_0a89",
+      "item": "Bug Catcher",
+      "metadata": {
+        "award_filename": "Bug Catcher.png",
+        "code": "bugsy",
+        "inventory_id": "bug_catcher_1779874595640_79d3",
+        "item_id": "bug_catcher",
+        "notify_inventory": true,
+        "source": "redeem_code_repair"
+      },
+      "points_after": 18,
+      "points_before": 18,
+      "timestamp": 1779874595640,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779874612979_c121",
+      "item": "points_set",
+      "metadata": {
+        "source": "manual_points_chip_edit",
+        "target_points": 20
+      },
+      "points_after": 20,
+      "points_before": 18,
+      "timestamp": 1779874612979,
+      "type": "points_set",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779874676673_6999",
+      "item": "Revive 2",
+      "metadata": {
+        "inventory_id": "revive_2_1779839057400_32ec",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779839057400,
+          "id": "revive_2_1779839057400_32ec",
+          "item_id": "revive_2",
+          "metadata": {
+            "award_filename": "Revive 2.png",
+            "code": "brock",
+            "source": "redeem_code"
+          },
+          "name": "Revive 2",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code",
+          "type": "revive_2"
+        }
+      },
+      "points_after": 20,
+      "points_before": 20,
+      "timestamp": 1779874676673,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779911221334_9648",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "misty",
+        "source": "redeem_code"
+      },
+      "points_after": 22,
+      "points_before": 20,
+      "timestamp": 1779911221334,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779911440679_55ef",
+      "item": "Fishing Boon 2",
+      "metadata": {
+        "award_filename": "Fishing Boon 2.png",
+        "code": "misty",
+        "inventory_id": "fishing_boon_2_1779911440679_3afa",
+        "item_id": "fishing_boon_2",
+        "notify_inventory": true,
+        "source": "redeem_code_repair"
+      },
+      "points_after": 22,
+      "points_before": 22,
+      "timestamp": 1779911440679,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779912836610_8904",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "grunt2",
+        "source": "redeem_code"
+      },
+      "points_after": 23,
+      "points_before": 22,
+      "timestamp": 1779912836610,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779922738363_63fa",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "ann&brooks",
+        "source": "redeem_code"
+      },
+      "points_after": 24,
+      "points_before": 23,
+      "timestamp": 1779922738363,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779924055959_1d2b",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "edmond&trevor",
+        "source": "redeem_code"
+      },
+      "points_after": 25,
+      "points_before": 24,
+      "timestamp": 1779924055959,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779931609605_208a",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "brendan2",
+        "source": "redeem_code"
+      },
+      "points_after": 27,
+      "points_before": 25,
+      "timestamp": 1779931609605,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 10,
+      "id": "txn_1779933938039_1c86",
+      "item": "Soft Reset",
+      "metadata": {
+        "inventory_id": "soft_reset_1779933938039_0556",
+        "item_id": "soft_reset"
+      },
+      "points_after": 17,
+      "points_before": 27,
+      "timestamp": 1779933938039,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 3,
+      "id": "txn_1779933941185_29ce",
+      "item": "Boss Reset",
+      "metadata": {
+        "inventory_id": "boss_reset_1779933941185_c6a4",
+        "item_id": "boss_reset"
+      },
+      "points_after": 14,
+      "points_before": 17,
+      "timestamp": 1779933941185,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 3,
+      "id": "txn_1779933943986_d851",
+      "item": "Boss Reset",
+      "metadata": {
+        "inventory_id": "boss_reset_1779933943986_ea88",
+        "item_id": "boss_reset"
+      },
+      "points_after": 11,
+      "points_before": 14,
+      "timestamp": 1779933943986,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779935534529_e4ea",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "whitney",
+        "source": "redeem_code"
+      },
+      "points_after": 13,
+      "points_before": 11,
+      "timestamp": 1779935534529,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779935534529_270a",
+      "item": "Ex-Boyfriend",
+      "metadata": {
+        "award_filename": "Ex-Boyfriend.png",
+        "code": "whitney",
+        "inventory_id": "ex_boyfriend_1779935534529_a300",
+        "item_id": "ex_boyfriend",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 13,
+      "points_before": 13,
+      "timestamp": 1779935534529,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779935650369_cbdf",
+      "item": "Ex-Boyfriend",
+      "metadata": {
+        "inventory_id": "ex_boyfriend_1779935534529_a300",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779935534529,
+          "id": "ex_boyfriend_1779935534529_a300",
+          "item_id": "ex_boyfriend",
+          "metadata": {
+            "award_filename": "Ex-Boyfriend.png",
+            "code": "whitney",
+            "source": "redeem_code"
+          },
+          "name": "Ex-Boyfriend",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code",
+          "type": "ex_boyfriend"
+        }
+      },
+      "points_after": 13,
+      "points_before": 13,
+      "timestamp": 1779935650369,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779936144289_4be7",
+      "item": "Bird Watcher",
+      "metadata": {
+        "inventory_id": "bird_watcher_1779840057980_1452",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779840057980,
+          "id": "bird_watcher_1779840057980_1452",
+          "item_id": "bird_watcher",
+          "metadata": {
+            "award_filename": "Bird Watcher.png",
+            "code": "falkner",
+            "source": "redeem_code"
+          },
+          "name": "Bird Watcher",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code",
+          "type": "bird_watcher"
+        }
+      },
+      "points_after": 13,
+      "points_before": 13,
+      "timestamp": 1779936144289,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779936248364_87ca",
+      "item": "Bug Catcher",
+      "metadata": {
+        "inventory_id": "bug_catcher_1779874595640_79d3",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779874595640,
+          "id": "bug_catcher_1779874595640_79d3",
+          "item_id": "bug_catcher",
+          "metadata": {
+            "award_filename": "Bug Catcher.png",
+            "code": "bugsy",
+            "source": "redeem_code_repair"
+          },
+          "name": "Bug Catcher",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code_repair",
+          "type": "bug_catcher"
+        }
+      },
+      "points_after": 13,
+      "points_before": 13,
+      "timestamp": 1779936248364,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779937780451_0601",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "lt.surge",
+        "source": "redeem_code"
+      },
+      "points_after": 15,
+      "points_before": 13,
+      "timestamp": 1779937780451,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779937780451_2ecd",
+      "item": "Boss Reset 2",
+      "metadata": {
+        "award_filename": "Boss Reset 2.png",
+        "code": "lt.surge",
+        "inventory_id": "boss_reset_2_1779937780451_6c93",
+        "item_id": "boss_reset_2",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 15,
+      "points_before": 15,
+      "timestamp": 1779937780451,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": -1,
+      "id": "txn_1779939480797_6bf9",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 1,
+        "code": "caitlin",
+        "source": "redeem_code"
+      },
+      "points_after": 16,
+      "points_before": 15,
+      "timestamp": 1779939480797,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 3,
+      "id": "txn_1779939593746_de96",
+      "item": "Raid Roll",
+      "metadata": {
+        "inventory_id": "raid_roll_1779939593746_e96e",
+        "item_id": "raid_roll"
+      },
+      "points_after": 13,
+      "points_before": 16,
+      "timestamp": 1779939593746,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 3,
+      "id": "txn_1779944205826_6eba",
+      "item": "Revive",
+      "metadata": {
+        "inventory_id": "revive_1779944205826_f0de",
+        "item_id": "revive"
+      },
+      "points_after": 10,
+      "points_before": 13,
+      "timestamp": 1779944205826,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779944209700_f15e",
+      "item": "Revive",
+      "metadata": {
+        "inventory_id": "revive_1779944205826_f0de",
+        "item_snapshot": {
+          "base_cost": 3,
+          "granted_at": 1779944205826,
+          "id": "revive_1779944205826_f0de",
+          "item_id": "revive",
+          "metadata": {},
+          "name": "Revive",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "shop_purchase",
+          "type": "revive"
+        }
+      },
+      "points_after": 10,
+      "points_before": 10,
+      "timestamp": 1779944209700,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779944310088_916d",
+      "item": "Fishing Boon 2",
+      "metadata": {
+        "inventory_id": "fishing_boon_2_1779911440679_3afa",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1779911440679,
+          "id": "fishing_boon_2_1779911440679_3afa",
+          "item_id": "fishing_boon_2",
+          "metadata": {
+            "award_filename": "Fishing Boon 2.png",
+            "code": "misty",
+            "source": "redeem_code_repair"
+          },
+          "name": "Fishing Boon 2",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code_repair",
+          "type": "fishing_boon_2"
+        }
+      },
+      "points_after": 10,
+      "points_before": 10,
+      "timestamp": 1779944310088,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1779962363290_7438",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "morty",
+        "source": "redeem_code"
+      },
+      "points_after": 12,
+      "points_before": 10,
+      "timestamp": 1779962363290,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1779962363290_72d3",
+      "item": "Next Of Kin 2",
+      "metadata": {
+        "award_filename": "Next Of Kin 2.png",
+        "code": "morty",
+        "inventory_id": "next_of_kin_2_1779962363290_a08a",
+        "item_id": "next_of_kin_2",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 12,
+      "points_before": 12,
+      "timestamp": 1779962363290,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": 3,
+      "id": "txn_1780015456845_92fd",
+      "item": "Revive",
+      "metadata": {
+        "inventory_id": "revive_1780015456845_ddc3",
+        "item_id": "revive"
+      },
+      "points_after": 9,
+      "points_before": 12,
+      "timestamp": 1780015456845,
+      "type": "purchase",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1780015462383_e562",
+      "item": "Revive",
+      "metadata": {
+        "inventory_id": "revive_1780015456845_ddc3",
+        "item_snapshot": {
+          "base_cost": 3,
+          "granted_at": 1780015456845,
+          "id": "revive_1780015456845_ddc3",
+          "item_id": "revive",
+          "metadata": {},
+          "name": "Revive",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "shop_purchase",
+          "type": "revive"
+        }
+      },
+      "points_after": 9,
+      "points_before": 9,
+      "timestamp": 1780015462383,
+      "type": "redeem",
+      "undone": false
+    },
+    {
+      "cost": -2,
+      "id": "txn_1780017109600_7dac",
+      "item": "redeem_code",
+      "metadata": {
+        "amount": 2,
+        "code": "erika",
+        "source": "redeem_code"
+      },
+      "points_after": 11,
+      "points_before": 9,
+      "timestamp": 1780017109600,
+      "type": "award",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1780017109600_46dd",
+      "item": "Hatch Of The Day",
+      "metadata": {
+        "award_filename": "Hatch Of The Day.png",
+        "code": "erika",
+        "inventory_id": "hatch_of_the_day_1780017109600_71e4",
+        "item_id": "hatch_of_the_day",
+        "notify_inventory": true,
+        "source": "redeem_code"
+      },
+      "points_after": 11,
+      "points_before": 11,
+      "timestamp": 1780017109600,
+      "type": "grant",
+      "undone": false
+    },
+    {
+      "cost": 0,
+      "id": "txn_1780017158251_fcb6",
+      "item": "Hatch Of The Day",
+      "metadata": {
+        "inventory_id": "hatch_of_the_day_1780017109600_71e4",
+        "item_snapshot": {
+          "base_cost": 0,
+          "granted_at": 1780017109600,
+          "id": "hatch_of_the_day_1780017109600_71e4",
+          "item_id": "hatch_of_the_day",
+          "metadata": {
+            "award_filename": "Hatch Of The Day.png",
+            "code": "erika",
+            "source": "redeem_code"
+          },
+          "name": "Hatch Of The Day",
+          "redeemed": false,
+          "redeemed_at": null,
+          "source": "redeem_code",
+          "type": "hatch_of_the_day"
+        }
+      },
+      "points_after": 11,
+      "points_before": 11,
+      "timestamp": 1780017158251,
+      "type": "redeem",
+      "undone": false
+    }
+  ],
+  "unlocked_awards": [
+    "Revive 2.png",
+    "Bird Watcher.png",
+    "Bug Catcher.png",
+    "Fishing Boon 2.png",
+    "Ex-Boyfriend.png",
+    "Boss Reset 2.png",
+    "Next Of Kin 2.png",
+    "Hatch Of The Day.png"
+  ],
+  "unseen_inventory_reward_ids": [],
+  "version": 1
+}

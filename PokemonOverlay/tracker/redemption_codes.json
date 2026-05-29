@@ -105,19 +105,19 @@
   },
   "guard": {
     "points": 1,
-    "awards": []
+    "awards": ["Encounter Reroll 2.png"]
   },
   "leftguard": {
     "points": 1,
-    "awards": []
+    "awards": ["Encounter Reroll 2.png"]
   },
   "rightguard": {
     "points": 1,
-    "awards": []
+    "awards": ["Encounter Reroll 2.png"]
   },
   "giovanni": {
     "points": 2,
-    "awards": []
+    "awards": ["High Roller 2.png"]
   },
   "cole": {
     "points": 1,
@@ -133,7 +133,7 @@
   },
   "ghost": {
     "points": 1,
-    "awards": []
+    "awards": ["Next Of Kin 2.png"]
   },
   "rival3": {
     "points": 1,
@@ -145,15 +145,15 @@
   },
   "giovanni2": {
     "points": 2,
-    "awards": []
+    "awards": ["Cash Out.png"]
   },
   "chuck": {
     "points": 2,
-    "awards": []
+    "awards": ["Boss Reset 2.png"]
   },
   "sabrina": {
     "points": 2,
-    "awards": []
+    "awards": ["Foresight.png"]
   },
   "kid": {
     "points": 1,
@@ -245,27 +245,27 @@
   },
   "brendan3": {
     "points": 1,
-    "awards": []
+    "awards": ["Safari Hunt 2.png"]
   },
   "brock2": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "misty2": {
     "points": 2,
-    "awards": []
+    "awards": ["Surf's Up 2.png"]
   },
   "lt.surge2": {
     "points": 2,
-    "awards": []
+    "awards": ["Raid Roll 2.png"]
   },
   "erika2": {
     "points": 2,
-    "awards": []
+    "awards": ["Harvest Season.png"]
   },
   "koga": {
     "points": 2,
-    "awards": []
+    "awards": ["Bunshin Technique.png"]
   },
   "jojofan": {
     "points": 1,
@@ -273,7 +273,7 @@
   },
   "pryce": {
     "points": 2,
-    "awards": []
+    "awards": ["Gift Pokemon 2.png"]
   },
   "may": {
     "points": 1,
@@ -281,7 +281,7 @@
   },
   "jasmine": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "derek": {
     "points": 1,
@@ -297,19 +297,19 @@
   },
   "blaine": {
     "points": 2,
-    "awards": []
+    "awards": ["Raid Roll 2.png"]
   },
   "archer2": {
     "points": 1,
-    "awards": []
+    "awards": ["All In.png"]
   },
   "ariana": {
     "points": 1,
-    "awards": []
+    "awards": ["Black Market Trading.png"]
   },
   "giovanni3": {
     "points": 2,
-    "awards": []
+    "awards": ["Soft Reset 2.png"]
   },
   "ketchup": {
     "points": 1,
@@ -317,7 +317,7 @@
   },
   "clair": {
     "points": 2,
-    "awards": []
+    "awards": ["Dragon Tamer.png"]
   },
   "max": {
     "points": 1,
@@ -365,23 +365,23 @@
   },
   "lorelei": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "bruno": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "agatha": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "lance": {
     "points": 2,
-    "awards": []
+    "awards": ["Revive 2.png"]
   },
   "rival5": {
     "points": 2,
-    "awards": []
+    "awards": ["Soft Reset 2.png"]
   },
   "oak": {
     "points": 2,

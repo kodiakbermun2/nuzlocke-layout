@@ -113,6 +113,7 @@ const overlayClientId = (typeof crypto !== "undefined" && typeof crypto.randomUU
 const pendingPointsCommands = new Map();
 const pcBoxCache = new Map();
 let lastTrainerProfileKey = "";
+const partyHpCacheByKey = new Map();
 
 const spriteResolutionCache = new Map();
 const spriteLoadPromiseCache = new Map();
@@ -234,8 +235,41 @@ function normalizePokemon(raw, section, index) {
   };
 }
 
+function sortPartyBySlot(party) {
+  return [...party].sort((a, b) => {
+    const aSlot = Number.isFinite(a.slot) ? a.slot : Number.MAX_SAFE_INTEGER;
+    const bSlot = Number.isFinite(b.slot) ? b.slot : Number.MAX_SAFE_INTEGER;
+    if (aSlot !== bSlot) {
+      return aSlot - bSlot;
+    }
+    return String(a.nickname || "").localeCompare(String(b.nickname || ""));
+  });
+}
+
+function hydratePartyHpFromCache(party) {
+  for (const mon of party) {
+    const key = String(mon.key || "");
+    if (!key) {
+      continue;
+    }
+    const hasHp = Number.isFinite(mon.currentHp) && Number.isFinite(mon.maxHp) && mon.maxHp > 0;
+    if (hasHp) {
+      partyHpCacheByKey.set(key, { currentHp: mon.currentHp, maxHp: mon.maxHp });
+      continue;
+    }
+    const cached = partyHpCacheByKey.get(key);
+    if (cached) {
+      mon.currentHp = cached.currentHp;
+      mon.maxHp = cached.maxHp;
+    }
+  }
+}
+
 function normalizeState(data) {
-  const party = sanitizeArray(data.party).map((p, i) => normalizePokemon(p, "party", i));
+  const party = sortPartyBySlot(
+    sanitizeArray(data.party).map((p, i) => normalizePokemon(p, "party", i))
+  );
+  hydratePartyHpFromCache(party);
   const incomingPc = sanitizeArray(data.pc).map((p, i) => normalizePokemon(p, "pc", i));
   const sharedCachedPc = sanitizeArray(data.pc_cached).map((p, i) => normalizePokemon(p, "pc", i));
   let pc = incomingPc;
@@ -764,6 +798,16 @@ async function resolveMemorialSprite(mon) {
 function updateCardVisual(node, mon) {
   node.classList.toggle("shiny", mon.shiny);
   node.classList.toggle("sprite-right", mon.section === "party" && mon.slot % 2 === 0);
+  if (mon.section === "party") {
+    const normalizedSlot = Math.max(1, Math.min(6, Math.trunc(Number(mon.slot) || 1)));
+    node.style.setProperty("--slot-sprite-x", `var(--party-slot${normalizedSlot}-sprite-x)`);
+    node.style.setProperty("--slot-sprite-y", `var(--party-slot${normalizedSlot}-sprite-y)`);
+    node.style.setProperty("--slot-sprite-scale", `var(--party-slot${normalizedSlot}-sprite-scale)`);
+  } else {
+    node.style.removeProperty("--slot-sprite-x");
+    node.style.removeProperty("--slot-sprite-y");
+    node.style.removeProperty("--slot-sprite-scale");
+  }
 
   const levelText = mon.level == null ? "Lv ?" : `Lv ${mon.level}`;
   const heldText = mon.heldItem ? ` | Held: ${mon.heldItem}` : "";
@@ -1156,6 +1200,7 @@ function applyIncomingRawState(raw, source) {
   const incomingProfileKey = trainerProfileKeyFromRaw(raw || {});
   if (incomingProfileKey && lastTrainerProfileKey && incomingProfileKey !== lastTrainerProfileKey) {
     pcBoxCache.clear();
+    partyHpCacheByKey.clear();
   }
   if (incomingProfileKey) {
     lastTrainerProfileKey = incomingProfileKey;

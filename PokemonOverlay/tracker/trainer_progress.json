@@ -1,0 +1,46 @@
+{
+  "ace_wilton": {
+    "awarded": true,
+    "defeated": true
+  },
+  "brendan_viridian_forest": {
+    "awarded": true,
+    "defeated": true
+  },
+  "falkner": {
+    "awarded": true,
+    "defeated": true
+  },
+  "lass_anne_viridian_forest": {
+    "awarded": true,
+    "defeated": true
+  },
+  "left_guard_rocket_hideout": {
+    "awarded": true,
+    "defeated": true
+  },
+  "right_guard_rocket_hideout": {
+    "awarded": true,
+    "defeated": true
+  },
+  "rival_route_22": {
+    "awarded": false,
+    "defeated": false
+  },
+  "rocket_grunt_dig_house": {
+    "awarded": true,
+    "defeated": true
+  },
+  "rocket_grunt_nugget_bridge": {
+    "awarded": true,
+    "defeated": true
+  },
+  "rocket_guard_game_corner": {
+    "awarded": true,
+    "defeated": true
+  },
+  "tamer_ramiro": {
+    "awarded": false,
+    "defeated": false
+  }
+}
